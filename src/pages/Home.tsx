@@ -20,7 +20,7 @@ export const Home = () => {
 	</div>
 
 	{/* Foreground */}
-	<div className="relative z-10 smooth-scroll">
+	<div className="relative z-10">
 
 	  {/* Hero Section */}
 	  <section id="hero" className="relative h-screen w-full">
@@ -60,18 +60,9 @@ export const Home = () => {
 	  <Navbar />
 
 	  <main>
+
 		{/* Main Content */}
-		<section id="about">
-		  <AboutMe />
-		</section>
-
-		<section id="projects">
-
-		</section>
-
-		<section id="contact">
-
-		</section>
+		<AboutMe />
 
 	  </main>
 
