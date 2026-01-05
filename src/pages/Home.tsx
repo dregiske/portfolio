@@ -2,10 +2,11 @@
 
 import  { BackgroundPaths } from "@/components/ui/shadcn-io/background-paths";
 
-import { HeroTitle } from "@/components/ui/hero-title";
-import { HeroSubtitle } from "@/components/ui/hero-subtitle";
+import { HeroTitle } from "@/components/ui/HeroTitle";
+import { HeroSubtitle } from "@/components/ui/HeroSubtitle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Navbar } from "@/components/ui/Navbar";
+import { AboutMe } from "@/components/ui/AboutMe";
 
 import { PROFILE_PHOTO_LINK } from "@/constants/links";
 
@@ -61,7 +62,7 @@ export const Home = () => {
 	  <main>
 		{/* Main Content */}
 		<section id="about">
-
+		  <AboutMe />
 		</section>
 
 		<section id="projects">
