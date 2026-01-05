@@ -7,6 +7,7 @@ import { HeroSubtitle } from "@/components/ui/HeroSubtitle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Navbar } from "@/components/ui/Navbar";
 import { AboutMe } from "@/components/ui/AboutMe";
+import { Skills } from "@/components/ui/Skills";
 
 import { PROFILE_PHOTO_LINK } from "@/constants/links";
 
@@ -63,6 +64,8 @@ export const Home = () => {
 
 		{/* Main Content */}
 		<AboutMe />
+
+		<Skills />
 
 	  </main>
 
