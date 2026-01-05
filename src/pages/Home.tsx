@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Navbar } from "@/components/ui/Navbar";
 import { AboutMe } from "@/components/ui/AboutMe";
 import { Skills } from "@/components/ui/Skills";
+import { Projects } from "@/components/ui/Projects";
 
 import { PROFILE_PHOTO_LINK } from "@/constants/links";
 
@@ -66,6 +67,8 @@ export const Home = () => {
 		<AboutMe />
 
 		<Skills />
+
+		<Projects />
 
 	  </main>
 
