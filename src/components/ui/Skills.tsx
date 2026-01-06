@@ -2,23 +2,16 @@
 
 const skills = [
   { name: "Python", level: 95, category: "Languages" },
-  { name: "JavaScript", level: 90, category: "Languages" },
   { name: "TypeScript", level: 85, category: "Languages" },
   { name: "C++", level: 80, category: "Languages" },
-  { name: "C", level: 80, category: "Languages" },
   { name: "Java", level: 80, category: "Languages" },
   { name: "SQL", level: 80, category: "Languages" },
 
   { name: "React", level: 90, category: "Frameworks" },
   { name: "SQLAlchemy", level: 85, category: "Frameworks" },
   { name: "Numpy", level: 80, category: "Frameworks" },
-  { name: "Pandas", level: 75, category: "Frameworks" },
   { name: "FastAPI", level: 95, category: "Frameworks" },
   { name: "scikit-learn", level: 75, category: "Frameworks" },
-
-  { name: "Machine Learning", level: 80, category: "Technologies" },
-  { name: "Data Analysis", level: 85, category: "Technologies" },
-  { name: "Web Development", level: 90, category: "Technologies" },
 
   { name: "Docker", level: 80, category: "Tools" },
   { name: "Git", level: 90, category: "Tools" },
