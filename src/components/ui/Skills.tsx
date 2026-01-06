@@ -26,7 +26,7 @@ const skills = [
 
 export const Skills = () => {
   return (
-	<section id="skills" className="py-24 px-4 relative bg-secondary/30">
+	<section id="skills" className="py-24 px-4 relative">
 	  <div className="container mx-auto max-w-5xl">
 		<h2 className="text-3xl md:text-4xl font-bold mb-12 text-center border-b pb-4">
 		  My <span className="text-primary">Skills</span>
@@ -36,7 +36,7 @@ export const Skills = () => {
 		  {skills.map((skill, key) => (
 			<div
 			  key={key}
-			  className="bg-card p-6 rounded-lg shadow-xs card-hover"
+			  className="bg-secondary/70 p-6 rounded-lg shadow-md card-hover"
 			>
 			  <div className="text-left mb-4">
 				<h3 className="font-semibold text-lg">
