@@ -43,7 +43,7 @@ export const Skills = () => {
 				  {skill.name}
 				</h3>
 			  </div>
-			  <div className="w-full bg-secondary/50 h-2 rounded-full overflow-hidden">
+			  <div className="w-full bg-black/50 h-2 rounded-full overflow-hidden">
 			    <div className="bg-primary h-2 rounded-full origin-left animate-[grow_1s_ease-in-out_forwards]" style={{ width: `${skill.level}%` }}></div>
 			  </div>
 			</div>
