@@ -9,6 +9,7 @@ import { Navbar } from "@/components/ui/Navbar";
 import { AboutMe } from "@/components/ui/AboutMe";
 import { Projects } from "@/components/ui/Projects";
 import { Skills } from "@/components/ui/Skills";
+import { Contacts } from "@/components/ui/Contacts";
 
 import { PROFILE_PHOTO_LINK } from "@/constants/links";
 
@@ -65,11 +66,9 @@ export const Home = () => {
 
 		{/* Main Content */}
 		<AboutMe />
-
 		<Projects />
-
 		<Skills />
-
+		<Contacts />
 	  </main>
 
 	  {/* Footer */}

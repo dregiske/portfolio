@@ -48,7 +48,7 @@ export const Navbar = () => {
           ))}
         </div>
 
-        {/* Mobile Nav */}
+        {/* Mobile Nav  NEED TO FIX !!!*/}
 		<button
 		  onClick={() => setIsMenuOpen((prev) => !prev)}
 		  className="md:hidden p-2 text-foreground z-50"
