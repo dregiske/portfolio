@@ -8,8 +8,8 @@ import { MENU_BUTTON_SIZE } from "@/constants/theme";
 const navItems = [
   { name: "Home", href: "#hero" },
   { name: "About", href: "#about" },
-  { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
+  { name: "Skills", href: "#skills" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -54,8 +54,7 @@ export const Navbar = () => {
 		  className="md:hidden p-2 text-foreground z-50"
 		  aria-label={isMenuOpen ? "Close menu" : "Open menu"}
 		>
-		    {" "}
-		    {isMenuOpen ? <X size={MENU_BUTTON_SIZE} /> : <Menu size={MENU_BUTTON_SIZE} />}
+		  {isMenuOpen ? <X size={MENU_BUTTON_SIZE} /> : <Menu size={MENU_BUTTON_SIZE} />}
 		</button>
 
         <div className={cn(
@@ -82,5 +81,6 @@ export const Navbar = () => {
         </div>
       </div>
     </nav>
+	
   );
 };
