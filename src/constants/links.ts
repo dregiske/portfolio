@@ -10,4 +10,4 @@ export const DISCORD_LINK = 'https://discord.com/users/drev.2';
 
 export const EMAIL_ADDRESS = 'andre.giske@yahoo.com';
 
-export const PHONE_NUMBER = '(619)855-2551'
+export const PHONE_NUMBER = '(619) 855-2551'
