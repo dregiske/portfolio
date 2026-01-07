@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -34,7 +34,6 @@ export const Navbar = () => {
       )}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-
         {/* Desktop Nav */}
         <div className="hidden md:flex space-x-8">
           {navItems.map((item, key) => (
@@ -49,38 +48,41 @@ export const Navbar = () => {
         </div>
 
         {/* Mobile Nav  NEED TO FIX !!!*/}
-		<button
-		  onClick={() => setIsMenuOpen((prev) => !prev)}
-		  className="md:hidden p-2 text-foreground z-50"
-		  aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-		>
-		  {isMenuOpen ? <X size={MENU_BUTTON_SIZE} /> : <Menu size={MENU_BUTTON_SIZE} />}
-		</button>
+        <button
+          onClick={() => setIsMenuOpen((prev) => !prev)}
+          className="md:hidden p-2 text-foreground z-50"
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+        >
+          {isMenuOpen ? (
+            <X size={MENU_BUTTON_SIZE} />
+          ) : (
+            <Menu size={MENU_BUTTON_SIZE} />
+          )}
+        </button>
 
-        <div className={cn(
-			"fixed inset-0 bg-background/95 backdrop-blur-md z-40 flex flex-col",
-			"items-center justify-center transition-all duration-300 md:hidden",
-			isMenuOpen 
-			  ? "opacity-100 pointer-events-auto"
-			  : "opacity-0 pointer-events-none"
-		  )}
-		>
-		  <div className="flex flex-col space-y-8 text-xl items-center">
-		    {navItems.map((item, key) => (
+        <div
+          className={cn(
+            "fixed inset-0 bg-background/95 backdrop-blur-md z-40 flex flex-col",
+            "items-center justify-center transition-all duration-300 md:hidden",
+            isMenuOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          )}
+        >
+          <div className="flex flex-col space-y-8 text-xl items-center">
+            {navItems.map((item, key) => (
               <a
                 key={key}
                 href={item.href}
                 className="text-foreground/80 hover:text-primary transition-colors duration-300"
-				onClick={() => setIsMenuOpen(false)}
+                onClick={() => setIsMenuOpen(false)}
               >
-            	{item.name}
+                {item.name}
               </a>
             ))}
-		  </div>
-		  
+          </div>
         </div>
       </div>
     </nav>
-	
   );
 };
