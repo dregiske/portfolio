@@ -29,7 +29,7 @@ export const Skills = () => {
           {skills.map((skill, key) => (
             <div
               key={key}
-              className="bg-secondary/70 p-6 rounded-lg shadow-md card-hover"
+              className="bg-secondary/70 p-6 rounded-lg shadow-md card-hover hover:scale-[1.02] transition-transform duration-300"
             >
               <div className="text-left mb-4">
                 <h3 className="font-semibold text-lg">{skill.name}</h3>

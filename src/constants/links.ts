@@ -9,6 +9,8 @@ export const LINKEDIN_LINK =
 
 export const DISCORD_LINK = "https://discord.com/users/drev.2";
 
+export const INSTAGRAM_LINK = "https://www.instagram.com/dre.giske";
+
 export const EMAIL_ADDRESS = "andre.giske@yahoo.com";
 
 export const PHONE_NUMBER = "(619) 855-2551";
