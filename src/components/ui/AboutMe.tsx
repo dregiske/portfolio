@@ -42,6 +42,7 @@ export const AboutMe = () => {
                 Get In Touch
               </a>
               <a
+                target="_blank"
                 href={RESUME_LINK}
                 className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-colors duration-300"
               >
