@@ -34,7 +34,7 @@ export const Home = () => {
                 {/* Subtitle */}
                 <div className="mb-6">
                   <div className="font-medium text-lg sm:text-xl md:text-2xl">
-                    <HeroSubtitle subtitle="CSE Student & AI/ML Enthusiast" />
+                    <HeroSubtitle subtitle="CSE Student @ UCSD" />
                   </div>
                 </div>
               </div>
@@ -68,6 +68,7 @@ export const Home = () => {
         </main>
 
         {/* Footer */}
+        <Footer />
       </div>
     </div>
   );

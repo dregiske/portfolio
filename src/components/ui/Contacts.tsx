@@ -8,8 +8,9 @@ import {
   LINKEDIN_LINK,
   INSTAGRAM_LINK,
 } from "@/constants/links";
-import { Contact, Phone } from "lucide-react";
+import { Contact, Send, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const socials = [
   {
@@ -35,6 +36,17 @@ const socials = [
 ];
 
 export const Contacts = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setTimeout(() => {
+      // TODO: give some popup message to confirm submission
+      setIsSubmitting(false);
+    }, 2000);
+  };
+
   return (
     <section id="contact" className="py-16">
       <div className="container mx-auto px-4 md:px-6">
@@ -88,7 +100,7 @@ export const Contacts = () => {
 
           {/* Contact Form */}
           <div>
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="text"
                 placeholder="Your Name"
@@ -106,9 +118,13 @@ export const Contacts = () => {
               ></textarea>
               <button
                 type="submit"
-                className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors duration-300"
+                disabled={isSubmitting}
+                className={cn(
+                  "px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors duration-300"
+                )}
               >
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
+                <Send className="ml-2 h-5 w-5 inline-block" />
               </button>
             </form>
           </div>
