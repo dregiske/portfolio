@@ -10,6 +10,7 @@ import { AboutMe } from "@/components/ui/AboutMe";
 import { Projects } from "@/components/ui/Projects";
 import { Skills } from "@/components/ui/Skills";
 import { Contacts } from "@/components/ui/Contacts";
+import { Footer } from "@/components/ui/Footer";
 
 import { PROFILE_PHOTO_LINK } from "@/constants/links";
 
