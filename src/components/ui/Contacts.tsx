@@ -9,6 +9,7 @@ import {
   INSTAGRAM_LINK,
 } from "@/constants/links";
 import { Contact, Phone } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const socials = [
   {
@@ -63,7 +64,12 @@ export const Contacts = () => {
             <div className="mt-6 flex items-center justify-left">
               {socials.map((social) => (
                 <div
-                  className="mr-4 items-center flex rounded-full p-3 hover:outline-none hover:ring-2 hover:ring-primary hover:scale-[1.1] hover:bg-primary/10  transition-transform duration-300"
+                  className={cn(
+                    "mr-4 items-center flex rounded-full p-3",
+                    "dark:bg-white/50",
+                    "hover:outline-none hover:ring-2 hover:ring-primary",
+                    "hover:scale-[1.1] hover:bg-primary/10  transition-transform duration-300"
+                  )}
                   key={social.name}
                 >
                   <a

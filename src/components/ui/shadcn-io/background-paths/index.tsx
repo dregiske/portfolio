@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 function FloatingPaths({ position }: { position: number }) {
   const paths = Array.from({ length: 36 }, (_, i) => ({
@@ -19,7 +19,7 @@ function FloatingPaths({ position }: { position: number }) {
   return (
     <div className="absolute inset-0 pointer-events-none">
       <svg
-        className="w-full h-full text-slate-950 dark:text-white"
+        className="absolute w-full h-full text-slate-950 dark:text-white"
         viewBox="0 0 696 316"
         fill="none"
       >
@@ -40,7 +40,7 @@ function FloatingPaths({ position }: { position: number }) {
             transition={{
               duration: 20 + Math.random() * 10,
               repeat: Number.POSITIVE_INFINITY,
-              ease: 'linear',
+              ease: "linear",
             }}
           />
         ))}
