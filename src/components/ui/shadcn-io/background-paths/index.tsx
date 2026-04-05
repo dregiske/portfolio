@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 
 function FloatingPaths({ position }: { position: number }) {

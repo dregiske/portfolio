@@ -1,4 +1,3 @@
-"use client";
 import { ArrowUp } from "lucide-react";
 
 export const Footer = () => {

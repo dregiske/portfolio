@@ -1,5 +1,3 @@
-"use client";
-
 import { BackgroundPaths } from "@/components/ui/shadcn-io/background-paths";
 
 import { HeroTitle } from "@/components/ui/HeroTitle";
@@ -17,11 +15,6 @@ import { PROFILE_PHOTO_LINK } from "@/constants/links";
 export const Home = () => {
   return (
     <div className="relative min-h-screen">
-      {/* Background */}
-      <div className="fixed inset-0 -z-10 pointer-events-none">
-        <BackgroundPaths />
-      </div>
-
       {/* Foreground */}
       <div className="relative z-10">
         {/* Hero Section */}
@@ -67,6 +60,11 @@ export const Home = () => {
           <Skills />
           <Contacts />
         </main>
+
+        {/* Background */}
+        <div className="fixed inset-0 -z-10 pointer-events-none">
+          <BackgroundPaths />
+        </div>
 
         {/* Footer */}
         <Footer />

@@ -1,4 +1,4 @@
-export const RESUME_LINK = "/Andre_Giske_Resume_2026 copy.pdf";
+export const RESUME_LINK = "/AndreGiskeResume_2026.pdf";
 
 export const PROFILE_PHOTO_LINK = "/profile.jpg";
 

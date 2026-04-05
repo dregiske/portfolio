@@ -1,5 +1,3 @@
-"use client";
-
 const projects = [
   {
     name: "News Recommendation Website",

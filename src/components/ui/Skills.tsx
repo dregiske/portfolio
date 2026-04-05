@@ -1,5 +1,3 @@
-"use client";
-
 const skills = [
   { name: "Python", level: 95, category: "Languages" },
   { name: "TypeScript", level: 85, category: "Languages" },

@@ -1,5 +1,3 @@
-"use client";
-
 import { Code, User, Briefcase } from "lucide-react";
 import { RESUME_LINK } from "@/constants/links";
 
@@ -19,14 +17,14 @@ export const AboutMe = () => {
             </h3>
             <p className="text-muted-foreground">
               I'm a passionate Computer Science and Engineering student with a
-              keen interest in Artificial Intelligence and Machine Learning. I
-              love exploring new technologies and applying them to solve
-              real-world problems.
+              keen interest in Artificial Intelligence & Machine Learning. I
+              love exploring new technologies and applying them to solve real
+              world problems.
             </p>
             <p className="text-muted-foreground">
               In my free time, I enjoy working on personal projects,
               contributing to open-source, and staying updated with the latest
-              advancements in AI/ML.
+              advancements in tech.
             </p>
             <p className="text-muted-foreground">
               I'm always eager to connect with like-minded individuals and
