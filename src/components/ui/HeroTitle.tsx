@@ -1,7 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { HERO_TITLE } from "@/constants/theme";
-
 type HeroTitleProps = {
   title: string;
   className?: string;
@@ -36,8 +34,7 @@ export function HeroTitle({ title, className = "" }: HeroTitleProps) {
                     stiffness: 150,
                     damping: 25,
                   }}
-                  className={`inline-block text-transparent bg-clip-text 
-                    bg-linear-to-r ${HERO_TITLE.light} dark:${HERO_TITLE.dark}`}
+                  className="inline-block text-foreground"
                 >
                   {letter}
                 </motion.span>
