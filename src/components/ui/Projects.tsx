@@ -3,7 +3,7 @@ const projects = [
     name: "News Recommendation Website",
     description:
       "A web application that provides personalized news recommendations using machine learning algorithms. Built with React, FastAPI, and scikit-learn.",
-    link: "https://github.com/dregiske/personal-news-rec",
+    link: "https://www.thefraynews.com",
     tools: ["React", "FastAPI", "scikit-learn"],
     photo: "/newspaper.jpg",
   },
@@ -42,6 +42,7 @@ export const Projects = () => {
               <div className="text-left mb-4">
                 <img
                   src={project.photo}
+                  alt={project.name}
                   className="bg-secondary rounded-md mb-4 object-cover h-40 w-full"
                 />
 
