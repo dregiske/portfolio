@@ -13,4 +13,3 @@ export const INSTAGRAM_LINK = "https://www.instagram.com/dre.giske";
 
 export const EMAIL_ADDRESS = "andre.giske@yahoo.com";
 
-export const PHONE_NUMBER = "(619) 855-2551";

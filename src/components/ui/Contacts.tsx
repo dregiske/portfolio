@@ -1,12 +1,11 @@
 import {
   EMAIL_ADDRESS,
-  PHONE_NUMBER,
   DISCORD_LINK,
   GITHUB_LINK,
   LINKEDIN_LINK,
   INSTAGRAM_LINK,
 } from "@/constants/links";
-import { Contact, Send, Phone } from "lucide-react";
+import { Contact, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -66,12 +65,6 @@ export const Contacts = () => {
                   <Contact className="h-6 w-6 text-primary" />
                 </div>
                 <span>{EMAIL_ADDRESS}</span>
-              </li>
-              <li className="flex items-center">
-                <div className="p-3 rounded-full bg-primary/10 mr-4">
-                  <Phone className="h-6 w-6 text-primary" />
-                </div>
-                <span>+1 {PHONE_NUMBER}</span>
               </li>
             </ul>
 
