@@ -17,9 +17,9 @@ export const AboutMe = () => {
             </h3>
             <p className="text-muted-foreground">
               I'm a passionate Computer Science and Engineering student with a
-              keen interest in Artificial Intelligence & Machine Learning. I
-              love exploring new technologies and applying them to solve real
-              world problems.
+              keen interest in backend design and full-stack development. I love
+              exploring new technologies and applying them to solve real world
+              problems.
             </p>
             <p className="text-muted-foreground">
               In my free time, I enjoy working on personal projects,
