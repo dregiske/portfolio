@@ -2,7 +2,6 @@ import { BackgroundPaths } from "@/components/ui/shadcn-io/background-paths";
 
 import { HeroTitle } from "@/components/ui/HeroTitle";
 import { HeroSubtitle } from "@/components/ui/HeroSubtitle";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Navbar } from "@/components/ui/Navbar";
 import { AboutMe } from "@/components/ui/AboutMe";
 import { Projects } from "@/components/ui/Projects";
@@ -46,9 +45,6 @@ export const Home = () => {
             </div>
           </div>
         </section>
-
-        {/* Theme Toggle */}
-        <ThemeToggle />
 
         {/* Navbar */}
         <Navbar />

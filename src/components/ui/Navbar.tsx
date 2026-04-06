@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { MENU_BUTTON_SIZE } from "@/constants/theme";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const navItems = [
   { name: "Home", href: "#hero" },
@@ -45,6 +46,8 @@ export const Navbar = () => {
               </a>
             ))}
           </div>
+
+          <ThemeToggle />
 
           {/* Mobile Menu Button */}
           <button

@@ -31,7 +31,7 @@ export const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className={cn("fixed max-sm:hidden top-5 right-10 z-50")}
+      className={cn("max-sm:hidden")}
       aria-label="Toggle Theme"
     >
       {isDarkMode ? (
