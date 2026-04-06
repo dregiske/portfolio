@@ -178,9 +178,9 @@
 
   --destructive: oklch(0.704 0.191 22.216);
 
-  --border: oklch(0.28 0 0);
+  --border: oklch(1 0 0 / 10%);
 
-  --input: oklch(0.3 0 0);
+  --input: oklch(1 0 0 / 15%);
 
   --ring: oklch(0.556 0 0);
 

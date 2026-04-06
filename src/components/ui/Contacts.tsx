@@ -84,9 +84,9 @@ export const Contacts = () => {
                 <div
                   className={cn(
                     "mr-4 items-center flex rounded-full p-3",
-                    "dark:bg-neutral-200",
+                    "dark:bg-white/50",
                     "hover:outline-none hover:ring-2 hover:ring-primary",
-                    "hover:scale-[1.1] hover:bg-orange-50 dark:hover:bg-orange-100 transition-transform duration-300"
+                    "hover:scale-[1.1] hover:bg-primary/10 transition-transform duration-300"
                   )}
                   key={social.name}
                 >
@@ -111,24 +111,24 @@ export const Contacts = () => {
                 type="text"
                 name="name"
                 placeholder="Your Name"
-                className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <input
                 type="email"
                 name="email"
                 placeholder="Your Email"
-                className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <textarea
                 name="message"
                 placeholder="Your Message"
                 rows={4}
-                className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               ></textarea>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2 bg-primary text-white rounded-md hover:opacity-90 transition-opacity duration-300"
+                className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors duration-300"
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
                 <Send className="ml-2 h-5 w-5 inline-block" />

@@ -40,14 +40,14 @@ export const AboutMe = () => {
             <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center md:justify-start">
               <a
                 href="#contact"
-                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-orange-50 dark:hover:bg-orange-950 transition-colors duration-300"
+                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-colors duration-300"
               >
                 Get In Touch
               </a>
               <a
                 target="_blank"
                 href={RESUME_LINK}
-                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-orange-50 dark:hover:bg-orange-950 transition-colors duration-300"
+                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-colors duration-300"
               >
                 Download Resume
               </a>
@@ -56,7 +56,7 @@ export const AboutMe = () => {
 
           {/* Right Side */}
           <div className="grid grid-cols-1 gap-6">
-            <div className="bg-background rounded-lg border border-border p-6">
+            <div className="gradient-border p-6 card-hover">
               <div className="flex items-start gap-4">
                 <div className={ICON_CIRCLE}>
                   <Code className="h-6 w-6 text-primary" />
@@ -72,7 +72,7 @@ export const AboutMe = () => {
               </div>
             </div>
 
-            <div className="bg-background rounded-lg border border-border p-6">
+            <div className="gradient-border p-6 card-hover">
               <div className="flex items-start gap-4">
                 <div className={ICON_CIRCLE}>
                   <User className="h-6 w-6 text-primary" />
@@ -88,7 +88,7 @@ export const AboutMe = () => {
               </div>
             </div>
 
-            <div className="bg-background rounded-lg border border-border p-6">
+            <div className="gradient-border p-6 card-hover">
               <div className="flex items-start gap-4">
                 <div className={ICON_CIRCLE}>
                   <Briefcase className="h-6 w-6 text-primary" />
