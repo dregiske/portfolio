@@ -1,4 +1,8 @@
-import { SECTION_CARD_SM, SECTION_HEADING, TOOL_BADGE } from "@/constants/theme";
+import {
+  SECTION_CARD_SM,
+  SECTION_HEADING,
+  TOOL_BADGE,
+} from "@/constants/theme";
 
 const projects = [
   {
@@ -6,7 +10,16 @@ const projects = [
     description:
       "A web application that provides personalized news recommendations using machine learning algorithms. Built with React, FastAPI, and scikit-learn.",
     link: "https://www.thefraynews.com",
-    tools: ["React", "FastAPI", "scikit-learn"],
+    tools: [
+      "React",
+      "FastAPI",
+      "scikit-learn",
+      "Nginx",
+      "Python",
+      "TypeScript",
+      "JWT",
+      "NewsAPI",
+    ],
     photo: "/newspaper.jpg",
   },
   {
@@ -14,7 +27,12 @@ const projects = [
     description:
       "A product recommendation system that suggests similar products based on user preferences. Developed using Python, Flask, and collaborative filtering techniques.",
     link: "https://github.com/dregiske/product_recommendation_model",
-    tools: ["Python", "Flask", "Collaborative Filtering"],
+    tools: [
+      "Python",
+      "Flask",
+      "Collaborative Filtering",
+      "K-Nearest-Neighbors",
+    ],
     photo: "/products.jpg",
   },
   {
@@ -22,7 +40,13 @@ const projects = [
     description:
       "A C++ application that implements various graph algorithms, including Dijkstra's and A* for shortest pathfinding, and Prim's and Kruskal's for minimum spanning trees.",
     link: "https://github.com/dregiske/graph-project",
-    tools: ["C++", "Graph Algorithms", "csv-parser"],
+    tools: [
+      "C++",
+      "Graph Algorithms",
+      "csv-parser",
+      "Graph Theory",
+      "Path Optimization",
+    ],
     photo: "/graph.jpg",
   },
 ];
