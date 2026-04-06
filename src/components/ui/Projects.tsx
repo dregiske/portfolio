@@ -1,3 +1,5 @@
+import { SECTION_CARD_SM, SECTION_HEADING, TOOL_BADGE } from "@/constants/theme";
+
 const projects = [
   {
     name: "News Recommendation Website",
@@ -29,16 +31,13 @@ export const Projects = () => {
   return (
     <section id="projects">
       <div className="container mx-auto max-w-5xl py-24 px-4 relative">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center border-b pb-4">
+        <h2 className={SECTION_HEADING}>
           Featured <span className="text-primary">Projects</span>
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {projects.map((project, key) => (
-            <div
-              key={key}
-              className="bg-secondary/70 p-6 rounded-lg shadow-md card-hover"
-            >
+            <div key={key} className={SECTION_CARD_SM}>
               <div className="text-left mb-4">
                 <img
                   src={project.photo}
@@ -52,10 +51,7 @@ export const Projects = () => {
                 </p>
                 <div className="mb-4">
                   {project.tools.map((tool, toolKey) => (
-                    <span
-                      key={toolKey}
-                      className="inline-block bg-primary/20 text-primary text-xs px-2 py-1 rounded-full mr-2 mb-2"
-                    >
+                    <span key={toolKey} className={TOOL_BADGE}>
                       {tool}
                     </span>
                   ))}

@@ -1,19 +1,24 @@
 import { Code, User, Briefcase } from "lucide-react";
 import { RESUME_LINK } from "@/constants/links";
+import {
+  SECTION_CARD,
+  SECTION_HEADING,
+  ICON_CIRCLE,
+} from "@/constants/theme";
 
 export const AboutMe = () => {
   return (
     <section id="about" className="py-24 px-4 relative">
       <div className="container mx-auto max-w-5xl">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center border-b pb-4">
+        <h2 className={SECTION_HEADING}>
           About <span className="text-primary">Me</span>
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center bg-secondary/70 p-8 rounded-lg shadow-md">
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-12 items-center ${SECTION_CARD}`}>
           {/* Left Side */}
           <div className="space-y-6 max-w-prose text-center md:text-left">
             <h3 className="text-xl font-semibold">
-              Hi! My name is Andre Giske.
+              Hello world! My name is Andre Giske.
             </h3>
             <p className="text-muted-foreground">
               I'm a passionate Computer Science and Engineering student with a
@@ -27,22 +32,22 @@ export const AboutMe = () => {
               advancements in tech.
             </p>
             <p className="text-muted-foreground">
-              I'm always eager to connect with like-minded individuals and
-              explore opportunities in the tech world. Feel free to reach out if
-              you'd like to collaborate or just chat about technology!
+              I'm always eager to connect and explore opportunities in the tech
+              world. Feel free to reach out if you'd like to collaborate or just
+              chat about technology!
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center md:justify-start">
               <a
                 href="#contact"
-                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-colors duration-300"
+                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-orange-50 dark:hover:bg-orange-950 transition-colors duration-300"
               >
                 Get In Touch
               </a>
               <a
                 target="_blank"
                 href={RESUME_LINK}
-                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-colors duration-300"
+                className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-orange-50 dark:hover:bg-orange-950 transition-colors duration-300"
               >
                 Download Resume
               </a>
@@ -51,9 +56,9 @@ export const AboutMe = () => {
 
           {/* Right Side */}
           <div className="grid grid-cols-1 gap-6">
-            <div className="gradient-border p-6 card-hover">
+            <div className="bg-background rounded-lg border border-border p-6">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10">
+                <div className={ICON_CIRCLE}>
                   <Code className="h-6 w-6 text-primary" />
                 </div>
 
@@ -67,9 +72,9 @@ export const AboutMe = () => {
               </div>
             </div>
 
-            <div className="gradient-border p-6 card-hover">
+            <div className="bg-background rounded-lg border border-border p-6">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10">
+                <div className={ICON_CIRCLE}>
                   <User className="h-6 w-6 text-primary" />
                 </div>
 
@@ -83,9 +88,9 @@ export const AboutMe = () => {
               </div>
             </div>
 
-            <div className="gradient-border p-6 card-hover">
+            <div className="bg-background rounded-lg border border-border p-6">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10">
+                <div className={ICON_CIRCLE}>
                   <Briefcase className="h-6 w-6 text-primary" />
                 </div>
 
