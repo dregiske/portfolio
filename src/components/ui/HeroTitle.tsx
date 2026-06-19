@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+
 type HeroTitleProps = {
   title: string;
   className?: string;
@@ -20,9 +21,12 @@ export function HeroTitle({ title, className = "" }: HeroTitleProps) {
   return (
     <div ref={ref} className={className}>
       <motion.div style={{ opacity, y }}>
-        <h1 className="font-bold mb-8 tracking-tighter leading-[0.95] text-[clamp(2.25rem,7vw,6rem)]">
+        <h1 className="font-serif font-normal leading-[0.9] tracking-[-0.01em] text-[clamp(3.5rem,10vw,7.5rem)] text-foreground">
           {words.map((word, wordIndex) => (
-            <span key={wordIndex} className="inline-block mr-4 last:mr-0">
+            <span
+              key={wordIndex}
+              className={`block ${wordIndex === words.length - 1 ? "italic" : ""}`}
+            >
               {word.split("").map((letter, letterIndex) => (
                 <motion.span
                   key={`${wordIndex}-${letterIndex}`}
@@ -34,7 +38,7 @@ export function HeroTitle({ title, className = "" }: HeroTitleProps) {
                     stiffness: 150,
                     damping: 25,
                   }}
-                  className="inline-block text-foreground"
+                  className="inline-block"
                 >
                   {letter}
                 </motion.span>
