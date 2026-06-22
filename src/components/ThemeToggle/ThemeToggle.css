@@ -1,0 +1,13 @@
+@reference "../../index.css";
+
+@layer components {
+  .theme-toggle__icon {
+    @apply h-6 w-6;
+  }
+  .theme-toggle__icon--sun {
+    @apply text-icon-sun;
+  }
+  .theme-toggle__icon--moon {
+    @apply text-icon-moon;
+  }
+}
