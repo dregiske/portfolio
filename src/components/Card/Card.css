@@ -1,0 +1,27 @@
+@reference "../../index.css";
+
+@layer components {
+  .card {
+    @apply rounded-2xl;
+  }
+
+  .card--surface {
+    @apply bg-card-surface border border-border;
+  }
+
+  .card--clay {
+    @apply bg-tone-clay-subtle;
+  }
+  .card--mint {
+    @apply bg-tone-mint-subtle;
+  }
+  .card--sky {
+    @apply bg-tone-sky-subtle;
+  }
+  .card--lilac {
+    @apply bg-tone-lilac-subtle;
+  }
+  .card--butter {
+    @apply bg-tone-butter-subtle;
+  }
+}
