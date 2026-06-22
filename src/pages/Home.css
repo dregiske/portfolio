@@ -1,0 +1,10 @@
+@reference "../index.css";
+
+@layer components {
+  .home {
+    @apply relative min-h-screen;
+  }
+  .home__fg {
+    @apply relative z-10;
+  }
+}
