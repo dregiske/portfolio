@@ -1,0 +1,40 @@
+@reference "../../index.css";
+
+@layer components {
+  .hero {
+    @apply relative min-h-screen w-full;
+  }
+  .hero__inner {
+    @apply relative z-10 mx-auto max-w-6xl px-6 w-full min-h-screen flex items-center pt-24 pb-16;
+  }
+  .hero__grid {
+    @apply w-full grid grid-cols-1 md:grid-cols-[1.12fr_0.88fr] gap-14 items-center;
+  }
+
+  .hero__intro {
+    @apply text-left flex flex-col items-start w-full max-w-md md:max-w-none mx-auto md:mx-0;
+  }
+  .hero__badge {
+    @apply text-xs uppercase tracking-[0.2em] px-3.5 mb-7;
+  }
+  .hero__subtitle {
+    @apply mt-7;
+  }
+  .hero__actions {
+    @apply flex flex-wrap gap-3.5 mt-9 justify-start;
+  }
+
+  .hero__photo {
+    @apply relative w-full max-w-md mx-auto md:mx-0;
+  }
+  .hero__frame {
+    @apply relative z-10 rounded-lg overflow-hidden;
+    box-shadow: 0 22px 55px rgb(var(--shadow-color) / 0.18);
+  }
+  .hero__img {
+    @apply w-full h-105 md:h-120 object-cover;
+  }
+  .hero__caption {
+    @apply relative z-10 flex justify-between mt-3.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground;
+  }
+}
