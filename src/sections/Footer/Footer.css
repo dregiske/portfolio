@@ -1,0 +1,22 @@
+@reference "../../index.css";
+
+@layer components {
+  .footer {
+    @apply border-t border-border mt-10;
+  }
+
+  .footer__inner {
+    @apply mx-auto max-w-6xl px-6 py-7 flex flex-wrap items-center justify-between gap-3 font-mono text-xs tracking-[0.06em] text-muted-foreground;
+  }
+
+  .footer__top {
+    @apply inline-flex items-center text-tone-terracotta hover:underline transition-colors;
+  }
+
+  .footer__top-label {
+    @apply max-md:hidden;
+  }
+  .footer__top-icon {
+    @apply hidden max-md:block;
+  }
+}

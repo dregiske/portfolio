@@ -1,13 +1,16 @@
+import { ArrowUp } from "lucide-react";
+import "./Footer.css";
+
 export const Footer = () => {
   return (
-    <footer className="border-t border-rule mt-10">
-      <div className="container mx-auto max-w-6xl px-6 py-7 flex flex-wrap items-center justify-between gap-3 font-mono text-xs tracking-[0.06em] text-muted-foreground">
-        <span>© {new Date().getFullYear()} Andre Giske. All rights reserved.</span>
-        <a
-          href="#hero"
-          className="text-primary hover:underline transition-colors"
-        >
-          Back to top ↑
+    <footer className="footer">
+      <div className="footer__inner">
+        <span>
+          © {new Date().getFullYear()} Andre Giske. All rights reserved.
+        </span>
+        <a href="#hero" className="footer__top" aria-label="Back to top">
+          <span className="footer__top-label">Back to top ↑</span>
+          <ArrowUp className="footer__top-icon" size={18} aria-hidden="true" />
         </a>
       </div>
     </footer>
