@@ -28,7 +28,7 @@
     --tone-butter-subtle: oklch(0.935 0.048 var(--hue-butter));
   }
   .contact__social {
-    @apply hover:ring-2 hover:ring-tone-terracotta hover:scale-110 transition-transform duration-300;
+    @apply hover:scale-110 transition-transform duration-300;
   }
   .contact__social-img {
     @apply h-5 w-5;
@@ -47,8 +47,8 @@
 
   .contact__submit {
     @apply self-start;
-    --btn-fill: var(--tone-terracotta);
-    --btn-fill-fg: var(--tone-terracotta-fg);
+    --btn-fill: var(--tone-lilac);
+    --btn-fill-fg: var(--egg);
   }
   .contact__submit-icon {
     @apply ml-2 h-4 w-4 inline-block;
