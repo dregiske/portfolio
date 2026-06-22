@@ -1,0 +1,58 @@
+@reference "../../index.css";
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center cursor-pointer transition-colors disabled:opacity-60 disabled:pointer-events-none;
+    /* Accent defaults to --primary; tone modifiers (or callers via --btn-fill)
+       override these. --btn-fill / --btn-fill-fg drive the solid fill;
+       --btn-accent the text. */
+    --btn-accent: var(--primary);
+    --btn-fill: var(--primary);
+    --btn-fill-fg: var(--primary-foreground);
+  }
+
+  /* Tone accents — text/accent = tone ink, fill = the soft tone surface. */
+  .btn--clay {
+    --btn-accent: var(--tone-clay);
+    --btn-fill: var(--tone-clay-subtle);
+    --btn-fill-fg: var(--tone-clay);
+  }
+  .btn--mint {
+    --btn-accent: var(--tone-mint);
+    --btn-fill: var(--tone-mint-subtle);
+    --btn-fill-fg: var(--tone-mint);
+  }
+  .btn--sky {
+    --btn-accent: var(--tone-sky);
+    --btn-fill: var(--tone-sky-subtle);
+    --btn-fill-fg: var(--tone-sky);
+  }
+  .btn--lilac {
+    --btn-accent: var(--tone-lilac);
+    --btn-fill: var(--tone-lilac-subtle);
+    --btn-fill-fg: var(--tone-lilac);
+  }
+  .btn--butter {
+    --btn-accent: var(--tone-butter);
+    --btn-fill: var(--tone-butter-subtle);
+    --btn-fill-fg: var(--tone-butter);
+  }
+
+  /* Filled pill CTA. */
+  .btn--solid {
+    @apply font-mono text-xs uppercase tracking-widest rounded-full px-7 py-3.5 transition-opacity hover:opacity-90;
+    background: var(--btn-fill);
+    color: var(--btn-fill-fg);
+  }
+
+  /* Bare text button — just the label (+ arrow), underline on hover. */
+  .btn--text {
+    @apply font-mono text-xs uppercase tracking-[0.08em] hover:underline;
+    color: var(--btn-accent);
+  }
+
+  /* Bare button for icon buttons; inherits foreground unless an icon sets its own. */
+  .btn--ghost {
+    @apply text-foreground;
+  }
+}
