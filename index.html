@@ -25,6 +25,14 @@
     <meta name="twitter:title" content="Andre Giske - Portfolio" />
     <meta name="twitter:description" content="CSE student at UCSD." />
     <meta name="twitter:image" content="https://andregiske.com/profile.jpg" />
+
+    <script>
+      (function () {
+        if (localStorage.getItem("theme") !== "light") {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
