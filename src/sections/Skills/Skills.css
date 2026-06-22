@@ -1,0 +1,39 @@
+@reference "../../index.css";
+
+@layer components {
+  .skills__hint {
+    @apply mb-1.5 uppercase tracking-wider;
+  }
+
+  .constellation {
+    @apply relative w-full h-130 cursor-grab touch-none overflow-hidden;
+  }
+
+  .constellation__canvas {
+    @apply absolute inset-0 w-full h-full;
+  }
+
+  .skill-node {
+    @apply absolute left-0 top-0 rounded-full font-semibold whitespace-nowrap text-foreground select-none cursor-grab z-2;
+    transform-origin: center;
+    will-change: left, top, transform;
+    transition:
+      box-shadow 0.2s,
+      transform 0.12s;
+  }
+  .skill-node--clay {
+    @apply bg-tone-clay-subtle;
+  }
+  .skill-node--mint {
+    @apply bg-tone-mint-subtle;
+  }
+  .skill-node--sky {
+    @apply bg-tone-sky-subtle;
+  }
+  .skill-node--lilac {
+    @apply bg-tone-lilac-subtle;
+  }
+  .skill-node--butter {
+    @apply bg-tone-butter-subtle;
+  }
+}
