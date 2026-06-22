@@ -1,0 +1,16 @@
+@reference "../../index.css";
+
+@layer components {
+  .hero-title {
+    @apply font-serif font-normal leading-[0.9] tracking-[-0.01em] text-6xl md:text-[7.5rem] text-foreground;
+  }
+  .hero-title__word {
+    @apply block;
+  }
+  .hero-title__word--accent {
+    @apply italic;
+  }
+  .hero-title__letter {
+    @apply inline-block;
+  }
+}

@@ -1,0 +1,7 @@
+@reference "../../index.css";
+
+@layer components {
+  .hero-subtitle {
+    @apply max-w-md text-lg leading-relaxed text-muted-foreground;
+  }
+}
