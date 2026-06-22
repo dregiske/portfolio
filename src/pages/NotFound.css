@@ -1,0 +1,30 @@
+@reference "../index.css";
+
+@layer components {
+  .notfound {
+    @apply relative min-h-screen;
+  }
+
+  .notfound__inner {
+    @apply relative z-10 mx-auto max-w-2xl px-6 min-h-screen flex flex-col items-center justify-center text-center;
+  }
+
+  .notfound__badge {
+    @apply text-xs uppercase tracking-[0.2em] px-3.5 mb-8;
+  }
+
+  .notfound__title {
+    @apply font-serif font-normal leading-none text-foreground text-6xl md:text-8xl;
+  }
+  .notfound__accent {
+    @apply italic text-tone-terracotta;
+  }
+
+  .notfound__text {
+    @apply mt-6 max-w-md text-muted-foreground leading-relaxed;
+  }
+
+  .notfound__actions {
+    @apply mt-9 flex flex-wrap gap-3.5 justify-center;
+  }
+}
