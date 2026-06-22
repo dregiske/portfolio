@@ -59,8 +59,8 @@ export function WaveLines() {
           const base = h * (-0.05 + p * 1.05);
           const y =
             base +
-            Math.sin(nx * 3.0 + t * 0.6 + p * 4.0) * 42 * dpr +
-            Math.sin(nx * 7.0 - t * 0.4 + p * 2.0) * 14 * dpr +
+            Math.sin(nx * 3.0 + t * 1.0 + p * 4.0) * 48 * dpr +
+            Math.sin(nx * 7.0 - t * 0.7 + p * 2.0) * 20 * dpr +
             nx * nx * h * 0.4;
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
@@ -68,7 +68,7 @@ export function WaveLines() {
         ctx.stroke();
       }
       if (!reduce) {
-        t += 0.0045;
+        t += 0.012;
         raf = requestAnimationFrame(draw);
       }
     };
