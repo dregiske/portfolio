@@ -1,0 +1,8 @@
+@reference "../../index.css";
+
+@layer components {
+  /* Color source for the canvas strokes (read via getComputedStyle). */
+  .wave-lines {
+    @apply block w-full h-full text-muted-foreground;
+  }
+}
