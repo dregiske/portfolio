@@ -57,7 +57,7 @@ const projects: Project[] = [
       "JWT",
       "FastAPI",
     ],
-    photo: "cashoutpoker.png",
+    photo: "cashoutlogo.png",
     band: "project-card__band--butter",
   },
   {
