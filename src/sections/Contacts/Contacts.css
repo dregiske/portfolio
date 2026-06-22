@@ -5,6 +5,10 @@
     @apply grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-12 p-10 md:p-12;
   }
 
+  .dark .contact__panel {
+    @apply bg-card-surface border border-border;
+  }
+
   .contact__heading {
     @apply font-serif font-normal text-3xl mb-7 text-foreground;
   }
@@ -16,20 +20,35 @@
     @apply h-5 w-5;
   }
 
-  .contact__socials {
-    @apply flex gap-3.5;
+  .contact__hint {
+    @apply mb-3 uppercase tracking-wider;
   }
 
-  .dark .contact__socials {
+  .contact__constellation {
+    @apply relative w-full h-40 cursor-grab touch-none overflow-hidden;
+  }
+  .contact__constellation-canvas {
+    @apply absolute inset-0 w-full h-full;
+  }
+
+  .contact__node {
+    @apply absolute left-0 top-0 select-none cursor-grab z-2;
+    transform-origin: center;
+    will-change: left, top, transform;
+    transition:
+      box-shadow 0.2s,
+      transform 0.12s;
+  }
+
+  /* Keep the dark-svg social glyphs legible by holding the circles light. */
+  .dark .contact__constellation {
     --tone-clay-subtle: oklch(0.935 0.048 var(--hue-clay));
     --tone-mint-subtle: oklch(0.935 0.048 var(--hue-mint));
     --tone-sky-subtle: oklch(0.935 0.048 var(--hue-sky));
     --tone-lilac-subtle: oklch(0.935 0.048 var(--hue-lilac));
     --tone-butter-subtle: oklch(0.935 0.048 var(--hue-butter));
   }
-  .contact__social {
-    @apply hover:scale-110 transition-transform duration-300;
-  }
+
   .contact__social-img {
     @apply h-5 w-5;
   }
