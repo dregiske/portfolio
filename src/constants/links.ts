@@ -1,6 +1,10 @@
-export const RESUME_LINK = "/AndreGiskeResume_2026.pdf";
+export const RESUME_LINK = "/resume/Andre_Giske_Resume_2026.pdf";
 
-export const PROFILE_PHOTO_LINK = "/profile.jpg";
+export const HERO_PHOTO_LINK = "/hero/profile.jpg";
+
+export const PROJECT_PHOTO_LINK = "/projects/";
+
+export const SOCIALS_ICON_LINK = "/socials/";
 
 export const GITHUB_LINK = "https://github.com/dregiske";
 
@@ -12,4 +16,3 @@ export const DISCORD_LINK = "https://discord.com/users/drev.2";
 export const INSTAGRAM_LINK = "https://www.instagram.com/dre.giske";
 
 export const EMAIL_ADDRESS = "andre.giske@yahoo.com";
-
