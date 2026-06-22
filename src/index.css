@@ -9,8 +9,7 @@
   --font-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
   --font-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* Tonal accent families — each a soft surface + matching ink, exposed as
-     bg-tone-{name}-subtle (surface) and text-tone-{name} (ink). */
+  /* Tonal accent families */
   --color-tone-clay: var(--tone-clay);
   --color-tone-clay-subtle: var(--tone-clay-subtle);
   --color-tone-mint: var(--tone-mint);
