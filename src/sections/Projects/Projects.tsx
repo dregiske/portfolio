@@ -20,57 +20,30 @@ type Project = {
 
 const projects: Project[] = [
   {
-    name: "News Recommendation Website",
+    name: "The Fray News",
     description:
-      "A web application that provides personalized news recommendations using machine learning algorithms. Built with React, FastAPI, and scikit-learn.",
+      "A web application that provides personalized news recommendations. Using KNN machine learning algorithms and user preferences through interactions and topic filtering, this web app personalizes your feed to match what each user likes.",
     link: "https://www.thefraynews.com",
     site: "www.thefraynews.com",
     tools: [
       "React",
       "FastAPI",
       "scikit-learn",
+      "Machine Learning",
       "Nginx",
       "Python",
       "TypeScript",
       "JWT",
+      "Axios",
       "NewsAPI",
     ],
-    photo: "newspaper.jpg",
+    photo: "thefraynews.png",
     band: "project-card__band--sky",
-  },
-  {
-    name: "Similar Product Recommender",
-    description:
-      "A product recommendation system that suggests similar products based on user preferences. Developed using Python, Flask, and collaborative filtering techniques.",
-    link: "https://github.com/dregiske/product_recommendation_model",
-    tools: [
-      "Python",
-      "Flask",
-      "Collaborative Filtering",
-      "K-Nearest-Neighbors",
-    ],
-    photo: "products.jpg",
-    band: "project-card__band--butter",
-  },
-  {
-    name: "Graph Project",
-    description:
-      "A C++ application that implements various graph algorithms, including Dijkstra's and A* for shortest pathfinding, and Prim's and Kruskal's for minimum spanning trees.",
-    link: "https://github.com/dregiske/graph-project",
-    tools: [
-      "C++",
-      "Graph Algorithms",
-      "csv-parser",
-      "Graph Theory",
-      "Path Optimization",
-    ],
-    photo: "graph.jpg",
-    band: "project-card__band--lilac",
   },
   {
     name: "Cash Out Poker Bank",
     description:
-      "A automated home game poker banking app. Made to make home games enjoyable, avoiding hand calculations and providing stats overtime and between friends.",
+      "A automated home game poker banking app. Made to make home games enjoyable by servicing settlement calculations and denomination distrubutions. Also provides stats overtime and between friends!",
     link: "https://cashoutpoker.net",
     site: "www.cashoutpoker.net",
     tools: [
@@ -80,10 +53,28 @@ const projects: Project[] = [
       "TypeScript",
       "PostgreSQL",
       "TailwindCSS",
+      "React",
+      "JWT",
       "FastAPI",
     ],
-    photo: "Cashoutpoker.png",
-    band: "project-card__band--sky",
+    photo: "cashoutpoker.png",
+    band: "project-card__band--butter",
+  },
+  {
+    name: "My Portfolio",
+    description:
+      "My fun and innovative portfolio, with interactive components, animated rendering, and theming. This website is meant to showcase my projects, skills, and myself as a programmer!",
+    link: "https://andregiske.com",
+    site: "www.andregiske.com",
+    tools: [
+      "TypeScript",
+      "TailwindCSS",
+      "UX/UI",
+      "Digital Design",
+      "Interactivity",
+    ],
+    photo: "code.png",
+    band: "project-card__band--mint",
   },
 ];
 

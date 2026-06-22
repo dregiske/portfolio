@@ -21,6 +21,12 @@
   .project-card__band--lilac {
     @apply bg-tone-lilac-subtle;
   }
+  .project-card__band--mint {
+    @apply bg-tone-mint-subtle;
+  }
+  .project-card__band--clay {
+    @apply bg-tone-clay-subtle;
+  }
 
   .project-card__img {
     @apply rounded-lg object-cover h-44 w-full;
