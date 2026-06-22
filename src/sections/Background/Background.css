@@ -5,10 +5,4 @@
   .background__lines {
     @apply fixed inset-0 -z-20 pointer-events-none;
   }
-
-  /* Full-page circle scatter. Spans the whole document so circles scroll with
-     content; sits above the fixed lines but below the foreground. */
-  .background__scatter {
-    @apply absolute inset-0 -z-10 pointer-events-none overflow-hidden;
-  }
 }
