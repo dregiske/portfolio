@@ -1,0 +1,36 @@
+@reference "../../index.css";
+
+@layer components {
+  .section-header {
+    @apply mb-12;
+  }
+
+  .section-header__eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.2em] mb-2.5;
+  }
+
+  .section-header__title {
+    @apply font-serif font-normal leading-none text-foreground text-5xl md:text-6xl;
+  }
+
+  .section-header__accent {
+    @apply italic;
+  }
+
+  /* Tone modifiers (applied to eyebrow + accent word) */
+  .section-header--clay {
+    @apply text-tone-clay;
+  }
+  .section-header--mint {
+    @apply text-tone-mint;
+  }
+  .section-header--sky {
+    @apply text-tone-sky;
+  }
+  .section-header--lilac {
+    @apply text-tone-lilac;
+  }
+  .section-header--butter {
+    @apply text-tone-butter;
+  }
+}

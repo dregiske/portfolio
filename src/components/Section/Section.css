@@ -1,0 +1,10 @@
+@reference "../../index.css";
+
+@layer components {
+  .section {
+    @apply py-24 px-6;
+  }
+  .section__inner {
+    @apply mx-auto max-w-6xl;
+  }
+}
