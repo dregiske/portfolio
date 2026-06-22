@@ -1,0 +1,38 @@
+@reference "../../index.css";
+
+@layer components {
+  .blob {
+    @apply absolute rounded-full pointer-events-none;
+  }
+
+  /* Pastel color variants */
+  .blob--clay {
+    @apply bg-tone-clay-subtle;
+  }
+  .blob--mint {
+    @apply bg-tone-mint-subtle;
+  }
+  .blob--sky {
+    @apply bg-tone-sky-subtle;
+  }
+  .blob--lilac {
+    @apply bg-tone-lilac-subtle;
+  }
+  .blob--butter {
+    @apply bg-tone-butter-subtle;
+  }
+
+  /* Size variants */
+  .blob--sm {
+    @apply w-16 h-16;
+  }
+  .blob--md {
+    @apply w-20 h-20;
+  }
+  .blob--lg {
+    @apply w-28 h-28;
+  }
+  .blob--xl {
+    @apply w-40 h-40;
+  }
+}
