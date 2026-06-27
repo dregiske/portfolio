@@ -19,7 +19,7 @@ export const Hero = () => {
             <HeroTitle title="Andre Giske" />
 
             <div className="hero__subtitle">
-              <HeroSubtitle subtitle="CSE student at UC San Diego building backend systems & full-stack apps — somewhere between the terminal and the chairlift." />
+              <HeroSubtitle subtitle="CSE student at UC San Diego building backend systems and full-stack apps, somewhere between the terminal and the chairlift." />
             </div>
 
             <div className="hero__actions">
