@@ -25,19 +25,35 @@ export function ScrollIndicator({ morph }: { morph: ScrollMorph }) {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
+    // The engine ticks every frame whether or not anything moved, and the
+    // reader spends most of their time still. Writing a style property that
+    // hasn't changed still invalidates layout, so each value is compared
+    // against the last one written and skipped when it matches — a parked page
+    // touches the DOM not at all.
+    let lastFill = -1;
+    let lastEnd = -1;
+    let lastActive = -1;
     return morph.subscribe((state) => {
-      if (fillRef.current) {
-        fillRef.current.style.width = `${(state.frac * 100).toFixed(2)}%`;
+      const fill = Math.round(state.frac * 1000);
+      if (fill !== lastFill && fillRef.current) {
+        lastFill = fill;
+        fillRef.current.style.width = `${fill / 10}%`;
       }
-      if (rootRef.current) {
-        const { end } = state;
-        rootRef.current.style.transform = `translateY(${(-end * LIFT).toFixed(1)}px)`;
-        rootRef.current.style.opacity = `${(1 - end).toFixed(3)}`;
+      const end = Math.round(state.end * 1000);
+      if (end !== lastEnd && rootRef.current) {
+        const style = rootRef.current.style;
+        const e = end / 1000;
+        lastEnd = end;
+        style.transform = `translateY(${(-e * LIFT).toFixed(1)}px)`;
+        style.opacity = `${1 - e}`;
         // Once it's faded past legibility its links stop being clickable, so a
         // reader at the bottom can't hit an anchor they can no longer see.
-        rootRef.current.style.pointerEvents = end > 0.6 ? "none" : "";
+        style.pointerEvents = e > 0.6 ? "none" : "";
       }
-      setActive(state.active);
+      if (state.active !== lastActive) {
+        lastActive = state.active;
+        setActive(state.active);
+      }
     });
   }, [morph]);
 

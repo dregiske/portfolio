@@ -44,6 +44,11 @@ type Node = {
   w: number;
   h: number;
   phase: number;
+  /** Eased toward `hoverScale`; the CSS transition used to do this. */
+  scale: number;
+  /** Last-written values, so a frame that changes nothing writes nothing. */
+  lifted: boolean;
+  z: string;
 };
 
 /**
@@ -125,7 +130,25 @@ export function useConstellation({
       w: 0,
       h: 0,
       phase: (i * 1234.567) % 6.28,
+      scale: 1,
+      lifted: false,
+      z: "",
     }));
+
+    /**
+     * Node sizes only change when the text reflows or a font swaps in — rare,
+     * and `offsetWidth` forces a layout flush, so it is watched for rather than
+     * read on every frame. The observer also fires once on observe, which is
+     * where the initial measurement comes from.
+     */
+    const measureNodes = () => {
+      for (const n of nodes) {
+        if (!n.el) continue;
+        n.w = n.el.offsetWidth;
+        n.h = n.el.offsetHeight;
+      }
+    };
+    const sizeObserver = new ResizeObserver(measureNodes);
 
     let dpr = 1;
     let scaleX = 1;
@@ -159,7 +182,9 @@ export function useConstellation({
     nodes.forEach((n) => {
       n.x = n.hx;
       n.y = n.hy;
+      if (n.el) sizeObserver.observe(n.el);
     });
+    measureNodes();
     window.addEventListener("resize", resize);
 
     let hovered = -1;
@@ -247,78 +272,157 @@ export function useConstellation({
       });
     });
 
+    // Link bookkeeping, allocated once. Rebuilding the nearest-neighbour list
+    // used to allocate `count²` objects and sort them, per node, per frame —
+    // pure garbage for the collector to chase sixty times a second.
+    const nearIdx = new Int32Array(neighbors);
+    const nearD = new Float64Array(neighbors);
+    /** Pair flags, so a link is only drawn from one of its two ends. */
+    const linked = new Uint8Array(count * count);
+    /** Links touching the hovered node, held back for a second stroke pass. */
+    const litA = new Int32Array(count * neighbors);
+    const litB = new Int32Array(count * neighbors);
+
     let raf = 0;
     const frame = () => {
       t += 0.016;
-      nodes.forEach((n) => {
-        n.w = n.el.offsetWidth;
-        n.h = n.el.offsetHeight;
-      });
-      nodes.forEach((n, i) => {
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
         const halfW = n.w / 2 / scaleX - bleed;
         const halfH = n.h / 2 / scaleY - bleed;
-        if (dragging === i) {
-          n.x = Math.max(halfW, Math.min(vw - halfW, n.x));
-          n.y = Math.max(halfH, Math.min(vh - halfH, n.y));
-        } else {
+        if (dragging !== i) {
           const ax = (n.hx + Math.sin(t * 0.6 + n.phase) * amp - n.x) * 0.012;
           const ay = (n.hy + Math.cos(t * 0.5 + n.phase) * amp - n.y) * 0.012;
           n.vx = (n.vx + ax) * 0.9;
           n.vy = (n.vy + ay) * 0.9;
           n.x += n.vx;
           n.y += n.vy;
-          n.x = Math.max(halfW, Math.min(vw - halfW, n.x));
-          n.y = Math.max(halfH, Math.min(vh - halfH, n.y));
         }
-        n.el.style.left = n.x * scaleX - n.w / 2 + "px";
-        n.el.style.top = n.y * scaleY - n.h / 2 + "px";
-        n.el.style.transform =
-          hovered === i ? `scale(${hoverScale})` : "scale(1)";
-        n.el.style.boxShadow = hovered === i ? shadowHover : shadowRest;
-        n.el.style.zIndex = hovered === i || dragging === i ? "5" : "2";
-      });
+        n.x = Math.max(halfW, Math.min(vw - halfW, n.x));
+        n.y = Math.max(halfH, Math.min(vh - halfH, n.y));
+
+        // Position rides on the transform rather than left/top. Both look the
+        // same, but left/top are layout properties: moving a dozen nodes that
+        // way re-runs layout every frame, where a transform is handed straight
+        // to the compositor. The hover scale is eased here for the same reason
+        // the CSS transition on `transform` had to go — it would smear every
+        // per-frame position write into a lag.
+        const lifted = hovered === i;
+        n.scale += ((lifted ? hoverScale : 1) - n.scale) * 0.22;
+        const tx = n.x * scaleX - n.w / 2;
+        const ty = n.y * scaleY - n.h / 2;
+        n.el.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) scale(${n.scale.toFixed(4)})`;
+
+        if (n.lifted !== lifted) {
+          n.lifted = lifted;
+          n.el.style.boxShadow = lifted ? shadowHover : shadowRest;
+        }
+        const z = lifted || dragging === i ? "5" : "2";
+        if (n.z !== z) {
+          n.z = z;
+          n.el.style.zIndex = z;
+        }
+      }
 
       const W = canvas.width;
       const H = canvas.height;
       ctx.clearRect(0, 0, W, H);
       const cx = (n: Node) => (n.x * scaleX + bleedX) * dpr;
       const cy = (n: Node) => (n.y * scaleY + bleedY) * dpr;
-      const drawn = new Set<string>();
-      nodes.forEach((a, ai) => {
+
+      linked.fill(0);
+      let lit = 0;
+      // One path for all the resting links: a stroke is a rasterization pass,
+      // and there is no reason to start a new one per line.
+      ctx.beginPath();
+      for (let ai = 0; ai < nodes.length; ai++) {
+        const a = nodes[ai];
         // Nearest neighbours by on-screen distance, so links stay natural at any
-        // aspect ratio as the constellation morphs.
-        const near = nodes
-          .map((b, bi) => ({
-            bi,
-            d:
-              bi === ai
-                ? 1e9
-                : Math.hypot((a.x - b.x) * scaleX, (a.y - b.y) * scaleY),
-          }))
-          .sort((p, q) => p.d - q.d)
-          .slice(0, neighbors);
-        near.forEach(({ bi }) => {
-          const key = ai < bi ? ai + "-" + bi : bi + "-" + ai;
-          if (drawn.has(key)) return;
-          drawn.add(key);
+        // aspect ratio as the constellation morphs. Insertion into a fixed
+        // `neighbors`-long list, on squared distance — the ordering is the same
+        // as hypot's and it costs no square roots.
+        for (let k = 0; k < neighbors; k++) {
+          nearD[k] = Infinity;
+          nearIdx[k] = -1;
+        }
+        for (let bi = 0; bi < nodes.length; bi++) {
+          if (bi === ai) continue;
           const b = nodes[bi];
-          const active = hovered === ai || hovered === bi;
-          ctx.beginPath();
+          const dx = (a.x - b.x) * scaleX;
+          const dy = (a.y - b.y) * scaleY;
+          const d = dx * dx + dy * dy;
+          if (d >= nearD[neighbors - 1]) continue;
+          let k = neighbors - 1;
+          while (k > 0 && nearD[k - 1] > d) {
+            nearD[k] = nearD[k - 1];
+            nearIdx[k] = nearIdx[k - 1];
+            k--;
+          }
+          nearD[k] = d;
+          nearIdx[k] = bi;
+        }
+        for (let k = 0; k < neighbors; k++) {
+          const bi = nearIdx[k];
+          if (bi < 0) continue;
+          const key = ai < bi ? ai * count + bi : bi * count + ai;
+          if (linked[key]) continue;
+          linked[key] = 1;
+          if (hovered === ai || hovered === bi) {
+            litA[lit] = ai;
+            litB[lit] = bi;
+            lit++;
+            continue;
+          }
+          const b = nodes[bi];
           ctx.moveTo(cx(a), cy(a));
           ctx.lineTo(cx(b), cy(b));
-          ctx.lineWidth = (active ? 1.6 : 1) * dpr;
-          ctx.strokeStyle = active ? lineActive : lineRest;
-          ctx.stroke();
-        });
-      });
+        }
+      }
+      ctx.lineWidth = dpr;
+      ctx.strokeStyle = lineRest;
+      ctx.stroke();
+
+      if (lit > 0) {
+        ctx.beginPath();
+        for (let k = 0; k < lit; k++) {
+          const a = nodes[litA[k]];
+          const b = nodes[litB[k]];
+          ctx.moveTo(cx(a), cy(a));
+          ctx.lineTo(cx(b), cy(b));
+        }
+        ctx.lineWidth = 1.6 * dpr;
+        ctx.strokeStyle = lineActive;
+        ctx.stroke();
+      }
       raf = requestAnimationFrame(frame);
     };
+
+    // Lay the nodes out before first paint — the observer below only reports
+    // back a frame later, and until something writes a transform every node is
+    // still sitting on top of the others at the field's origin.
     frame();
+
+    // A constellation two sections away is still a full rAF loop and a canvas
+    // repaint. Run it only while it's near the viewport.
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!raf) frame();
+        } else if (raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      },
+      { rootMargin: "150px" },
+    );
+    visibility.observe(box);
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
       themeObserver.disconnect();
+      sizeObserver.disconnect();
+      visibility.disconnect();
       probe.remove();
       cleanups.forEach((fn) => fn());
     };

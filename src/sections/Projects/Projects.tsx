@@ -3,6 +3,7 @@ import { PROJECT_PHOTO_LINK } from "@/constants/links";
 import { TONES } from "@/constants/tones";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
 import { Card } from "@/components/Card/Card";
+import { Photo } from "@/components/Photo/Photo";
 import { Tag } from "@/components/Tag/Tag";
 import "./Projects.css";
 
@@ -14,6 +15,8 @@ type Project = {
   site?: string;
   tools: string[];
   photo: string;
+  /** Pixel size of the file in public/projects, so the card reserves its space. */
+  photoSize: [number, number];
 };
 
 const projects: Project[] = [
@@ -35,7 +38,8 @@ const projects: Project[] = [
       "Axios",
       "NewsAPI",
     ],
-    photo: "thefraynews.png",
+    photo: "thefraynews.jpg",
+    photoSize: [750, 373],
   },
   {
     name: "Cash Out Poker Bank",
@@ -54,7 +58,8 @@ const projects: Project[] = [
       "JWT",
       "FastAPI",
     ],
-    photo: "cashoutlogo.png",
+    photo: "cashoutlogo.jpg",
+    photoSize: [750, 348],
   },
   {
     name: "My Portfolio",
@@ -69,7 +74,8 @@ const projects: Project[] = [
       "Digital Design",
       "Interactivity",
     ],
-    photo: "code.png",
+    photo: "code.jpg",
+    photoSize: [750, 403],
   },
 ];
 
@@ -79,10 +85,12 @@ export const Projects = () => {
       <div className="projects__grid">
         {projects.map((project) => (
           <Card as="article" key={project.name} className="project-card">
-            <img
+            <Photo
               src={`${PROJECT_PHOTO_LINK}${project.photo}`}
               alt={project.name}
               className="project-card__img"
+              width={project.photoSize[0]}
+              height={project.photoSize[1]}
             />
             <div className="project-card__body">
               <h3 className="project-card__title">{project.name}</h3>

@@ -106,11 +106,41 @@ export function useScrollMorph(sections: readonly SectionMeta[]): ScrollMorph {
     const subs = engine.subs;
     const reduceQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    // Section tops, refreshed on resize — reading five offsetTops per frame is
-    // cheap, but only if the elements are already resolved.
-    let els: (HTMLElement | null)[] = [];
-    const resolveEls = () => {
-      els = sections.map((s) => document.getElementById(s.id));
+    /*
+     * Nothing in the frame loop below reads layout, and that is the point.
+     * `scrollY`, `offsetTop` and `scrollHeight` all force the browser to flush
+     * style and layout before answering — and since the subscribers write to
+     * the DOM every frame, layout is always dirty by the time the next frame
+     * asks. Reading any of them per frame means relaying out five
+     * full-viewport sections sixty times a second.
+     *
+     * So the scroll position arrives by event instead (scroll events are
+     * dispatched before rAF in the same frame, so it is never stale), and the
+     * page's measurements are cached until something can actually have changed
+     * them. Layout then happens once per frame, at the browser's own time.
+     */
+    let y = window.scrollY;
+    const onScroll = () => {
+      y = window.scrollY;
+    };
+
+    let vh = window.innerHeight;
+    let maxScroll = 0;
+    let tops: number[] = [];
+    const measure = () => {
+      vh = window.innerHeight;
+      const els = sections.map((s) => document.getElementById(s.id));
+      // Each morph runs from one section's top to the next's, so a boundary is
+      // fully resolved exactly when the next section lands at the top. Before
+      // the sections exist, fall back to stacking them a viewport apart.
+      tops = [];
+      let prev = 0;
+      els.forEach((el, i) => {
+        prev = el ? el.offsetTop : i === 0 ? 0 : prev + vh;
+        tops.push(prev);
+      });
+      maxScroll = document.documentElement.scrollHeight - vh;
+      y = window.scrollY;
     };
 
     let tmx = 0;
@@ -127,11 +157,6 @@ export function useScrollMorph(sections: readonly SectionMeta[]): ScrollMorph {
     let vs = 0;
 
     const update = () => {
-      if (els.length !== sections.length || els.some((el) => el === null)) {
-        resolveEls();
-      }
-      const vh = window.innerHeight;
-      const y = window.scrollY;
       const snap = st.reduced;
 
       if (snap) {
@@ -143,7 +168,7 @@ export function useScrollMorph(sections: readonly SectionMeta[]): ScrollMorph {
       }
 
       // Whole-page progress.
-      const max = document.documentElement.scrollHeight - vh;
+      const max = maxScroll;
       const frac = max > 0 ? clamp01(y / max) : 0;
       if (snap) {
         st.frac = frac;
@@ -163,13 +188,10 @@ export function useScrollMorph(sections: readonly SectionMeta[]): ScrollMorph {
         if (Math.abs(end - st.end) < 0.0005) st.end = end;
       }
 
-      // Each morph runs from one section's top to the next's, so a boundary is
-      // fully resolved exactly when the next section lands at the top.
-      const top = (i: number, fallback: number) => els[i]?.offsetTop ?? fallback;
-      const aboutTop = top(1, vh);
-      const projTop = top(2, aboutTop + vh);
-      const skillsTop = top(3, projTop + vh);
-      const contactTop = top(4, skillsTop + vh);
+      const aboutTop = tops[1] ?? vh;
+      const projTop = tops[2] ?? aboutTop + vh;
+      const skillsTop = tops[3] ?? projTop + vh;
+      const contactTop = tops[4] ?? skillsTop + vh;
 
       const tp = aboutTop > 0 ? clamp01(y / aboutTop) : 0;
       const tq = clamp01((y - aboutTop) / Math.max(1, projTop - aboutTop));
@@ -197,9 +219,9 @@ export function useScrollMorph(sections: readonly SectionMeta[]): ScrollMorph {
       // Scroll spy: the last section whose top has passed the viewport middle.
       const center = y + vh * 0.5;
       let active = 0;
-      els.forEach((el, i) => {
-        if (el && el.offsetTop <= center) active = i;
-      });
+      for (let i = 0; i < tops.length; i++) {
+        if (tops[i] <= center) active = i;
+      }
       st.active = active;
 
       subs.forEach((fn) => fn(st));
@@ -221,26 +243,37 @@ export function useScrollMorph(sections: readonly SectionMeta[]): ScrollMorph {
       });
     };
 
+    /** Anything that changes the page's height moves every boundary below it. */
+    const remeasure = () => {
+      measure();
+      if (st.reduced) schedule();
+    };
+    const observer = new ResizeObserver(remeasure);
+
     const start = () => {
       cancelAnimationFrame(raf);
       queued = false;
       st.reduced = reduceQuery.matches;
-      resolveEls();
+      measure();
+      // Registered first, so the cached scroll position is fresh before
+      // anything that reacts to it runs.
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", remeasure);
+      observer.observe(document.body);
       if (st.reduced) {
         window.addEventListener("scroll", schedule, { passive: true });
-        window.addEventListener("resize", schedule);
         update();
       } else {
         window.addEventListener("pointermove", onPointer, { passive: true });
-        window.addEventListener("resize", resolveEls);
         loop();
       }
     };
     const stop = () => {
       cancelAnimationFrame(raf);
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      window.removeEventListener("resize", resolveEls);
+      window.removeEventListener("resize", remeasure);
       window.removeEventListener("pointermove", onPointer);
     };
     const onPreferenceChange = () => {

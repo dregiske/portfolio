@@ -11,14 +11,22 @@
     @apply absolute inset-0 h-full w-full;
   }
 
+  /* No backdrop-blur here, deliberately: the tone backgrounds below are opaque
+     oklch, so there is nothing behind a node to show through and be blurred.
+     The filter was invisible and the cost was not — these twelve move every
+     frame, and a moving backdrop-filter makes the compositor re-sample and
+     re-blur a fresh region of the animating canvas underneath, every frame,
+     twelve times over. */
   .skill-node {
-    @apply absolute left-0 top-0 z-2 cursor-grab select-none whitespace-nowrap rounded-full border font-semibold backdrop-blur-sm;
+    @apply absolute left-0 top-0 z-2 cursor-grab select-none whitespace-nowrap rounded-full border font-semibold;
     border-color: var(--glass-border);
     transform-origin: center;
-    will-change: left, top, transform;
-    transition:
-      box-shadow 0.2s,
-      transform 0.12s;
+    /* left/top stay at 0: the position and the hover scale both live in the
+       transform, which keeps the per-frame updates off the layout path. The
+       scale is eased in JS, so there is no transition on transform to smear
+       every position write. */
+    will-change: transform;
+    transition: box-shadow 0.2s;
   }
   .skill-node--frost {
     @apply bg-tone-frost-subtle text-tone-frost;

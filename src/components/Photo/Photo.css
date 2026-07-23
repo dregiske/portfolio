@@ -1,0 +1,20 @@
+@reference "../../index.css";
+
+@layer components {
+  /* The <picture> exists only to pick a format. `display: contents` keeps it
+     out of the box tree entirely, so the <img> stays the grid cell or flex item
+     its parent expects — otherwise every consumer would have to re-style a
+     wrapper it never asked for. */
+  .photo {
+    display: contents;
+  }
+
+  /* That promotion reaches *every* child, though, and <source> has no UA
+     `display: none` to fall back on — so it becomes a real (empty) box ahead of
+     the image and shifts whatever lays them out by one slot. Hiding it is
+     purely a layout concern: format selection is an HTML-level algorithm over
+     the <source> attributes and doesn't care what CSS does to the element. */
+  .photo > source {
+    display: none;
+  }
+}

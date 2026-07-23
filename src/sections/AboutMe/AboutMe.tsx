@@ -1,6 +1,7 @@
 import { ABOUT_PHOTO_LINK, RESUME_LINK } from "@/constants/links";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
 import { Card } from "@/components/Card/Card";
+import { Photo } from "@/components/Photo/Photo";
 import { Pill } from "@/components/Pill/Pill";
 import "./AboutMe.css";
 
@@ -8,10 +9,12 @@ export const AboutMe = () => {
   return (
     <SectionShell id="about" num="02" eyebrow="ABOUT" title="About">
       <div className="about__grid">
-        <img
+        <Photo
           src={ABOUT_PHOTO_LINK}
           alt="Andre with the ACM group at UC San Diego"
           className="about__photo"
+          width={1100}
+          height={616}
         />
 
         {/* Right — the bio, on glass over the globe. */}

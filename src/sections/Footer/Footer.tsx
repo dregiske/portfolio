@@ -15,10 +15,17 @@ export function Footer({ morph }: { morph: ScrollMorph }) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    // Skipped when unchanged: the engine ticks every frame, but the footer only
+    // moves over the last stretch of the page, and a redundant style write
+    // still costs a style recalculation. See ScrollIndicator for the same idea.
+    let last = -1;
     return morph.subscribe((state) => {
       const el = ref.current;
       if (!el) return;
-      el.style.transform = `translateY(${((1 - state.end) * 100).toFixed(2)}%)`;
+      const hidden = Math.round((1 - state.end) * 1000);
+      if (hidden === last) return;
+      last = hidden;
+      el.style.transform = `translateY(${hidden / 10}%)`;
     });
   }, [morph]);
 
