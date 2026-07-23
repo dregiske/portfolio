@@ -48,7 +48,6 @@ const projects: Project[] = [
     link: "https://cashoutpoker.net",
     site: "www.cashoutpoker.net",
     tools: [
-      "Nginx",
       "Data Anaylsis",
       "Python",
       "TypeScript",
@@ -57,6 +56,7 @@ const projects: Project[] = [
       "React",
       "JWT",
       "FastAPI",
+      "Swift",
     ],
     photo: "cashoutlogo.jpg",
     photoSize: [750, 348],

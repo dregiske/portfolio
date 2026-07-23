@@ -284,8 +284,13 @@ export function useConstellation({
     const litB = new Int32Array(count * neighbors);
 
     let raf = 0;
-    const frame = () => {
-      t += 0.016;
+    let lastNow = -1;
+    const frame = (now: number) => {
+      // Real elapsed time, not a fixed step per frame — a constant would run
+      // the idle float at double speed on a 120Hz display. Capped so a long
+      // pause (backgrounded tab, offscreen section) resumes rather than lurches.
+      t += Math.min(lastNow < 0 ? 16.7 : now - lastNow, 100) / 1000;
+      lastNow = now;
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
         const halfW = n.w / 2 / scaleX - bleed;
@@ -400,14 +405,17 @@ export function useConstellation({
     // Lay the nodes out before first paint — the observer below only reports
     // back a frame later, and until something writes a transform every node is
     // still sitting on top of the others at the field's origin.
-    frame();
+    frame(performance.now());
 
     // A constellation two sections away is still a full rAF loop and a canvas
     // repaint. Run it only while it's near the viewport.
     const visibility = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          if (!raf) frame();
+          if (!raf) {
+            lastNow = -1;
+            frame(performance.now());
+          }
         } else if (raf) {
           cancelAnimationFrame(raf);
           raf = 0;

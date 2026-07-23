@@ -57,6 +57,15 @@ const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 /** Spring constants from the mockup: heavy damping, gentle pull — water, not rubber. */
 const DAMPING = 0.88;
 const STIFFNESS = 0.008;
+/**
+ * Below these, a spring is done — snap it onto its target. The renderer skips
+ * a morph leg only once the morph is *exactly* complete, and a spring on its
+ * own approaches the target asymptotically: it would keep two or three legs'
+ * worth of per-dot work alive for a second-plus after every transition. The
+ * snap is sub-pixel (dots flutter more than this) but ends that tail at once.
+ */
+const SETTLE_DIST = 0.002;
+const SETTLE_VEL = 0.0003;
 /** Lerp factor for the progress line, and for the pointer. */
 const FRAC_EASE = 0.12;
 const POINTER_EASE = 0.06;
@@ -205,15 +214,32 @@ export function useScrollMorph(sections: readonly SectionMeta[]): ScrollMorph {
         st.s = ts;
       } else {
         // Velocity + damping, so a morph overshoots and settles instead of
-        // tracking the scrollbar rigidly.
+        // tracking the scrollbar rigidly — then a snap once it's effectively
+        // there, so the tail doesn't outlive the eye's interest in it.
         vp = vp * DAMPING + (tp - st.p) * STIFFNESS;
         st.p += vp;
+        if (Math.abs(tp - st.p) < SETTLE_DIST && Math.abs(vp) < SETTLE_VEL) {
+          st.p = tp;
+          vp = 0;
+        }
         vq = vq * DAMPING + (tq - st.q) * STIFFNESS;
         st.q += vq;
+        if (Math.abs(tq - st.q) < SETTLE_DIST && Math.abs(vq) < SETTLE_VEL) {
+          st.q = tq;
+          vq = 0;
+        }
         vr = vr * DAMPING + (tr - st.r) * STIFFNESS;
         st.r += vr;
+        if (Math.abs(tr - st.r) < SETTLE_DIST && Math.abs(vr) < SETTLE_VEL) {
+          st.r = tr;
+          vr = 0;
+        }
         vs = vs * DAMPING + (ts - st.s) * STIFFNESS;
         st.s += vs;
+        if (Math.abs(ts - st.s) < SETTLE_DIST && Math.abs(vs) < SETTLE_VEL) {
+          st.s = ts;
+          vs = 0;
+        }
       }
 
       // Scroll spy: the last section whose top has passed the viewport middle.

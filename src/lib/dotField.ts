@@ -92,6 +92,8 @@ export interface DotField {
   FX0: Float32Array;
   DSZ: Float32Array;
   DAL: Float32Array;
+  /** Dot indices sorted by quantized alpha — the settled-stream draw order. */
+  ORD: Uint32Array;
   /** Starfield (04): scatter position, depth layer, twinkle, wander radius. */
   SX0: Float32Array;
   SY0: Float32Array;
@@ -206,6 +208,15 @@ export function createDotField({ gx, gz }: DotFieldSize): DotField {
     DAL[n] = 0.12 + dep * 0.8;
   }
 
+  // Settled-stream draw order: `DAL` is random per dot, so drawing in index
+  // order would change globalAlpha on nearly every dot — the one state where
+  // the renderer's alpha batching does nothing. Sorting by the same 1/255
+  // quantization the renderer writes collapses ~7k state changes to ~200, and
+  // the order itself is visually free: one color, disjoint squares.
+  const ORD = new Uint32Array(N);
+  for (let n = 0; n < N; n++) ORD[n] = n;
+  ORD.sort((a, b) => ((DAL[a] * 255) | 0) - ((DAL[b] * 255) | 0));
+
   const SX0 = new Float32Array(N);
   const SY0 = new Float32Array(N);
   const LAY = new Int8Array(N);
@@ -269,6 +280,7 @@ export function createDotField({ gx, gz }: DotFieldSize): DotField {
     FX0,
     DSZ,
     DAL,
+    ORD,
     SX0,
     SY0,
     LAY,
@@ -340,6 +352,7 @@ export function renderDotField(
     FX0,
     DSZ,
     DAL,
+    ORD,
     SX0,
     SY0,
     LAY,
@@ -389,6 +402,39 @@ export function renderDotField(
   const doWave1 = !(pAll || deadGlobe);
   /** Leg 05 aims back at the wave, so its terms outlive their use as a source. */
   const needWave = doWave1 || doWave2;
+
+  // — settled streams, the Projects resting state ————————————————————
+  // The one state whose per-dot alpha (DAL) is random, which would leave the
+  // main loop's globalAlpha batching with nothing to batch: ~7k alpha writes a
+  // frame, more than any other settled state. Every dot is simply *at* its
+  // stream position here, so take a dedicated pass in alpha-sorted order and
+  // skip the leg machinery entirely.
+  if (qAll && !rAny && !sAny) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = dotColor;
+    let lastA = -1;
+    const my14 = my * 14;
+    for (let o = 0; o < N; o++) {
+      const n = ORD[o];
+      const k = LANE[n];
+      let fxp = FX0[n] * bandW + t * SSP[k];
+      fxp = ((fxp % bandW) + bandW) % bandW + bandMin;
+      const cyL =
+        SY[k] * H +
+        fsin(fxp * SFR[k] + t * STP[k] + SPH[k]) * SAMP[k] * H +
+        fsin(fxp * SFR[k] * 0.35 + t * 0.18 + SPH[k]) * SAMP[k] * H * 0.5;
+      const fyp = cyL + OFF[n] + fsin(t * 1.3 + n * 0.7) * 1.8 + my14;
+      if (fxp < -4 || fyp < -4 || fxp > W || fyp > H) continue;
+      const a = (DAL[n] * 255) | 0;
+      if (a !== lastA) {
+        lastA = a;
+        ctx.globalAlpha = a / 255;
+      }
+      ctx.fillRect(fxp, fyp, DSZ[n], DSZ[n]);
+    }
+    ctx.globalAlpha = 1;
+    return;
+  }
 
   // Globe: left of center, gently breathing, on a slow tilted spin. Once per
   // frame, so this stays on the exact trig.

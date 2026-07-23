@@ -5,11 +5,18 @@
     @apply mt-10 grid grid-cols-1 items-start gap-5 md:grid-cols-3;
   }
 
-  .project-card {
+  /* No backdrop blur on these (`.card.project-card` outranks `.card`): three
+     of them tile most of the viewport, and a backdrop-filter over the
+     always-animating dot canvas makes the compositor re-blur that whole area
+     every frame. A bg-base scrim dims the streams enough for the text to read
+     instead — the dots still flow behind, just faded. */
+  .card.project-card {
     @apply flex flex-col overflow-hidden transition-colors;
+    backdrop-filter: none;
+    background: color-mix(in srgb, var(--bg-base) 55%, var(--glass-bg));
   }
-  .project-card:hover {
-    background: var(--glass-bg-strong);
+  .card.project-card:hover {
+    background: color-mix(in srgb, var(--bg-base) 55%, var(--glass-bg-strong));
   }
 
   .project-card__img {
@@ -40,7 +47,7 @@
   }
 
   .project-card__desc {
-    @apply mb-5 text-sm leading-relaxed text-fg-muted;
+    @apply mb-5 text-sm leading-relaxed text-fg;
   }
 
   .project-card__tags {

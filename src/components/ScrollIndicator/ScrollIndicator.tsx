@@ -37,7 +37,9 @@ export function ScrollIndicator({ morph }: { morph: ScrollMorph }) {
       const fill = Math.round(state.frac * 1000);
       if (fill !== lastFill && fillRef.current) {
         lastFill = fill;
-        fillRef.current.style.width = `${fill / 10}%`;
+        // scaleX, not width: width is a layout property, and this is the one
+        // style on the page that changes on every frame of every scroll.
+        fillRef.current.style.transform = `scaleX(${fill / 1000})`;
       }
       const end = Math.round(state.end * 1000);
       if (end !== lastEnd && rootRef.current) {

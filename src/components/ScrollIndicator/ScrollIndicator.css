@@ -20,8 +20,12 @@
     background: color-mix(in srgb, var(--fg) 50%, transparent);
   }
 
+  /* Full-width and scaled down from the left, rather than animating `width`:
+     the transform stays off the layout path, so the per-frame progress write
+     is compositor-only. (The glow compresses with the scale, but at 10px of
+     pure haze that reads the same.) */
   .scroll-indicator__fill {
-    @apply absolute left-0 top-[-0.5px] h-0.5 w-0;
+    @apply absolute left-0 top-[-0.5px] h-0.5 w-full origin-left scale-x-0;
     background: var(--fg);
     box-shadow: 0 0 10px color-mix(in srgb, var(--accent-brand) 80%, transparent);
   }
