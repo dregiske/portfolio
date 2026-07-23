@@ -1,0 +1,18 @@
+@reference "../../index.css";
+
+@layer components {
+  /* Both canvases are fixed and full-bleed: the page scrolls, the weather
+     doesn't. The buffers are smaller than the element (the aura much smaller) —
+     CSS stretches them back up. */
+  .site-bg {
+    @apply pointer-events-none fixed inset-0 block h-full w-full;
+  }
+
+  .site-bg--aura {
+    @apply z-0;
+  }
+
+  .site-bg--dots {
+    @apply z-[1];
+  }
+}

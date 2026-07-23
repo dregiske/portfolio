@@ -1,0 +1,12 @@
+@reference "../../index.css";
+
+@layer components {
+  .portrait-card {
+    @apply h-[256px] w-[200px] flex-none overflow-hidden rounded-2xl lg:h-[320px] lg:w-[250px];
+    box-shadow: 0 24px 50px -20px var(--hero-shadow);
+  }
+
+  .portrait-card__img {
+    @apply h-full w-full object-cover;
+  }
+}

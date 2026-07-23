@@ -12,30 +12,30 @@
   }
 
   /* Tone accents — text/accent = tone ink, fill = the soft tone surface. */
-  .btn--clay {
-    --btn-accent: var(--tone-clay);
-    --btn-fill: var(--tone-clay-subtle);
-    --btn-fill-fg: var(--tone-clay);
+  .btn--frost {
+    --btn-accent: var(--tone-frost);
+    --btn-fill: var(--tone-frost-subtle);
+    --btn-fill-fg: var(--tone-frost);
   }
-  .btn--mint {
-    --btn-accent: var(--tone-mint);
-    --btn-fill: var(--tone-mint-subtle);
-    --btn-fill-fg: var(--tone-mint);
+  .btn--ice {
+    --btn-accent: var(--tone-ice);
+    --btn-fill: var(--tone-ice-subtle);
+    --btn-fill-fg: var(--tone-ice);
   }
   .btn--sky {
     --btn-accent: var(--tone-sky);
     --btn-fill: var(--tone-sky-subtle);
     --btn-fill-fg: var(--tone-sky);
   }
-  .btn--lilac {
-    --btn-accent: var(--tone-lilac);
-    --btn-fill: var(--tone-lilac-subtle);
-    --btn-fill-fg: var(--tone-lilac);
+  .btn--azure {
+    --btn-accent: var(--tone-azure);
+    --btn-fill: var(--tone-azure-subtle);
+    --btn-fill-fg: var(--tone-azure);
   }
-  .btn--butter {
-    --btn-accent: var(--tone-butter);
-    --btn-fill: var(--tone-butter-subtle);
-    --btn-fill-fg: var(--tone-butter);
+  .btn--cobalt {
+    --btn-accent: var(--tone-cobalt);
+    --btn-fill: var(--tone-cobalt-subtle);
+    --btn-fill-fg: var(--tone-cobalt);
   }
 
   /* Filled pill CTA. */

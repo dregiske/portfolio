@@ -1,27 +1,36 @@
 @reference "../../index.css";
 
 @layer components {
+  /* Cards are glass, not panels: the dot field keeps flowing behind them, just
+     far enough out of focus that text stays readable on top. */
   .card {
-    @apply rounded-2xl;
+    @apply rounded-2xl backdrop-blur-sm;
   }
 
   .card--surface {
-    @apply bg-card-surface border border-border;
+    @apply border;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
   }
 
-  .card--clay {
-    @apply bg-tone-clay-subtle;
+  .card--tinted {
+    @apply border;
+    border-color: var(--glass-border);
   }
-  .card--mint {
-    @apply bg-tone-mint-subtle;
+
+  .card--frost {
+    @apply bg-tone-frost-subtle;
+  }
+  .card--ice {
+    @apply bg-tone-ice-subtle;
   }
   .card--sky {
     @apply bg-tone-sky-subtle;
   }
-  .card--lilac {
-    @apply bg-tone-lilac-subtle;
+  .card--azure {
+    @apply bg-tone-azure-subtle;
   }
-  .card--butter {
-    @apply bg-tone-butter-subtle;
+  .card--cobalt {
+    @apply bg-tone-cobalt-subtle;
   }
 }

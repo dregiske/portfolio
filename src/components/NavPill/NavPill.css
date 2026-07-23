@@ -1,0 +1,16 @@
+@reference "../../index.css";
+
+@layer components {
+  .nav-pill {
+    @apply hidden items-center gap-2 rounded-[30px] px-[10px] py-2 text-sm font-medium sm:flex;
+    background: var(--nav-pill-bg);
+    color: var(--nav-pill-fg);
+  }
+
+  .nav-pill__link {
+    @apply rounded-[20px] px-3 py-[5px] transition-opacity;
+  }
+  .nav-pill__link:hover {
+    @apply opacity-70;
+  }
+}

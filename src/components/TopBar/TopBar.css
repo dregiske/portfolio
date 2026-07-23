@@ -1,0 +1,15 @@
+@reference "../../index.css";
+
+@layer components {
+  .top-bar {
+    @apply flex items-center justify-between;
+  }
+
+  .top-bar__logo {
+    @apply font-display text-xl font-bold tracking-[0.04em];
+  }
+
+  .top-bar__actions {
+    @apply flex items-center gap-2;
+  }
+}

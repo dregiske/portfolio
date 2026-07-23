@@ -5,23 +5,19 @@
     @apply inline-flex items-center gap-2.5 font-mono text-[11px] px-2.5 py-1.5 rounded-full;
   }
 
-  .tag__dot {
-    @apply flex-none w-1.5 h-1.5 rounded-full bg-tone-terracotta;
+  .tag--frost {
+    @apply bg-tone-frost-subtle text-tone-frost;
   }
-
-  .tag--clay {
-    @apply bg-tone-clay-subtle text-tone-clay;
-  }
-  .tag--mint {
-    @apply bg-tone-mint-subtle text-tone-mint;
+  .tag--ice {
+    @apply bg-tone-ice-subtle text-tone-ice;
   }
   .tag--sky {
     @apply bg-tone-sky-subtle text-tone-sky;
   }
-  .tag--lilac {
-    @apply bg-tone-lilac-subtle text-tone-lilac;
+  .tag--azure {
+    @apply bg-tone-azure-subtle text-tone-azure;
   }
-  .tag--butter {
-    @apply bg-tone-butter-subtle text-tone-butter;
+  .tag--cobalt {
+    @apply bg-tone-cobalt-subtle text-tone-cobalt;
   }
 }

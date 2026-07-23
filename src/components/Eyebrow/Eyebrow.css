@@ -1,0 +1,7 @@
+@reference "../../index.css";
+
+@layer components {
+  .eyebrow {
+    @apply font-mono text-[13px] tracking-[0.22em] text-accent-brand;
+  }
+}

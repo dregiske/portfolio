@@ -11,10 +11,8 @@ import "./Tag.css";
 type TagProps = {
   /** Element to render as — e.g. "a" for a linked pill. Defaults to "span". */
   as?: ElementType;
-  /** Pastel tone for the background + text color. */
+  /** Rung of the blue shade ladder used for the background + text color. */
   tone: Tone;
-  /** Render a small leading status dot (e.g. the hero badge). */
-  dot?: boolean;
   className?: string;
   children: ReactNode;
 } & HTMLAttributes<HTMLElement> &
@@ -27,14 +25,12 @@ type TagProps = {
 export function Tag({
   as: Component = "span",
   tone,
-  dot = false,
   className,
   children,
   ...rest
 }: TagProps) {
   return (
     <Component className={cn("tag", `tag--${tone}`, className)} {...rest}>
-      {dot && <span className="tag__dot" />}
       {children}
     </Component>
   );

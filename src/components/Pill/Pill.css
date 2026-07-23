@@ -10,6 +10,6 @@
   }
 
   .pill--outline {
-    @apply border border-border text-foreground hover:border-tone-terracotta hover:text-tone-terracotta;
+    @apply border border-glass-border text-fg backdrop-blur-sm hover:border-accent-brand hover:text-accent-brand;
   }
 }

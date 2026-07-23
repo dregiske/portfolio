@@ -1,0 +1,52 @@
+@reference "../../index.css";
+
+@layer components {
+  .scroll-indicator {
+    @apply fixed inset-x-0 bottom-0 z-50;
+    /* A scrim, not a bar: the dots keep flowing under the labels. */
+    background: linear-gradient(
+      to top,
+      rgb(var(--scrim) / 0.55),
+      rgb(var(--scrim) / 0)
+    );
+  }
+
+  .scroll-indicator__inner {
+    @apply mx-auto w-full max-w-[1180px] px-6 pb-2.5 pt-8 md:px-10 lg:px-[60px];
+  }
+
+  .scroll-indicator__track {
+    @apply relative mb-[9px] h-px;
+    background: color-mix(in srgb, var(--fg) 50%, transparent);
+  }
+
+  .scroll-indicator__fill {
+    @apply absolute left-0 top-[-0.5px] h-0.5 w-0;
+    background: var(--fg);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--accent-brand) 80%, transparent);
+  }
+
+  .scroll-indicator__items {
+    @apply flex justify-between;
+  }
+
+  .scroll-indicator__item {
+    @apply flex flex-col items-start gap-1;
+    color: var(--fg-faint);
+    transition: color 0.35s ease;
+  }
+  .scroll-indicator__item:last-child {
+    @apply items-end;
+  }
+  .scroll-indicator__item--active {
+    color: var(--fg);
+  }
+
+  .scroll-indicator__label {
+    @apply text-[11px] font-medium sm:text-sm;
+  }
+
+  .scroll-indicator__num {
+    @apply font-display text-[15px] font-semibold sm:text-[21px];
+  }
+}

@@ -9,7 +9,7 @@ type ButtonProps = {
    * hover · "ghost" = bare button, e.g. icon buttons.
    */
   variant?: "solid" | "text" | "ghost";
-  /** Accent color. Defaults to the primary terracotta when omitted. */
+  /** Rung of the blue shade ladder. Defaults to the brand accent when omitted. */
   tone?: Tone;
   className?: string;
   children: ReactNode;

@@ -1,37 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Sun, Moon } from "lucide-react";
 import { Button } from "@/components/Button/Button";
 import "./ThemeToggle.css";
 
+/**
+ * Light/dark switch. The inline script in index.html already applied the stored
+ * theme before first paint, so this reads the class it left behind rather than
+ * re-deciding on mount — which would have meant a flash of the wrong theme.
+ */
 export const ThemeToggle = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme === "light") {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove("dark");
-    } else {
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    }
-  }, []);
+  const [isDarkMode, setIsDarkMode] = useState(() =>
+    document.documentElement.classList.contains("dark"),
+  );
 
   const toggleTheme = () => {
-    if (isDarkMode) {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    } else {
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    }
+    const next = !isDarkMode;
+    setIsDarkMode(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
   };
 
   return (
-    <Button variant="ghost" onClick={toggleTheme} aria-label="Toggle Theme">
+    <Button
+      variant="ghost"
+      onClick={toggleTheme}
+      aria-label={isDarkMode ? "Switch to light theme" : "Switch to dark theme"}
+      className="theme-toggle"
+    >
       {isDarkMode ? (
         <Sun className="theme-toggle__icon theme-toggle__icon--sun" />
       ) : (

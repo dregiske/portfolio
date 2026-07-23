@@ -1,0 +1,17 @@
+@reference "../../index.css";
+
+@layer components {
+  .section-shell {
+    /* z-10 keeps every section above both background canvases (z-0 / z-1). */
+    @apply relative z-10 flex min-h-screen items-center py-24;
+  }
+
+  .section-shell__inner {
+    /* Bottom padding clears the fixed scroll indicator. */
+    @apply mx-auto w-full max-w-[1180px] px-6 pb-24 md:px-10 lg:px-[60px];
+  }
+
+  .section-shell__title {
+    @apply mt-3.5 font-display text-[clamp(40px,7vw,76px)] font-semibold tracking-[-0.03em];
+  }
+}
