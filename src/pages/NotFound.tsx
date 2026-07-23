@@ -8,11 +8,11 @@ export const NotFound = () => {
       <div className="notfound__inner">
         <Eyebrow num="404" label="OFF THE TRAIL" />
 
-        <h1 className="notfound__title">Not found</h1>
+        <h1 className="notfound__title">Not found :(</h1>
 
         <p className="notfound__text">
-          This page wandered off-piste — it doesn't exist (or got moved). Let's
-          get you back on track.
+          This page wandered off-piste. This page doesn't exist (or got moved).
+          Let's get you back on track.
         </p>
 
         <div className="notfound__actions">
