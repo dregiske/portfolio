@@ -17,6 +17,12 @@ export interface ConstellationOptions {
   neighbors?: number;
   /** Idle float amplitude, in virtual units. */
   floatAmp?: number;
+  /**
+   * How far past the box a node may be dragged, in virtual units. The canvas
+   * grows by the same margin so links still draw out there. The box itself must
+   * not clip (no `overflow-hidden`) for the bleed to be visible.
+   */
+  bleed?: number;
   /** Scale applied to a hovered node. */
   hoverScale?: number;
   /**
@@ -55,12 +61,15 @@ export function useConstellation({
   vh = 1000,
   neighbors = 2,
   floatAmp = 7,
+  bleed = 0,
   hoverScale = 1.06,
   layout,
 }: ConstellationOptions) {
   // Keep the latest layout without re-running the effect (mount-once setup).
   const layoutRef = useRef(layout);
-  layoutRef.current = layout;
+  useEffect(() => {
+    layoutRef.current = layout;
+  });
 
   useEffect(() => {
     const box = boxRef.current;
@@ -121,6 +130,10 @@ export function useConstellation({
     let dpr = 1;
     let scaleX = 1;
     let scaleY = 1;
+    // The bleed margin in px — the canvas is grown and offset by this much so a
+    // node dragged outside the box keeps its links.
+    let bleedX = 0;
+    let bleedY = 0;
     const setHome: SetHome = (i, hx, hy) => {
       nodes[i].hx = hx;
       nodes[i].hy = hy;
@@ -129,10 +142,18 @@ export function useConstellation({
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       const h = layoutRef.current(box, setHome);
       if (typeof h === "number") box.style.height = h + "px";
-      canvas.width = box.clientWidth * dpr;
-      canvas.height = box.clientHeight * dpr;
       scaleX = box.clientWidth / vw;
       scaleY = box.clientHeight / vh;
+      bleedX = bleed * scaleX;
+      bleedY = bleed * scaleY;
+      const cw = box.clientWidth + bleedX * 2;
+      const ch = box.clientHeight + bleedY * 2;
+      canvas.width = cw * dpr;
+      canvas.height = ch * dpr;
+      canvas.style.left = `${-bleedX}px`;
+      canvas.style.top = `${-bleedY}px`;
+      canvas.style.width = `${cw}px`;
+      canvas.style.height = `${ch}px`;
     };
     resize();
     nodes.forEach((n) => {
@@ -234,8 +255,8 @@ export function useConstellation({
         n.h = n.el.offsetHeight;
       });
       nodes.forEach((n, i) => {
-        const halfW = n.w / 2 / scaleX;
-        const halfH = n.h / 2 / scaleY;
+        const halfW = n.w / 2 / scaleX - bleed;
+        const halfH = n.h / 2 / scaleY - bleed;
         if (dragging === i) {
           n.x = Math.max(halfW, Math.min(vw - halfW, n.x));
           n.y = Math.max(halfH, Math.min(vh - halfH, n.y));
@@ -260,8 +281,8 @@ export function useConstellation({
       const W = canvas.width;
       const H = canvas.height;
       ctx.clearRect(0, 0, W, H);
-      const cx = (n: Node) => n.x * scaleX * dpr;
-      const cy = (n: Node) => n.y * scaleY * dpr;
+      const cx = (n: Node) => (n.x * scaleX + bleedX) * dpr;
+      const cy = (n: Node) => (n.y * scaleY + bleedY) * dpr;
       const drawn = new Set<string>();
       nodes.forEach((a, ai) => {
         // Nearest neighbours by on-screen distance, so links stay natural at any
@@ -310,6 +331,7 @@ export function useConstellation({
     vh,
     neighbors,
     floatAmp,
+    bleed,
     hoverScale,
   ]);
 }
