@@ -4,23 +4,49 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ---------------------------------------------------------------------------
+   Design tokens
+   ---------------------------------------------------------------------------
+   Everything visual — CSS *and* the background canvases — reads from the role
+   tokens below. A role names a job ("the color of a dot", "the glass border"),
+   never a hue, so the two themes are two value sets for one vocabulary:
+
+     .dark  (default) — the mockup's deep navy, white ink
+     :root  (light)   — white paper, near-black ink
+
+   The canvases can't read CSS variables directly, so `src/lib/themeColors.ts`
+   resolves the ones they need (--dot-color, --aura-*) through a hidden probe
+   element and re-resolves whenever `.dark` toggles on <html>.
+   ------------------------------------------------------------------------- */
+
 @theme inline {
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
-  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Sora", "Space Grotesk", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* Tonal accent families */
-  --color-tone-clay: var(--tone-clay);
-  --color-tone-clay-subtle: var(--tone-clay-subtle);
-  --color-tone-mint: var(--tone-mint);
-  --color-tone-mint-subtle: var(--tone-mint-subtle);
+  /* Role colors — the redesign's vocabulary */
+  --color-bg-base: var(--bg-base);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-faint: var(--fg-faint);
+  --color-accent-brand: var(--accent-brand);
+  --color-glass: var(--glass-bg);
+  --color-glass-strong: var(--glass-bg-strong);
+  --color-glass-border: var(--glass-border);
+  --color-nav-pill: var(--nav-pill-bg);
+  --color-nav-pill-fg: var(--nav-pill-fg);
+
+  /* Blue shade ladder */
+  --color-tone-frost: var(--tone-frost);
+  --color-tone-frost-subtle: var(--tone-frost-subtle);
+  --color-tone-ice: var(--tone-ice);
+  --color-tone-ice-subtle: var(--tone-ice-subtle);
   --color-tone-sky: var(--tone-sky);
   --color-tone-sky-subtle: var(--tone-sky-subtle);
-  --color-tone-lilac: var(--tone-lilac);
-  --color-tone-lilac-subtle: var(--tone-lilac-subtle);
-  --color-tone-butter: var(--tone-butter);
-  --color-tone-butter-subtle: var(--tone-butter-subtle);
-  --color-tone-terracotta: var(--tone-terracotta);
+  --color-tone-azure: var(--tone-azure);
+  --color-tone-azure-subtle: var(--tone-azure-subtle);
+  --color-tone-cobalt: var(--tone-cobalt);
+  --color-tone-cobalt-subtle: var(--tone-cobalt-subtle);
 
   --color-icon-sun: var(--icon-sun);
   --color-icon-moon: var(--icon-moon);
@@ -33,223 +59,235 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
+  /* Legacy shadcn-shaped roles, re-pointed at the tokens above so components
+     that already consume them inherit the new look. */
   --color-background: var(--background);
-
   --color-foreground: var(--foreground);
-
   --color-card: var(--card);
   --color-card-surface: var(--card-surface);
   --color-card-foreground: var(--card-foreground);
-
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-
   --color-destructive: var(--destructive);
-
   --color-border: var(--border);
-
   --color-input: var(--input);
-
   --color-ring: var(--ring);
-
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* ---------------------------------------------------------------------------
+   Light theme — white paper, near-black ink
+   ------------------------------------------------------------------------- */
 :root {
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 
-  /* Eggshell neutrals */
-  --egg: #ede4cf;
-  --ink: #1a1714;
-  --rule: #d9d3c6;
+  /* Surfaces + ink */
+  --bg-base: #ffffff;
+  --fg: #10131a;
+  --fg-muted: rgba(16, 19, 26, 0.55);
+  --fg-faint: rgba(16, 19, 26, 0.38);
+  --accent-brand: #3457c8;
 
-  /* Tonal accent families */
-  --hue-clay: 55;
-  --hue-butter: 95;
-  --hue-mint: 165;
-  --hue-sky: 255;
-  --hue-lilac: 345;
+  /* Glass — the only "card" surface in the redesign: a whisper of ink over
+     the live background, never an opaque panel. */
+  --glass-bg: rgba(16, 19, 26, 0.035);
+  --glass-bg-strong: rgba(16, 19, 26, 0.06);
+  --glass-border: rgba(16, 19, 26, 0.12);
 
-  /* Role recipe (light):
-  	ink: L 0.55 / C 0.12
-	subtle: L 0.935 / C 0.048
-  */
+  /* Chrome */
+  --nav-pill-bg: rgba(16, 19, 26, 0.92);
+  --nav-pill-fg: #ffffff;
+  --scrim: 255 255 255; /* rgb triplet — scroll-indicator gradient */
+  --hero-shadow: rgba(20, 30, 60, 0.22);
+  --selection-bg: #3457c8;
+  --selection-fg: #ffffff;
+
+  /* Canvas colors (read by themeColors.ts) */
+  --dot-color: #10131a;
+  --aura-base: #ffffff;
+  --aura-blob-1: rgb(147, 180, 245);
+  --aura-blob-2: rgb(201, 217, 251);
+  --aura-blob-3: rgb(111, 160, 240);
+  --aura-blob-4: rgb(232, 238, 252);
+  --aura-blob-5: rgb(169, 196, 255);
+
+  /* ---- Blue shade ladder -------------------------------------------------
+     One hue family, five shades. Each rung turns the hue a few degrees and
+     steps `--tone-step-dir` further from the page background — darker on white,
+     lighter on navy — so the ladder reads the same way in both themes without
+     a second set of colors. `-h` is the hue, `-step` the lightness offset. */
+  --shade-frost-h: 232;
+  --shade-frost-step: 0;
+  --shade-ice-h: 240;
+  --shade-ice-step: 0.035;
+  --shade-sky-h: 248;
+  --shade-sky-step: 0.07;
+  --shade-azure-h: 256;
+  --shade-azure-step: 0.105;
+  --shade-cobalt-h: 264;
+  --shade-cobalt-step: 0.14;
+
+  /* Base recipe (light): ink L 0.55 / C 0.12 · subtle L 0.935 / C 0.048.
+     Deeper rungs go darker here, so the step direction is negative. */
+  --tone-step-dir: -1;
   --tone-ink-l: 0.55;
   --tone-ink-c: 0.12;
   --tone-subtle-l: 0.935;
   --tone-subtle-c: 0.048;
 
-  --tone-clay: oklch(var(--tone-ink-l) var(--tone-ink-c) var(--hue-clay));
-  --tone-clay-subtle: oklch(
-    var(--tone-subtle-l) var(--tone-subtle-c) var(--hue-clay)
+  --tone-frost: oklch(
+    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-frost-step))
+      var(--tone-ink-c) var(--shade-frost-h)
   );
-  --tone-butter: oklch(var(--tone-ink-l) var(--tone-ink-c) var(--hue-butter));
-  --tone-butter-subtle: oklch(
-    var(--tone-subtle-l) var(--tone-subtle-c) var(--hue-butter)
+  --tone-frost-subtle: oklch(
+    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-frost-step))
+      var(--tone-subtle-c) var(--shade-frost-h)
   );
-  --tone-mint: oklch(var(--tone-ink-l) var(--tone-ink-c) var(--hue-mint));
-  --tone-mint-subtle: oklch(
-    var(--tone-subtle-l) var(--tone-subtle-c) var(--hue-mint)
+  --tone-ice: oklch(
+    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-ice-step))
+      var(--tone-ink-c) var(--shade-ice-h)
   );
-  --tone-sky: oklch(var(--tone-ink-l) var(--tone-ink-c) var(--hue-sky));
+  --tone-ice-subtle: oklch(
+    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-ice-step))
+      var(--tone-subtle-c) var(--shade-ice-h)
+  );
+  --tone-sky: oklch(
+    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-sky-step))
+      var(--tone-ink-c) var(--shade-sky-h)
+  );
   --tone-sky-subtle: oklch(
-    var(--tone-subtle-l) var(--tone-subtle-c) var(--hue-sky)
+    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-sky-step))
+      var(--tone-subtle-c) var(--shade-sky-h)
   );
-  --tone-lilac: oklch(var(--tone-ink-l) var(--tone-ink-c) var(--hue-lilac));
-  --tone-lilac-subtle: oklch(
-    var(--tone-subtle-l) var(--tone-subtle-c) var(--hue-lilac)
+  --tone-azure: oklch(
+    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-azure-step))
+      var(--tone-ink-c) var(--shade-azure-h)
+  );
+  --tone-azure-subtle: oklch(
+    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-azure-step))
+      var(--tone-subtle-c) var(--shade-azure-h)
+  );
+  --tone-cobalt: oklch(
+    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-cobalt-step))
+      var(--tone-ink-c) var(--shade-cobalt-h)
+  );
+  --tone-cobalt-subtle: oklch(
+    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-cobalt-step))
+      var(--tone-subtle-c) var(--shade-cobalt-h)
   );
 
-  --constellation-line: color-mix(in srgb, var(--ink) 20%, transparent);
-  --constellation-line-active: var(--primary);
-  --shadow-color: 26 23 20;
+  --constellation-line: rgba(16, 19, 26, 0.18);
+  --constellation-line-active: var(--accent-brand);
+  --shadow-color: 20 30 60;
 
   /* Theme-toggle icons */
   --icon-sun: oklch(0.88 0.17 95);
   --icon-moon: oklch(0.4 0.14 264);
 
-  --background: var(--egg);
-  --foreground: var(--ink);
-
-  --wave-line: #5c574d;
-
-  --card: #fbf6ec;
-  --card-surface: #f3ecda;
-  --card-foreground: var(--ink);
-
-  --popover: #fbf6ec;
-  --popover-foreground: var(--ink);
-
-  --tone-terracotta: #bf6a4a;
-  --tone-terracotta-fg: #fbf6ec;
-
-  --primary: #ffffff;
-  --primary-foreground: #1a1714;
-  --secondary: #e9e1d0;
-  --secondary-foreground: var(--ink);
-  --muted: #e9e1d0;
-  --muted-foreground: #5c574d;
-  --accent: #e9e1d0;
-  --accent-foreground: var(--ink);
+  /* Legacy roles → new tokens */
+  --background: var(--bg-base);
+  --foreground: var(--fg);
+  --card: var(--glass-bg);
+  --card-surface: var(--glass-bg-strong);
+  --card-foreground: var(--fg);
+  --primary: var(--accent-brand);
+  --primary-foreground: #ffffff;
+  --muted: var(--glass-bg);
+  --muted-foreground: var(--fg-muted);
+  --accent: var(--glass-bg-strong);
+  --accent-foreground: var(--fg);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: var(--rule);
-  --input: var(--rule);
-  --ring: var(--tone-terracotta);
-
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-
-  --sidebar: #fbf6ec;
-  --sidebar-foreground: var(--ink);
-  --sidebar-primary: #bf6a4a;
-  --sidebar-primary-foreground: #fbf6ec;
-  --sidebar-accent: #e9e1d0;
-  --sidebar-accent-foreground: var(--ink);
-  --sidebar-border: var(--rule);
-  --sidebar-ring: #bf6a4a;
+  --border: var(--glass-border);
+  --input: var(--glass-border);
+  --ring: var(--accent-brand);
 }
 
+/* ---------------------------------------------------------------------------
+   Dark theme (default) — the mockup's navy
+   ------------------------------------------------------------------------- */
 .dark {
-  --egg: #0f1f3d;
-  --ink: #ede4cf;
-  --rule: rgba(237, 228, 207, 0.14);
+  --bg-base: #0b1f4d;
+  --fg: #ffffff;
+  --fg-muted: rgba(255, 255, 255, 0.62);
+  --fg-faint: rgba(255, 255, 255, 0.42);
+  --accent-brand: #a9c4ff;
 
-  /* Tonal accent families (dark):
-  	bright ink (L 0.8 / C 0.1)
-    subtle (L 0.33 / C 0.039)
-  */
-  --tone-ink-l: 0.8;
-  --tone-ink-c: 0.1;
-  --tone-subtle-l: 0.33;
-  --tone-subtle-c: 0.039;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-strong: rgba(255, 255, 255, 0.09);
+  --glass-border: rgba(255, 255, 255, 0.14);
 
+  --nav-pill-bg: rgba(255, 255, 255, 0.92);
+  --nav-pill-fg: #1a1a17;
+  --scrim: 9 20 54;
+  --hero-shadow: rgba(6, 16, 45, 0.6);
+  --selection-bg: #a9c4ff;
+  --selection-fg: #0b1f4d;
+
+  --dot-color: #ffffff;
+  --aura-base: #0b1f4d;
+  --aura-blob-1: rgb(37, 99, 235);
+  --aura-blob-2: rgb(30, 58, 138);
+  --aura-blob-3: rgb(59, 130, 246);
+  --aura-blob-4: rgb(8, 22, 66);
+  --aura-blob-5: rgb(96, 130, 220);
+
+  /* Base recipe (dark): bright ink L 0.82 / C 0.09 · subtle L 0.36 / C 0.045.
+     On navy the ladder climbs *out* of the page instead of down into it, so
+     the step direction flips — same rungs, same order, mirrored. */
+  --tone-step-dir: 1;
+  --tone-ink-l: 0.82;
+  --tone-ink-c: 0.09;
+  --tone-subtle-l: 0.36;
+  --tone-subtle-c: 0.045;
+
+  --constellation-line: rgba(255, 255, 255, 0.22);
+  --constellation-line-active: var(--accent-brand);
   --shadow-color: 0 0 0;
 
-  --background: var(--egg);
-
-  --foreground: var(--ink);
-
-  --wave-line: #cdbf9a;
-
-  --card: #16294b;
-  --card-surface: #1b3358;
-  --card-foreground: var(--ink);
-
-  --popover: #16294b;
-  --popover-foreground: var(--ink);
-
-  --tone-terracotta: #d98a63;
-  --tone-terracotta-fg: #0f1f3d;
-
-  --primary: #ffffff;
-  --primary-foreground: #1a1714;
-  --secondary: #1d3354;
-  --secondary-foreground: var(--ink);
-  --muted: #1d3354;
-  --muted-foreground: #b6c0d6;
-  --accent: #1d3354;
-  --accent-foreground: var(--ink);
+  --primary: var(--accent-brand);
+  --primary-foreground: #0b1f4d;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: var(--rule);
-  --input: rgba(255, 255, 255, 0.15);
-  --ring: var(--tone-terracotta);
-
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-
-  --sidebar: #16294b;
-  --sidebar-foreground: var(--ink);
-  --sidebar-primary: #d98a63;
-  --sidebar-primary-foreground: #0f1f3d;
-  --sidebar-accent: #1d3354;
-  --sidebar-accent-foreground: var(--ink);
-  --sidebar-border: var(--rule);
-  --sidebar-ring: #d98a63;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground font-sans;
+
+  html {
+    scroll-behavior: smooth;
+    /* The scroll indicator is the scroll affordance — hide the native bar. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  body {
+    @apply bg-bg-base text-fg font-sans;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
   ::selection {
-    background: color-mix(in srgb, var(--tone-terracotta) 22%, transparent);
+    background: var(--selection-bg);
+    color: var(--selection-fg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 }
