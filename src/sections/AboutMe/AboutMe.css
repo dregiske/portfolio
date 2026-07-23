@@ -2,58 +2,29 @@
 
 @layer components {
   .about__grid {
-    @apply grid grid-cols-1 md:grid-cols-[1.05fr_0.95fr] gap-14 items-start;
+    @apply mt-10 grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-14;
   }
 
-  .about__card {
-    @apply p-10;
+  /* A little narrower than the source (2400×1344), so object-cover trims the
+     dead air at the sides. Fixed aspect means a different shot later reframes
+     rather than moving the bio. */
+  .about__photo {
+    @apply aspect-[3/2] w-full max-w-[520px] overflow-hidden rounded-2xl object-cover;
+    box-shadow: 0 24px 50px -20px var(--hero-shadow);
   }
 
-  .about__heading {
-    @apply font-serif font-normal text-3xl leading-tight mb-5 text-foreground;
-  }
-
-  .about__name {
-    @apply text-tone-terracotta;
+  .about__bio {
+    @apply p-8 lg:p-10;
   }
 
   .about__text {
-    @apply text-muted-foreground leading-relaxed;
+    @apply text-[17px] leading-relaxed text-fg-muted;
   }
   .about__text + .about__text {
     @apply mt-4;
   }
 
   .about__actions {
-    @apply flex flex-wrap gap-3.5 mt-8;
-  }
-
-  .about__features {
-    @apply flex flex-col gap-4.5;
-  }
-
-  .about-feature {
-    @apply flex gap-5 items-start p-6;
-  }
-
-  .about-feature__glyph {
-    @apply h-6 w-6;
-  }
-  .about-feature__glyph--clay {
-    @apply text-tone-clay;
-  }
-  .about-feature__glyph--blue {
-    @apply text-tone-sky;
-  }
-  .about-feature__glyph--plum {
-    @apply text-tone-lilac;
-  }
-
-  .about-feature__title {
-    @apply font-serif font-normal text-xl mb-1.5 text-foreground;
-  }
-
-  .about-feature__text {
-    @apply text-muted-foreground leading-relaxed;
+    @apply mt-8 flex flex-wrap gap-3.5;
   }
 }

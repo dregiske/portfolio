@@ -2,39 +2,34 @@
 
 @layer components {
   .hero {
-    @apply relative min-h-screen w-full;
+    @apply relative z-10 min-h-screen overflow-hidden;
   }
+
   .hero__inner {
-    @apply relative z-10 mx-auto max-w-6xl px-6 w-full min-h-screen flex items-center pt-24 pb-16;
+    @apply flex min-h-screen flex-col px-6 pb-28 pt-6 md:px-10 lg:px-[60px] lg:pb-[90px] lg:pt-[34px];
   }
-  .hero__grid {
-    @apply w-full grid grid-cols-1 md:grid-cols-[1.12fr_0.88fr] gap-14 items-center;
+
+  /* Text beside the portrait on wide screens, stacked above it below lg. */
+  .hero__body {
+    @apply flex flex-1 flex-col items-start justify-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-14;
   }
 
   .hero__intro {
-    @apply text-left flex flex-col items-start w-full max-w-md md:max-w-none mx-auto md:mx-0;
-  }
-  .hero__badge {
-    @apply text-xs uppercase tracking-[0.2em] px-3.5 mb-7;
-  }
-  .hero__subtitle {
-    @apply mt-7;
-  }
-  .hero__actions {
-    @apply flex flex-wrap gap-3.5 mt-9 justify-start;
+    @apply flex flex-col items-start text-left;
   }
 
-  .hero__photo {
-    @apply relative w-full max-w-md mx-auto md:mx-0;
+  .hero__greeting {
+    @apply mb-0.5 text-xl tracking-[0.04em] text-accent-brand;
   }
-  .hero__frame {
-    @apply relative z-10 rounded-lg overflow-hidden;
-    box-shadow: 0 22px 55px rgb(var(--shadow-color) / 0.18);
+
+  .hero__title {
+    /* One line wherever it fits — the name is the piece of type the whole
+       page is built around. */
+    @apply font-display text-[clamp(48px,9vw,104px)] font-semibold leading-[0.92] tracking-[-0.04em] md:whitespace-nowrap;
+    text-shadow: 0 2px 40px var(--hero-shadow);
   }
-  .hero__img {
-    @apply w-full h-105 md:h-120 object-cover;
-  }
-  .hero__caption {
-    @apply relative z-10 flex justify-between mt-3.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground;
+
+  .hero__tagline {
+    @apply mt-5 max-w-[440px] text-[17px] leading-relaxed sm:text-[19px];
   }
 }

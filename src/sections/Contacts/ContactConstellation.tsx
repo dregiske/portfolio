@@ -8,6 +8,8 @@ export type Social = { name: string; url: string; src: string; tone: Tone };
 
 const VW = 1000;
 const VH = 400;
+/** Slack around the field a dragged icon may occupy — see `useConstellation`. */
+const BLEED = 150;
 
 /**
  * The contact socials laid out as an inline horizontal constellation: linked
@@ -25,6 +27,7 @@ export function ContactConstellation({ socials }: { socials: Social[] }) {
     count: socials.length,
     vw: VW,
     vh: VH,
+    bleed: BLEED,
     floatAmp: 16,
     hoverScale: 1.1,
     // Even horizontal spread with a gentle zigzag so the links read as a chain.
@@ -51,10 +54,7 @@ export function ContactConstellation({ socials }: { socials: Social[] }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={social.name}
-          className={cn(
-            "icon-circle icon-circle--sm contact__node",
-            `icon-circle--${social.tone}`,
-          )}
+          className={cn("contact__node", `contact__node--${social.tone}`)}
         >
           <img
             src={`${SOCIALS_ICON_LINK}${social.src}`}

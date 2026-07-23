@@ -1,22 +1,32 @@
 @reference "../../index.css";
 
 @layer components {
-  .footer {
-    @apply border-t border-border mt-10;
+  /* Parked one full height below the viewport; the reveal is a transform, so it
+     never takes part in layout and never lengthens the page. Sits under the
+     indicator's z-50 so the two cross over cleanly during the handoff. */
+  .site-footer {
+    @apply fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-sm;
+    border-color: var(--glass-border);
+    background: var(--scrim);
   }
 
-  .footer__inner {
-    @apply mx-auto max-w-6xl px-6 py-7 flex flex-wrap items-center justify-between gap-3 font-mono text-xs tracking-[0.06em] text-muted-foreground;
+  .site-footer__inner {
+    @apply mx-auto flex w-full max-w-[1180px] flex-col gap-3 px-6 py-6 md:flex-row md:items-end md:justify-between md:px-10 lg:px-[60px];
   }
 
-  .footer__top {
-    @apply inline-flex items-center text-tone-terracotta hover:underline transition-colors;
+  .site-footer__meta {
+    @apply flex items-center gap-6 font-mono text-xs;
   }
 
-  .footer__top-label {
-    @apply max-md:hidden;
+  .site-footer__copyright {
+    @apply text-fg-faint;
   }
-  .footer__top-icon {
-    @apply hidden max-md:block;
+
+  .site-footer__top {
+    @apply inline-flex items-center gap-1.5 uppercase tracking-[0.08em] text-accent-brand transition-opacity hover:opacity-70;
+  }
+
+  .site-footer__top-glyph {
+    @apply h-3.5 w-3.5;
   }
 }

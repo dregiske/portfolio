@@ -1,39 +1,38 @@
 @reference "../../index.css";
 
 @layer components {
-  .skills__hint {
-    @apply mb-1.5 uppercase tracking-wider;
-  }
-
+  /* Deliberately not clipped: nodes can be dragged past the field's edge (see
+     the `bleed` option). The section clips instead, so nothing escapes the page. */
   .constellation {
-    @apply relative w-full h-130 cursor-grab touch-none overflow-hidden;
+    @apply relative mt-8 w-full cursor-grab touch-none;
   }
 
   .constellation__canvas {
-    @apply absolute inset-0 w-full h-full;
+    @apply absolute inset-0 h-full w-full;
   }
 
   .skill-node {
-    @apply absolute left-0 top-0 rounded-full font-semibold whitespace-nowrap text-foreground select-none cursor-grab z-2;
+    @apply absolute left-0 top-0 z-2 cursor-grab select-none whitespace-nowrap rounded-full border font-semibold backdrop-blur-sm;
+    border-color: var(--glass-border);
     transform-origin: center;
     will-change: left, top, transform;
     transition:
       box-shadow 0.2s,
       transform 0.12s;
   }
-  .skill-node--clay {
-    @apply bg-tone-clay-subtle;
+  .skill-node--frost {
+    @apply bg-tone-frost-subtle text-tone-frost;
   }
-  .skill-node--mint {
-    @apply bg-tone-mint-subtle;
+  .skill-node--ice {
+    @apply bg-tone-ice-subtle text-tone-ice;
   }
   .skill-node--sky {
-    @apply bg-tone-sky-subtle;
+    @apply bg-tone-sky-subtle text-tone-sky;
   }
-  .skill-node--lilac {
-    @apply bg-tone-lilac-subtle;
+  .skill-node--azure {
+    @apply bg-tone-azure-subtle text-tone-azure;
   }
-  .skill-node--butter {
-    @apply bg-tone-butter-subtle;
+  .skill-node--cobalt {
+    @apply bg-tone-cobalt-subtle text-tone-cobalt;
   }
 }

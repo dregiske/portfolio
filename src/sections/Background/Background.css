@@ -1,8 +1,0 @@
-@reference "../../index.css";
-
-@layer components {
-  /* Fixed eggshell color + animated lines. Stays put while the page scrolls. */
-  .background__lines {
-    @apply fixed inset-0 -z-20 pointer-events-none;
-  }
-}

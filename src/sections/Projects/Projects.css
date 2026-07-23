@@ -2,61 +2,52 @@
 
 @layer components {
   .projects__grid {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-6 items-start;
+    @apply mt-10 grid grid-cols-1 items-start gap-5 md:grid-cols-3;
   }
 
   .project-card {
-    @apply overflow-hidden flex flex-col;
+    @apply flex flex-col overflow-hidden transition-colors;
   }
-
-  .project-card__band {
-    @apply p-3.5;
-  }
-  .project-card__band--sky {
-    @apply bg-tone-sky-subtle;
-  }
-  .project-card__band--butter {
-    @apply bg-tone-butter-subtle;
-  }
-  .project-card__band--lilac {
-    @apply bg-tone-lilac-subtle;
-  }
-  .project-card__band--mint {
-    @apply bg-tone-mint-subtle;
-  }
-  .project-card__band--clay {
-    @apply bg-tone-clay-subtle;
+  .project-card:hover {
+    background: var(--glass-bg-strong);
   }
 
   .project-card__img {
-    @apply rounded-lg object-cover h-44 w-full;
+    @apply h-40 w-full object-cover;
+    /* The art sits on its own tinted shelf so photos with light backgrounds
+       don't punch a hole in the glass. */
+    background: var(--glass-bg-strong);
   }
 
   .project-card__body {
-    @apply p-6 flex flex-col flex-1;
+    @apply flex flex-1 flex-col p-6;
   }
 
   .project-card__title {
-    @apply font-serif font-normal text-2xl leading-tight mb-3 text-foreground;
+    @apply mb-3 font-display text-xl font-semibold leading-tight tracking-[-0.02em];
   }
 
   /* Optional live-domain pill */
   .project-card__site {
-    @apply inline-flex items-center gap-1.5 self-start font-mono text-[11px] rounded-full px-2.5 py-1 mb-4 bg-tone-terracotta/10 text-tone-terracotta hover:bg-tone-terracotta/20 transition-colors;
+    @apply mb-4 inline-flex items-center gap-1.5 self-start rounded-full px-2.5 py-1 font-mono text-[11px] text-accent-brand transition-opacity;
+    background: var(--glass-bg-strong);
+  }
+  .project-card__site:hover {
+    @apply opacity-80;
   }
   .project-card__site-icon {
     @apply h-3 w-3;
   }
 
   .project-card__desc {
-    @apply text-muted-foreground text-sm leading-relaxed mb-5;
+    @apply mb-5 text-sm leading-relaxed text-fg-muted;
   }
 
   .project-card__tags {
-    @apply flex flex-wrap gap-2 mb-6;
+    @apply mb-6 flex flex-wrap gap-2;
   }
 
   .project-card__link {
-    @apply mt-auto font-mono text-xs uppercase tracking-[0.08em] text-tone-terracotta hover:underline;
+    @apply mt-auto font-mono text-xs uppercase tracking-[0.08em] text-accent-brand hover:underline;
   }
 }

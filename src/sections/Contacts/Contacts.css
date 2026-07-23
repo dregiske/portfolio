@@ -1,52 +1,67 @@
 @reference "../../index.css";
 
 @layer components {
-  .contact__panel {
-    @apply grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-12 p-10 md:p-12;
-  }
-
-  .dark .contact__panel {
-    @apply bg-card-surface border border-border;
-  }
-
-  .contact__heading {
-    @apply font-serif font-normal text-3xl mb-7 text-foreground;
+  .contact__grid {
+    @apply mt-10 grid grid-cols-1 gap-12 md:grid-cols-[0.9fr_1.1fr];
   }
 
   .contact__email {
-    @apply text-sm px-4 py-2.5 mb-8 transition-opacity hover:opacity-90;
+    @apply mb-8 inline-flex items-center gap-2.5 rounded-full border px-4 py-2.5 font-mono text-sm backdrop-blur-sm transition-colors;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+  }
+  .contact__email:hover {
+    background: var(--glass-bg-strong);
   }
   .contact__email-glyph {
-    @apply h-5 w-5;
+    @apply h-5 w-5 text-accent-brand;
   }
 
-  .contact__hint {
-    @apply mb-3 uppercase tracking-wider;
-  }
-
+  /* Unclipped, like Skills: icons can be dragged past the field's edge and over
+     the form beside it. The section clips, so nothing escapes the page. */
   .contact__constellation {
-    @apply relative w-full h-40 cursor-grab touch-none overflow-hidden;
+    @apply relative z-2 h-40 w-full cursor-grab touch-none;
   }
   .contact__constellation-canvas {
-    @apply absolute inset-0 w-full h-full;
+    @apply absolute inset-0 h-full w-full;
   }
 
   .contact__node {
-    @apply absolute left-0 top-0 select-none cursor-grab z-2;
+    @apply absolute left-0 top-0 z-2 inline-flex h-11 w-11 flex-none cursor-grab select-none items-center justify-center rounded-full;
     transform-origin: center;
     will-change: left, top, transform;
     transition:
       box-shadow 0.2s,
       transform 0.12s;
   }
+  .contact__node--frost {
+    @apply bg-tone-frost-subtle;
+  }
+  .contact__node--ice {
+    @apply bg-tone-ice-subtle;
+  }
+  .contact__node--sky {
+    @apply bg-tone-sky-subtle;
+  }
+  .contact__node--azure {
+    @apply bg-tone-azure-subtle;
+  }
+  .contact__node--cobalt {
+    @apply bg-tone-cobalt-subtle;
+  }
+  .contact__title {
+    @apply mb-6 text-3xl font-bold;
+  }
 
-  /* Keep the dark-svg social glyphs legible by holding the circles light. */
-  .dark .contact__constellation {
-    --tone-clay-subtle: oklch(0.935 0.048 var(--hue-clay));
-    --tone-mint-subtle: oklch(0.935 0.048 var(--hue-mint));
-    --tone-sky-subtle: oklch(0.935 0.048 var(--hue-sky));
-    --tone-lilac-subtle: oklch(0.935 0.048 var(--hue-lilac));
-    --tone-butter-subtle: oklch(0.935 0.048 var(--hue-butter));
+  /* The social glyphs are dark SVGs, so their circles hold the light end of the
+     ladder in both themes. Spelled out rather than derived: the tone tokens are
+     already substituted by the time they inherit down here. */
+  .contact__constellation {
+    --tone-frost-subtle: oklch(0.94 0.045 var(--shade-frost-h));
+    --tone-ice-subtle: oklch(0.905 0.048 var(--shade-ice-h));
+    --tone-sky-subtle: oklch(0.87 0.05 var(--shade-sky-h));
+    --tone-azure-subtle: oklch(0.835 0.052 var(--shade-azure-h));
+    --tone-cobalt-subtle: oklch(0.8 0.055 var(--shade-cobalt-h));
   }
 
   .contact__social-img {
@@ -58,7 +73,12 @@
   }
 
   .field {
-    @apply w-full px-4.5 py-3.5 rounded-xl border border-foreground/15 bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-tone-terracotta transition-colors;
+    @apply w-full rounded-xl border px-4 py-3.5 text-fg backdrop-blur-sm transition-colors placeholder:text-fg-faint focus:outline-none;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+  }
+  .field:focus {
+    border-color: var(--accent-brand);
   }
   .field--area {
     @apply resize-y;
@@ -66,18 +86,18 @@
 
   .contact__submit {
     @apply self-start;
-    --btn-fill: var(--tone-lilac);
-    --btn-fill-fg: var(--egg);
+    --btn-fill: var(--fg);
+    --btn-fill-fg: var(--bg-base);
   }
   .contact__submit-icon {
-    @apply ml-2 h-4 w-4 inline-block;
+    @apply ml-2 inline-block h-4 w-4;
   }
 
   .contact__status {
     @apply text-sm;
   }
   .contact__status--ok {
-    @apply text-tone-mint;
+    @apply text-accent-brand;
   }
   .contact__status--err {
     @apply text-destructive;

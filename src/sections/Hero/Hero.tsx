@@ -1,51 +1,30 @@
-import { HeroTitle } from "@/components/HeroTitle/HeroTitle";
-import { HeroSubtitle } from "@/components/HeroSubtitle/HeroSubtitle";
-import { Tag } from "@/components/Tag/Tag";
-import { Pill } from "@/components/Pill/Pill";
 import { HERO_PHOTO_LINK } from "@/constants/links";
+import { TopBar } from "@/components/TopBar/TopBar";
+import { PortraitCard } from "@/components/PortraitCard/PortraitCard";
 import "./Hero.css";
 
 export const Hero = () => {
   return (
     <section id="hero" className="hero">
       <div className="hero__inner">
-        <div className="hero__grid">
-          {/* Intro (LEFT) */}
+        <TopBar />
+
+        <div className="hero__body">
           <div className="hero__intro">
-            <Tag tone="clay" dot className="hero__badge">
-              Portfolio — 2026
-            </Tag>
-
-            <HeroTitle title="Andre Giske" />
-
-            <div className="hero__subtitle">
-              <HeroSubtitle subtitle="CSE student at UC San Diego building backend systems and full-stack apps, somewhere between the terminal and the chairlift." />
-            </div>
-
-            <div className="hero__actions">
-              <Pill href="#projects" variant="solid">
-                View Work →
-              </Pill>
-              <Pill href="#contact" variant="outline">
-                Get in Touch
-              </Pill>
-            </div>
+            <span className="hero__greeting">hey, I'm</span>
+            <h1 className="hero__title">Andre Giske</h1>
+            <p className="hero__tagline">
+              CSE student at UC San Diego building backend systems and
+              full-stack apps, feel free to connect!
+            </p>
           </div>
 
-          {/* Photo (RIGHT) */}
-          <div className="hero__photo">
-            <div className="hero__frame">
-              <img
-                src={HERO_PHOTO_LINK}
-                alt="Andre Giske"
-                className="hero__img"
-              />
-            </div>
-            <div className="hero__caption">
-              <span>Fig. 01 — On the lift</span>
-              <span>Big Bear, CA</span>
-            </div>
-          </div>
+          {/* Centred while it's stacked under the text; back in the row at lg. */}
+          <PortraitCard
+            src={HERO_PHOTO_LINK}
+            alt="Andre Giske"
+            className="self-center lg:self-auto"
+          />
         </div>
       </div>
     </section>

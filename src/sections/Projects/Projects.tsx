@@ -1,8 +1,7 @@
 import { Globe } from "lucide-react";
 import { PROJECT_PHOTO_LINK } from "@/constants/links";
 import { TONES } from "@/constants/tones";
-import { Section } from "@/components/Section/Section";
-import { SectionHeader } from "@/components/SectionHeader/SectionHeader";
+import { SectionShell } from "@/components/SectionShell/SectionShell";
 import { Card } from "@/components/Card/Card";
 import { Tag } from "@/components/Tag/Tag";
 import "./Projects.css";
@@ -15,7 +14,6 @@ type Project = {
   site?: string;
   tools: string[];
   photo: string;
-  band: string;
 };
 
 const projects: Project[] = [
@@ -38,7 +36,6 @@ const projects: Project[] = [
       "NewsAPI",
     ],
     photo: "thefraynews.png",
-    band: "project-card__band--sky",
   },
   {
     name: "Cash Out Poker Bank",
@@ -58,7 +55,6 @@ const projects: Project[] = [
       "FastAPI",
     ],
     photo: "cashoutlogo.png",
-    band: "project-card__band--butter",
   },
   {
     name: "My Portfolio",
@@ -74,31 +70,20 @@ const projects: Project[] = [
       "Interactivity",
     ],
     photo: "code.png",
-    band: "project-card__band--mint",
   },
 ];
 
 export const Projects = () => {
   return (
-    <Section id="projects">
-      <SectionHeader
-        index="02"
-        eyebrow="Work"
-        title="Featured"
-        accent="projects"
-        tone="clay"
-      />
-
+    <SectionShell id="projects" num="03" eyebrow="WORK" title="Projects">
       <div className="projects__grid">
         {projects.map((project) => (
           <Card as="article" key={project.name} className="project-card">
-            <div className={`project-card__band ${project.band}`}>
-              <img
-                src={`${PROJECT_PHOTO_LINK}${project.photo}`}
-                alt={project.name}
-                className="project-card__img"
-              />
-            </div>
+            <img
+              src={`${PROJECT_PHOTO_LINK}${project.photo}`}
+              alt={project.name}
+              className="project-card__img"
+            />
             <div className="project-card__body">
               <h3 className="project-card__title">{project.name}</h3>
               {project.site && (
@@ -132,6 +117,6 @@ export const Projects = () => {
           </Card>
         ))}
       </div>
-    </Section>
+    </SectionShell>
   );
 };

@@ -8,26 +8,20 @@ import {
 import { Mail, Send } from "lucide-react";
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
-import { Section } from "@/components/Section/Section";
-import { SectionHeader } from "@/components/SectionHeader/SectionHeader";
-import { Card } from "@/components/Card/Card";
-import { Tag } from "@/components/Tag/Tag";
+import { SectionShell } from "@/components/SectionShell/SectionShell";
 import { Button } from "@/components/Button/Button";
-import {
-  ContactConstellation,
-  type Social,
-} from "./ContactConstellation";
+import { ContactConstellation, type Social } from "./ContactConstellation";
 import "./Contacts.css";
 
 const socials: Social[] = [
   { name: "Discord", url: DISCORD_LINK, src: "discord.svg", tone: "sky" },
-  { name: "GitHub", url: GITHUB_LINK, src: "github.svg", tone: "clay" },
-  { name: "LinkedIn", url: LINKEDIN_LINK, src: "linkedin.svg", tone: "mint" },
+  { name: "GitHub", url: GITHUB_LINK, src: "github.svg", tone: "frost" },
+  { name: "LinkedIn", url: LINKEDIN_LINK, src: "linkedin.svg", tone: "ice" },
   {
     name: "Instagram",
     url: INSTAGRAM_LINK,
     src: "instagram.svg",
-    tone: "butter",
+    tone: "cobalt",
   },
 ];
 
@@ -57,75 +51,67 @@ export const Contacts = () => {
   };
 
   return (
-    <Section id="contact">
-      <SectionHeader
-        index="04"
-        eyebrow="Say Hello"
-        title="Contact"
-        accent="me"
-        tone="lilac"
-      />
-
-      <Card variant="tinted" tone="lilac" className="contact__panel">
-        {/* Contact Info */}
+    <SectionShell
+      id="contact"
+      num="05"
+      eyebrow="CONTACT"
+      title="Contact"
+      className="overflow-hidden"
+    >
+      <div className="contact__grid">
+        {/* Left — where to find me */}
         <div>
-          <h3 className="contact__heading">Get in touch</h3>
-          <Tag
-            as="a"
-            tone="clay"
-            href={`mailto:${EMAIL_ADDRESS}`}
-            className="contact__email"
-          >
+          <a href={`mailto:${EMAIL_ADDRESS}`} className="contact__email">
             <Mail className="contact__email-glyph" />
             {EMAIL_ADDRESS}
-          </Tag>
+          </a>
 
-          <Tag tone="clay" dot className="contact__hint">
-            Drag the icons!
-          </Tag>
           <ContactConstellation socials={socials} />
         </div>
 
-        {/* Contact Form */}
-        <form onSubmit={handleSubmit} className="contact__form">
-          <input
-            type="text"
-            name="name"
-            placeholder="Your Name"
-            className="field"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Your Email"
-            className="field"
-          />
-          <textarea
-            name="message"
-            placeholder="Your Message"
-            rows={5}
-            className="field field--area"
-          ></textarea>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="contact__submit"
-          >
-            {isSubmitting ? "Sending..." : "Send Message"}
-            <Send className="contact__submit-icon" />
-          </Button>
-          {status === "success" && (
-            <p className="contact__status contact__status--ok">
-              Message sent! I'll get back to you soon.
-            </p>
-          )}
-          {status === "error" && (
-            <p className="contact__status contact__status--err">
-              Something went wrong. Please try again or email me directly.
-            </p>
-          )}
-        </form>
-      </Card>
-    </Section>
+        {/* Right — say something */}
+        <div>
+          <h2 className="contact__title">Say Something!</h2>
+          <form onSubmit={handleSubmit} className="contact__form">
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              className="field"
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              className="field"
+            />
+            <textarea
+              name="message"
+              placeholder="Your Message"
+              rows={5}
+              className="field field--area"
+            ></textarea>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="contact__submit"
+            >
+              {isSubmitting ? "Sending..." : "Send Message"}
+              <Send className="contact__submit-icon" />
+            </Button>
+            {status === "success" && (
+              <p className="contact__status contact__status--ok">
+                Message sent! I'll get back to you soon.
+              </p>
+            )}
+            {status === "error" && (
+              <p className="contact__status contact__status--err">
+                Something went wrong. Please try again or email me directly.
+              </p>
+            )}
+          </form>
+        </div>
+      </div>
+    </SectionShell>
   );
 };

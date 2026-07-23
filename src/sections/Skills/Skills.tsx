@@ -1,9 +1,7 @@
 import { useRef } from "react";
 import { TONES } from "@/constants/tones";
 import { useConstellation } from "@/lib/useConstellation";
-import { Section } from "@/components/Section/Section";
-import { SectionHeader } from "@/components/SectionHeader/SectionHeader";
-import { Tag } from "@/components/Tag/Tag";
+import { SectionShell } from "@/components/SectionShell/SectionShell";
 import "./Skills.css";
 
 type Skill = { name: string; level: number };
@@ -64,6 +62,9 @@ const H_TALL = 760; // field height (px) when fully vertical
 // Blend factor: t=0 at WIDE_AT px wide, t=1 at TALL_AT px wide.
 const WIDE_AT = 900;
 const TALL_AT = 480;
+// Slack around the field, in virtual units, that a dragged node may occupy —
+// ~18% of the field on every side. The section's own overflow does the clipping.
+const BLEED = 180;
 
 const tints = TONES.map((tone) => `skill-node--${tone}`);
 
@@ -82,6 +83,7 @@ export const Skills = () => {
     count: skills.length,
     vw: VW,
     vh: VH,
+    bleed: BLEED,
     // Blend each home + the field height between the wide and tall layouts,
     // driven by container width, so the constellation morphs as it narrows.
     layout: (box, setHome) => {
@@ -98,19 +100,13 @@ export const Skills = () => {
   });
 
   return (
-    <Section id="skills" className="overflow-hidden">
-      <SectionHeader
-        index="03"
-        eyebrow="Toolkit"
-        title="My"
-        accent="skills"
-        tone="sky"
-      />
-
-      <Tag tone="sky" dot className="skills__hint">
-        Drag the nodes!
-      </Tag>
-
+    <SectionShell
+      id="skills"
+      num="04"
+      eyebrow="STACK"
+      title="Skills"
+      className="overflow-hidden"
+    >
       <div ref={boxRef} className="constellation">
         <canvas ref={canvasRef} className="constellation__canvas" />
         {skills.map((skill, i) => {
@@ -132,6 +128,6 @@ export const Skills = () => {
           );
         })}
       </div>
-    </Section>
+    </SectionShell>
   );
 };
