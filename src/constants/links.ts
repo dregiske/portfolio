@@ -2,6 +2,8 @@ export const RESUME_LINK = "/resume/Andre_Giske_Resume_2026.pdf";
 
 export const HERO_PHOTO_LINK = "/hero/profile.jpg";
 
+export const ABOUT_PHOTO_LINK = "/about/acm_group.JPG";
+
 export const PROJECT_PHOTO_LINK = "/projects/";
 
 export const SOCIALS_ICON_LINK = "/socials/";
