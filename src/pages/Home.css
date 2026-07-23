@@ -4,7 +4,11 @@
   .home {
     @apply relative min-h-screen;
   }
-  .home__fg {
-    @apply relative z-10;
+
+  /* Everything readable sits above both background canvases (z-0 / z-1). The
+     tail is empty on purpose: it's the stretch the footer rises through, so the
+     reveal never plays over anything worth reading (see END_ZONE). */
+  .home__content {
+    @apply relative z-10 pb-[180px];
   }
 }

@@ -6,25 +6,18 @@
   }
 
   .notfound__inner {
-    @apply relative z-10 mx-auto max-w-2xl px-6 min-h-screen flex flex-col items-center justify-center text-center;
-  }
-
-  .notfound__badge {
-    @apply text-xs uppercase tracking-[0.2em] px-3.5 mb-8;
+    @apply relative z-10 mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-6 text-center;
   }
 
   .notfound__title {
-    @apply font-serif font-normal leading-none text-foreground text-6xl md:text-8xl;
-  }
-  .notfound__accent {
-    @apply italic text-tone-terracotta;
+    @apply mt-3.5 font-display text-6xl font-semibold tracking-[-0.03em] md:text-8xl;
   }
 
   .notfound__text {
-    @apply mt-6 max-w-md text-muted-foreground leading-relaxed;
+    @apply mt-6 max-w-md leading-relaxed text-fg-muted;
   }
 
   .notfound__actions {
-    @apply mt-9 flex flex-wrap gap-3.5 justify-center;
+    @apply mt-9 flex flex-wrap justify-center gap-3.5;
   }
 }
