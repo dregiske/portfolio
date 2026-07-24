@@ -58,7 +58,8 @@ const homesTall: [number, number][] = [
 const VW = 1000;
 const VH = 1000;
 const H_WIDE = 520; // field height (px) when fully horizontal
-const H_TALL = 760; // field height (px) when fully vertical
+const H_TALL = 620; // field height (px) when fully vertical — trimmed so the
+// narrow-screen Skills section isn't taller than a phone viewport.
 // Blend factor: t=0 at WIDE_AT px wide, t=1 at TALL_AT px wide.
 const WIDE_AT = 900;
 const TALL_AT = 480;

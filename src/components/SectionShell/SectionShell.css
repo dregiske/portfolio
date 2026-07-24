@@ -2,8 +2,12 @@
 
 @layer components {
   .section-shell {
-    /* z-10 keeps every section above both background canvases (z-0 / z-1). */
-    @apply relative z-10 flex min-h-screen items-center py-24;
+    /* z-10 keeps every section above both background canvases (z-0 / z-1).
+       `svh` (small-viewport height), not `screen`/`vh`: on mobile `100vh` is the
+       toolbars-hidden height, so a centered section is taller than what's on
+       screen and gets clipped top and bottom. `svh` is the always-visible height
+       — the section fits the viewport whether the toolbars are up or not. */
+    @apply relative z-10 flex min-h-svh items-center py-16 md:py-24;
   }
 
   .section-shell__inner {

@@ -12,7 +12,10 @@
   }
 
   .scroll-indicator__inner {
-    @apply mx-auto w-full max-w-[1180px] px-6 pb-2.5 pt-8 md:px-10 lg:px-[60px];
+    /* The bottom pad clears the iOS home indicator via the safe-area inset, so
+       the labels sit flush at the true bottom edge on a phone. */
+    @apply mx-auto w-full max-w-[1180px] px-6 pt-8 md:px-10 lg:px-[60px];
+    padding-bottom: calc(0.625rem + env(safe-area-inset-bottom));
   }
 
   .scroll-indicator__track {

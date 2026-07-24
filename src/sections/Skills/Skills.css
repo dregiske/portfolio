@@ -3,8 +3,12 @@
 @layer components {
   /* Deliberately not clipped: nodes can be dragged past the field's edge (see
      the `bleed` option). The section clips instead, so nothing escapes the page. */
+  /* No `touch-none`/`cursor-grab` on the container: it would swallow vertical
+     scrolling anywhere in the field, which makes the section hard to scroll past
+     on a phone. Only the nodes opt out of scrolling (see .skill-node), so a
+     touch on empty space scrolls the page as usual. */
   .constellation {
-    @apply relative mt-8 w-full cursor-grab touch-none;
+    @apply relative mt-8 w-full;
   }
 
   .constellation__canvas {
@@ -18,7 +22,10 @@
      re-blur a fresh region of the animating canvas underneath, every frame,
      twelve times over. */
   .skill-node {
-    @apply absolute left-0 top-0 z-2 cursor-grab select-none whitespace-nowrap rounded-full border font-semibold;
+    /* `touch-none` (touch-action: none) is scoped to the nodes so dragging a
+       node pans the node rather than scrolling the page — while empty space in
+       the field stays scrollable. */
+    @apply absolute left-0 top-0 z-2 cursor-grab touch-none select-none whitespace-nowrap rounded-full border font-semibold;
     border-color: var(--glass-border);
     transform-origin: center;
     /* left/top stay at 0: the position and the hover scale both live in the

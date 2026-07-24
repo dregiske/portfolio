@@ -2,7 +2,7 @@
 
 @layer components {
   .home {
-    @apply relative min-h-screen;
+    @apply relative min-h-svh;
   }
 
   /* Everything readable sits above both background canvases (z-0 / z-1). The

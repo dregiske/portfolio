@@ -11,7 +11,9 @@
   }
 
   .site-footer__inner {
-    @apply mx-auto flex w-full max-w-[1180px] flex-col gap-3 px-6 py-6 md:flex-row md:items-end md:justify-between md:px-10 lg:px-[60px];
+    /* Bottom pad clears the iOS home indicator (safe-area inset). */
+    @apply mx-auto flex w-full max-w-[1180px] flex-col gap-3 px-6 pt-6 md:flex-row md:items-end md:justify-between md:px-10 lg:px-[60px];
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
   }
 
   .site-footer__meta {

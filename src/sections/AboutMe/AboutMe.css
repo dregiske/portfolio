@@ -13,12 +13,18 @@
     box-shadow: 0 24px 50px -20px var(--hero-shadow);
   }
 
-  .about__bio {
+  /* Match the project cards: no backdrop blur (it re-samples the animating dot
+     canvas every frame), just a bg-base scrim over the glass tint. The `.card`
+     in the selector outranks the base card's `backdrop-blur-sm`. The résumé
+     button keeps its own blur — that lives on the Pill, not this card. */
+  .card.about__bio {
     @apply p-8 lg:p-10;
+    backdrop-filter: none;
+    background: color-mix(in srgb, var(--bg-base) 55%, var(--glass-bg));
   }
 
   .about__text {
-    @apply text-[17px] leading-relaxed text-fg-muted;
+    @apply text-[17px] leading-relaxed text-fg;
   }
   .about__text + .about__text {
     @apply mt-4;

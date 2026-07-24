@@ -92,7 +92,8 @@ export function SiteBackground({ morph }: { morph: ScrollMorph }) {
       dotsCanvas.width = w;
       dotsCanvas.height = h;
       const grid = gridForWidth(w);
-      if (grid.gx !== field.gx || grid.gz !== field.gz) field = createDotField(grid);
+      if (grid.gx !== field.gx || grid.gz !== field.gz)
+        field = createDotField(grid);
     };
     resize();
 
@@ -189,8 +190,16 @@ export function SiteBackground({ morph }: { morph: ScrollMorph }) {
 
   return (
     <>
-      <canvas ref={auraRef} className="site-bg site-bg--aura" aria-hidden="true" />
-      <canvas ref={dotsRef} className="site-bg site-bg--dots" aria-hidden="true" />
+      <canvas
+        ref={auraRef}
+        className="site-bg site-bg--aura"
+        aria-hidden="true"
+      />
+      <canvas
+        ref={dotsRef}
+        className="site-bg site-bg--dots"
+        aria-hidden="true"
+      />
     </>
   );
 }

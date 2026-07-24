@@ -2,11 +2,11 @@
 
 @layer components {
   .hero {
-    @apply relative z-10 min-h-screen overflow-hidden;
+    @apply relative z-10 min-h-svh overflow-hidden;
   }
 
   .hero__inner {
-    @apply flex min-h-screen flex-col px-6 pb-28 pt-6 md:px-10 lg:px-[60px] lg:pb-[90px] lg:pt-[34px];
+    @apply flex min-h-svh flex-col px-6 pb-28 pt-6 md:px-10 lg:px-[60px] lg:pb-[90px] lg:pt-[34px];
   }
 
   /* Text beside the portrait on wide screens, stacked above it below lg. */

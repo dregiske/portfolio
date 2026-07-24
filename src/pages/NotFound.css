@@ -2,11 +2,11 @@
 
 @layer components {
   .notfound {
-    @apply relative min-h-screen;
+    @apply relative min-h-svh;
   }
 
   .notfound__inner {
-    @apply relative z-10 mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-6 text-center;
+    @apply relative z-10 mx-auto flex min-h-svh max-w-2xl flex-col items-center justify-center px-6 text-center;
   }
 
   .notfound__title {

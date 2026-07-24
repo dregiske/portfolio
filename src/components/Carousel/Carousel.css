@@ -1,0 +1,58 @@
+@reference "../../index.css";
+
+@layer components {
+  .carousel {
+    @apply relative;
+  }
+
+  .carousel__viewport {
+    /* Hide the off-window cards by clipping the left/right edges, but leave the
+       top and bottom open — and a sliver of side room within the gap — so a
+       hovered card can scale up without being cut off by the container.
+       `overflow: hidden` would clip all four sides and eat the scale. */
+    clip-path: inset(-40px -8px);
+  }
+
+  .carousel__track {
+    @apply flex;
+    will-change: transform;
+  }
+
+  /* The wrapper carries the measured width (set inline); the card fills it and
+     stretches to the row's shared height. */
+  .carousel__item {
+    @apply flex;
+  }
+  .carousel__item > * {
+    @apply h-full w-full;
+  }
+
+  /* Chevron controls float over the row edges, above the cards. */
+  .carousel__btn {
+    @apply absolute top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full transition;
+    /* Opaque fill rather than a backdrop blur — a blur over the animating dot
+       canvas would re-composite every frame, which is what we're avoiding. */
+    background: color-mix(in srgb, var(--bg-base) 78%, var(--glass-bg-strong));
+    border: 1px solid var(--glass-border);
+    color: var(--fg);
+  }
+  .carousel__btn:hover {
+    color: var(--accent-brand);
+    border-color: var(--accent-brand);
+  }
+  .carousel__btn:focus-visible {
+    outline: 2px solid var(--accent-brand);
+    outline-offset: 2px;
+  }
+  /* Pinned to the carousel's own edges. The consumer controls how wide that is
+     (and how much clear margin sits beside the content). */
+  .carousel__btn--left {
+    @apply left-0;
+  }
+  .carousel__btn--right {
+    @apply right-0;
+  }
+  .carousel__chevron {
+    @apply h-5 w-5;
+  }
+}

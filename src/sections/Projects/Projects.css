@@ -1,8 +1,29 @@
 @reference "../../index.css";
 
 @layer components {
-  .projects__grid {
-    @apply mt-10 grid grid-cols-1 items-start gap-5 md:grid-cols-3;
+  /* The carousel sizes each card to the measured viewport width, so the card
+     just fills its slot. `.card` matches the base rule's specificity and wins
+     on order, so `transition` covers the hover lift as well as the bg swap. */
+  /* The carousel root spans the full section width so the chevrons can sit out
+     at the edges — aligned with the bottom nav — instead of over the cards. */
+  .projects__carousel {
+    @apply mt-10;
+  }
+  /* Cap and centre only the card row, so the slots stay tight and the cards sit
+     close together instead of drifting apart inside wide viewport/3 slots. The
+     ~60px of margin this leaves on each side is where the chevrons live. */
+  .projects__carousel .carousel__viewport {
+    @apply mx-auto max-w-[940px];
+  }
+  /* Slimmer cards: cap the width and centre within the slot. Most visible on a
+     phone, where one card would otherwise span edge to edge; on desktop it adds
+     a little air between the three. `mx-auto` centres the capped card in its
+     (flex) carousel slot. */
+  .projects__carousel .card.project-card {
+    @apply mx-auto max-w-[320px] transition duration-300 ease-out;
+  }
+  .projects__carousel .card.project-card:hover {
+    @apply relative z-[1] scale-[1.03];
   }
 
   /* No backdrop blur on these (`.card.project-card` outranks `.card`): three
