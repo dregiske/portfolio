@@ -18,16 +18,20 @@
   }
 
   /* Unclipped, like Skills: icons can be dragged past the field's edge and over
-     the form beside it. The section clips, so nothing escapes the page. */
+     the form beside it. The section clips, so nothing escapes the page.
+     `touch-none`/`cursor-grab` are scoped to the nodes (see .contact__node), not
+     here, so a touch on empty space scrolls the page instead of being trapped. */
   .contact__constellation {
-    @apply relative z-2 h-40 w-full cursor-grab touch-none;
+    @apply relative z-2 h-40 w-full;
   }
   .contact__constellation-canvas {
     @apply absolute inset-0 h-full w-full;
   }
 
   .contact__node {
-    @apply absolute left-0 top-0 z-2 inline-flex h-11 w-11 flex-none cursor-grab select-none items-center justify-center rounded-full;
+    /* `touch-none` scoped here so dragging an icon pans it rather than scrolling
+       the page, while empty field space stays scrollable. */
+    @apply absolute left-0 top-0 z-2 inline-flex h-11 w-11 flex-none cursor-grab touch-none select-none items-center justify-center rounded-full;
     transform-origin: center;
     /* See .skill-node: position and hover scale both ride the transform, so
        moving these every frame never touches layout. */

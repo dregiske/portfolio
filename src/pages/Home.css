@@ -2,7 +2,12 @@
 
 @layer components {
   .home {
-    @apply relative min-h-svh;
+    /* `overflow-x: clip` locks the page against horizontal scrolling into empty
+       space (e.g. the carousel's off-screen track, which `clip-path` hides but
+       doesn't contain). `clip`, not `hidden`: hidden would force `overflow-y` to
+       `auto` and make `.home` its own scroll container, breaking the scroll-morph
+       and the fixed nav. `clip` contains the overflow without any of that. */
+    @apply relative min-h-svh overflow-x-clip;
   }
 
   /* Everything readable sits above both background canvases (z-0 / z-1). The
