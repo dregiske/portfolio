@@ -31,6 +31,7 @@ IMAGES=(
   "projects/thefraynews.png|750|80|80"
   "projects/cashoutlogo.png|750|80|80"
   "projects/code.png|750|82|82"
+  "projects/hemma.png|750|80|80"
 )
 
 command -v cwebp >/dev/null || {
