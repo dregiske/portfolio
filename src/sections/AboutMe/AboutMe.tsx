@@ -35,10 +35,13 @@ export const AboutMe = () => {
             <Pill href="#contact" variant="solid">
               Get in Touch
             </Pill>
+            {/* `download` forces a direct file download rather than opening the
+                PDF inline in a new tab — inline viewing errors out on a lot of
+                mobile browsers. Same-origin, so the download is honoured. */}
             <Pill
               href={RESUME_LINK}
               variant="outline"
-              target="_blank"
+              download
               rel="noopener noreferrer"
             >
               Résumé →

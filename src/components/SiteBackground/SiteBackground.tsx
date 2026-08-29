@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { ScrollMorph } from "@/lib/useScrollMorph";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 import { watchThemeColors, type ResolvedColor } from "@/lib/themeColors";
 import { createAura, renderAura, AURA_BLOB_COUNT } from "@/lib/aura";
 import {
@@ -56,14 +57,18 @@ export function SiteBackground({ morph }: { morph: ScrollMorph }) {
   const auraRef = useRef<HTMLCanvasElement>(null);
   const dotsRef = useRef<HTMLCanvasElement>(null);
   const reduced = useReducedMotion();
+  // The dot field is the heavier layer and is desktop-only — on a phone we skip
+  // the canvas, the field, and its draw loop entirely, leaving just the aura.
+  const showDots = useMediaQuery("(min-width: 768px)");
 
   useEffect(() => {
     const auraCanvas = auraRef.current;
-    const dotsCanvas = dotsRef.current;
-    if (!auraCanvas || !dotsCanvas) return;
+    if (!auraCanvas) return;
     const auraCtx = auraCanvas.getContext("2d");
-    const dotsCtx = dotsCanvas.getContext("2d");
-    if (!auraCtx || !dotsCtx) return;
+    if (!auraCtx) return;
+
+    const dotsCanvas = showDots ? dotsRef.current : null;
+    const dotsCtx = dotsCanvas?.getContext("2d") ?? null;
 
     const state = morph.state;
 
@@ -72,7 +77,9 @@ export function SiteBackground({ morph }: { morph: ScrollMorph }) {
     let dotColor = "#ffffff";
 
     const aura = createAura();
-    let field: DotField = createDotField(gridForWidth(window.innerWidth));
+    let field: DotField | null = dotsCanvas
+      ? createDotField(gridForWidth(window.innerWidth))
+      : null;
 
     // Assigning to canvas.width reallocates the backing store and clears it,
     // whether or not the number changed — and mobile browsers fire `resize`
@@ -89,11 +96,13 @@ export function SiteBackground({ morph }: { morph: ScrollMorph }) {
       auraCanvas.height = Math.max(1, Math.round(h * AURA_SCALE));
       // Deliberately DPR-1: thousands of 1–3px squares at DPR 2 cost 4× the
       // fill for no visible gain, and the softness suits the field.
-      dotsCanvas.width = w;
-      dotsCanvas.height = h;
-      const grid = gridForWidth(w);
-      if (grid.gx !== field.gx || grid.gz !== field.gz)
-        field = createDotField(grid);
+      if (dotsCanvas && field) {
+        dotsCanvas.width = w;
+        dotsCanvas.height = h;
+        const grid = gridForWidth(w);
+        if (grid.gx !== field.gx || grid.gz !== field.gz)
+          field = createDotField(grid);
+      }
     };
     resize();
 
@@ -115,6 +124,7 @@ export function SiteBackground({ morph }: { morph: ScrollMorph }) {
       );
     };
     const drawDots = (dt: number) => {
+      if (!dotsCanvas || !dotsCtx || !field) return; // mobile: no dot layer
       dotsT += DOTS_RATE * dt;
       renderDotField(
         dotsCtx,
@@ -186,7 +196,7 @@ export function SiteBackground({ morph }: { morph: ScrollMorph }) {
       window.removeEventListener("resize", onResize);
       stopWatching();
     };
-  }, [morph, reduced]);
+  }, [morph, reduced, showDots]);
 
   return (
     <>
@@ -195,11 +205,13 @@ export function SiteBackground({ morph }: { morph: ScrollMorph }) {
         className="site-bg site-bg--aura"
         aria-hidden="true"
       />
-      <canvas
-        ref={dotsRef}
-        className="site-bg site-bg--dots"
-        aria-hidden="true"
-      />
+      {showDots && (
+        <canvas
+          ref={dotsRef}
+          className="site-bg site-bg--dots"
+          aria-hidden="true"
+        />
+      )}
     </>
   );
 }
