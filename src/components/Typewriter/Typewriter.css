@@ -1,0 +1,58 @@
+@reference "../../index.css";
+
+@layer components {
+  /**
+   * Grid, not absolute positioning: both copies claim the same single cell, so
+   * the overlay is handed exactly the ghost's content box — same width, same
+   * max-width, same wrapping — without the ghost having to be a positioning
+   * context. It also blockifies both children predictably, wherever the line
+   * is used.
+   */
+  .typewriter {
+    @apply grid;
+  }
+
+  .typewriter__ghost,
+  .typewriter__ink {
+    grid-area: 1 / 1;
+  }
+
+  .typewriter__ghost {
+    /**
+     * `text-shadow` is set on the line itself (`.hero__title`) and inherits,
+     * and a shadow is still painted under transparent text — without this, the
+     * full name would sit there as a blur before a character of it existed.
+     */
+    color: transparent;
+    text-shadow: none;
+  }
+
+  .typewriter__ink {
+    /* A decorative duplicate of the ghost: never part of a selection. */
+    @apply select-none;
+  }
+
+  .typewriter__caret {
+    @apply inline-block w-[0.07em] align-baseline;
+    /* Tied to the type, not to pixels, so it scales with the 9vw title. */
+    height: 0.82em;
+    /* Optical: sits on the baseline rather than hanging below it. */
+    translate: 0 0.08em;
+    background: var(--accent-brand);
+    animation: typewriter-caret 1s step-end infinite;
+  }
+
+  @keyframes typewriter-caret {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  /* The caret only exists while something is typing, and nothing types under
+     reduced motion — but if the preference flips mid-line, stop the blink. */
+  @media (prefers-reduced-motion: reduce) {
+    .typewriter__caret {
+      animation: none;
+    }
+  }
+}

@@ -29,7 +29,20 @@
     text-shadow: 0 2px 40px var(--hero-shadow);
   }
 
+  /**
+   * A flex column, and specifically *not* `display: block` on the rows
+   * themselves. Each row is a `Typewriter`, which needs `display: grid` while
+   * it types in order to stack its ghost and its overlay — and a `display`
+   * declared here would be a same-specificity rule in the same cascade layer,
+   * so which one won would come down to stylesheet import order. Blockifying
+   * the rows as flex items instead sidesteps the conflict entirely: there is
+   * nothing to override, and a finished row stays on its own line once
+   * `Typewriter` drops the grid.
+   *
+   * `max-w` stays as a safety net. The lines are authored to fit, so it should
+   * never bite — but if the copy changes it will wrap rather than overflow.
+   */
   .hero__tagline {
-    @apply mt-5 max-w-[440px] text-[17px] leading-relaxed sm:text-[19px];
+    @apply mt-5 flex max-w-[440px] flex-col items-start text-[17px] leading-relaxed sm:text-[19px];
   }
 }

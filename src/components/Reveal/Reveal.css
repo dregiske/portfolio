@@ -1,0 +1,57 @@
+@reference "../../index.css";
+
+@layer components {
+  .reveal {
+    /**
+     * `both` matters: the backwards fill is what holds the content at
+     * `opacity: 0` through the delay. Without it the portrait would paint in
+     * place, then jump off-screen to start travelling.
+     *
+     * The curve is a strong ease-out — most of the distance is covered early
+     * and it settles rather than arriving. Linear motion over this far reads
+     * as a slide transition.
+     */
+    animation: reveal-in var(--reveal-duration, 700ms)
+      cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms) both;
+  }
+
+  /**
+   * Far enough to be genuinely outside the frame on a phone, and to read as
+   * off-screen on a wide viewport where the portrait sits centred in the row.
+   * `.hero` is `overflow-hidden`, so the travel is clipped rather than
+   * widening the page.
+   */
+  .reveal--right {
+    --reveal-x: min(42vw, 420px);
+  }
+
+  .reveal--left {
+    --reveal-x: calc(-1 * min(42vw, 420px));
+  }
+
+  .reveal--up {
+    --reveal-y: 40px;
+  }
+
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      transform: translate3d(var(--reveal-x, 0), var(--reveal-y, 0), 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /**
+   * No motion, and no fade either — a delayed fade on the hero portrait would
+   * still be pushing the largest-contentful-paint later for a reader who asked
+   * for less animation, not more waiting.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      animation: none;
+    }
+  }
+}
