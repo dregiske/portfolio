@@ -1,19 +1,24 @@
 @reference "../../index.css";
 
 @layer components {
-  /* The hero portrait hangs part of its height into the top of this section,
-     so the section starts below it — otherwise the heading (narrow screens) or
-     the bio (wide ones) would run into the photo. 1.28 is its 32/25 height. */
+  /* The usual section padding, plus whatever of the hero portrait hangs into
+     the top of this section (wide only; compact, it doesn't hang), so the
+     heading or bio never runs into the photo. 1.28 is its 32/25 height. */
   .section-shell.about {
-    padding-top: calc(var(--hero-portrait-w) * 1.28 * var(--hero-portrait-hang) + 1rem);
+    padding-top: calc(
+      var(--section-pad-y) + var(--hero-portrait-w) * 1.28 *
+        var(--hero-portrait-hang)
+    );
   }
 
   /* Wide: photos in a column of up to half the width (520px at most), bio in
      the rest. The bio column's negative margin pulls it back over the photos'
-     right edge (see .about__bio). */
+     right edge (see .about__bio). Compact: one column, the bio a short gap
+     below the photo. */
   .about__grid {
     @apply mt-10 grid grid-cols-1 items-center wide:grid-cols-[minmax(0,min(520px,50%))_minmax(0,1fr)];
-    gap: clamp(40px, 4vw, 56px);
+    row-gap: 24px;
+    column-gap: clamp(40px, 4vw, 56px);
   }
 
   .about__photos {
@@ -28,13 +33,21 @@
     box-shadow: 0 24px 50px -20px var(--hero-shadow);
   }
 
-  /* No card: free-standing text, the hero tagline's treatment. It's lifted
-     above the photos and nudged back over them — up onto the second photo on
-     narrow screens, across their right edge on wide ones — and the same soft
-     shadow helps white type where it crosses. Set flush right, against the
-     page's right edge, with the buttons following. */
+  /* The second shot is wide-layout only: stacked in one column, two photos
+     push the bio a full screen down on a phone. Hidden rather than left out
+     of the markup, so the prerendered page is the same at every width — and
+     since it's lazy-loaded, a hidden one is never fetched. */
+  .about__photo--wide-only {
+    @apply hidden wide:block;
+  }
+
+  /* No card: free-standing text, the hero tagline's treatment. Wide, it's
+     lifted above the photos and nudged back across their right edge, and the
+     same soft shadow helps white type where it crosses. Compact, it sits
+     clear below the photo. Set flush right, against the page's right edge,
+     with the buttons following. */
   .about__bio {
-    @apply relative z-1 -mt-24 text-right wide:mt-0;
+    @apply relative z-1 text-right;
 
     @variant wide {
       /* ~75px at the breakpoint, 144px from 1440 up. */

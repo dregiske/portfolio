@@ -134,6 +134,11 @@
   --nav-pill-bg: var(--glass-bg);
   --nav-pill-border: var(--glass-border);
   --nav-pill-fg: var(--fg);
+  /* The compact menu's full-screen cover: glass, but frosted far heavier than
+     the pills, since its links sit over the whole moving background. */
+  --menu-cover-bg: rgb(var(--scrim) / 0.55);
+  --menu-cover-blur: 20px;
+  --menu-cover-fg: var(--fg);
   --scrim: 255 255 255; /* rgb triplet — scroll-indicator gradient */
   --hero-shadow: rgba(20, 30, 60, 0.22);
   --selection-bg: #3457c8;
@@ -270,6 +275,9 @@
   --nav-pill-bg: var(--glass-bg);
   --nav-pill-border: var(--glass-border);
   --nav-pill-fg: var(--fg);
+  --menu-cover-bg: rgb(var(--scrim) / 0.55);
+  --menu-cover-blur: 20px;
+  --menu-cover-fg: var(--fg);
   --scrim: 10 10 10;
   --hero-shadow: rgba(0, 0, 0, 0.6);
   --selection-bg: #ffffff;

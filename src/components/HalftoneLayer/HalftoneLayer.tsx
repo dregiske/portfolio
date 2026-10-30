@@ -5,6 +5,7 @@ import { watchThemeColors } from "@/lib/themeColors";
 import {
   HALFTONE,
   type Halftone,
+  type HalftoneFrame,
   createHalftone,
   destroyHalftone,
   discardHalftone,
@@ -35,6 +36,67 @@ const FRAME_MS = 16;
 const MAX_STEP_MS = 100;
 /** Time for the cursor swell to grow in, or die away when the mouse leaves. */
 const POINTER_FADE_MS = 400;
+
+/**
+ * The text the halftone makes room for: any element marked
+ * `data-halftone-quiet`. Their page positions are measured once and again
+ * only when something resizes (the observer on <body> catches content above
+ * them changing height); each frame just shifts them by the cached scroll
+ * offset, so following the text costs no layout reads at all.
+ */
+function watchQuietZones() {
+  const { QUIET_MAX, QUIET_PAD: pad, QUIET_FALLOFF: fall } = HALFTONE;
+  const els = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-halftone-quiet]"),
+  ).slice(0, QUIET_MAX);
+  // Page coordinates, padded; a zero-width entry is an element that isn't
+  // rendered (e.g. hidden at this breakpoint) and is skipped.
+  const page = new Float32Array(els.length * 4);
+
+  const measure = () => {
+    const sx = window.scrollX;
+    const sy = window.scrollY;
+    els.forEach((el, k) => {
+      const r = el.getBoundingClientRect();
+      const o = k * 4;
+      if (r.width === 0 && r.height === 0) {
+        page[o] = page[o + 2] = 0;
+        return;
+      }
+      page[o] = r.left + sx - pad;
+      page[o + 1] = r.top + sy - pad;
+      page[o + 2] = r.right + sx + pad;
+      page[o + 3] = r.bottom + sy + pad;
+    });
+  };
+  measure();
+  const observer = new ResizeObserver(measure);
+  els.forEach((el) => observer.observe(el));
+  observer.observe(document.body);
+
+  return {
+    /** Write this frame's on-screen zones into `frame`. */
+    fill(frame: HalftoneFrame) {
+      const h = window.innerHeight;
+      let n = 0;
+      for (let k = 0; k < els.length; k++) {
+        const o = k * 4;
+        if (page[o + 2] === 0) continue;
+        const top = page[o + 1] - frame.scrollY;
+        const bottom = page[o + 3] - frame.scrollY;
+        // Out of reach of every visible row, falloff included.
+        if (bottom < -fall || top > h + fall) continue;
+        frame.quiet[n * 4] = page[o] - window.scrollX;
+        frame.quiet[n * 4 + 1] = top;
+        frame.quiet[n * 4 + 2] = page[o + 2] - window.scrollX;
+        frame.quiet[n * 4 + 3] = bottom;
+        n++;
+      }
+      frame.quietCount = n;
+    },
+    stop: () => observer.disconnect(),
+  };
+}
 
 /**
  * The halftone field, layered over the aura. All the drawing lives in
@@ -107,9 +169,18 @@ function runHalftone(
   reduced: boolean,
 ) {
   const state = morph.state;
-  const frame = { t: 0, scrollY: window.scrollY, pointer: 0, glitch: !reduced };
+  const frame: HalftoneFrame = {
+    t: 0,
+    scrollY: window.scrollY,
+    pointer: 0,
+    glitch: !reduced,
+    quiet: new Float32Array(HALFTONE.QUIET_MAX * 4),
+    quietCount: 0,
+  };
+  const zones = watchQuietZones();
   const draw = () => {
     if (ht.gl.isContextLost()) return;
+    zones.fill(frame);
     renderHalftone(ht, state, frame);
   };
 
@@ -204,6 +275,7 @@ function runHalftone(
     root.removeEventListener("mouseleave", onLeave);
     window.removeEventListener("blur", onLeave);
     stopWatching();
+    zones.stop();
     if (!ht.gl.isContextLost()) destroyHalftone(ht);
   };
 }

@@ -1,10 +1,11 @@
 import { NavPill } from "@/components/NavPill/NavPill";
+import { MobileMenu } from "@/components/MobileMenu/MobileMenu";
 import "./TopBar.css";
 
 /**
- * Wordmark + nav, across the top of the hero. It scrolls away with the hero on
- * purpose: past the fold the scroll indicator at the foot of the page is the
- * navigation, and nothing should crowd the artwork.
+ * Wordmark + nav, across the top of the hero: the nav pill when wide, the
+ * dropdown menu when compact. It scrolls away with the hero, so nothing
+ * crowds the artwork further down.
  *
  * ARCHIVED — the theme toggle. The site is dark-only for the redesign; the
  * component is untouched in `src/components/ThemeToggle/`. To restore it,
@@ -18,7 +19,9 @@ export function TopBar() {
         AG
       </a>
       <div className="top-bar__actions">
+        {/* One or the other, swapped at the site breakpoint. */}
         <NavPill />
+        <MobileMenu />
       </div>
     </div>
   );

@@ -12,8 +12,7 @@
   }
 
   .section-shell__inner {
-    /* Bottom padding clears the fixed scroll indicator. */
-    @apply mx-auto w-full max-w-[1180px] pb-24;
+    @apply mx-auto w-full max-w-[1180px];
     padding-inline: var(--gutter);
   }
 

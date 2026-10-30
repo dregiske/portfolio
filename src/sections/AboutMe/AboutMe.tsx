@@ -23,21 +23,24 @@ export const AboutMe = () => {
           <Photo
             src={ABOUT_PHOTO_2_LINK}
             alt="ACM event participants at UC San Diego"
-            className="about__photo"
+            className="about__photo about__photo--wide-only"
             width={1100}
             height={825}
           />
         </div>
 
-        {/* Right — the bio, free-standing and overlapping the photos. */}
+        {/* Right — the bio, free-standing and overlapping the photos. Its
+            paragraphs are `data-halftone-quiet`: the halftone thins its dots
+            out behind them (see HalftoneLayer), so the type reads clean
+            without a shadow or a backing. */}
         <div className="about__bio">
-          <p className="about__text">
+          <p className="about__text" data-halftone-quiet>
             I'm a Computer Science &amp; Engineering student with a keen
             interest in backend design and full-stack development. I love
             exploring new technologies and applying them to solve real-world
             problems.
           </p>
-          <p className="about__text">
+          <p className="about__text" data-halftone-quiet>
             In my free time I work on personal projects, contribute to
             open-source, and surf the San Diego beaches. Always eager to
             connect, so reach out if you'd like to collaborate or just chat!

@@ -11,15 +11,12 @@
   /* A size container, so the wordmark, tagline and portrait can all size off
      the content box (`cqw`) — gutters already subtracted, no scrollbar maths
      the way `vw` would need, and they keep their proportions to each other at
-     every width. Also the portrait's positioning context.
-
-     The bottom pad clears the fixed scroll indicator, which is a little taller
-     on a phone relative to its type; both pads are fluid, so nothing steps. */
+     every width. Also the portrait's positioning context. Both vertical pads
+     are fluid, so nothing steps. */
   .hero__inner {
     @apply relative flex min-h-svh flex-col;
     container-type: inline-size;
-    padding: clamp(24px, 2.4vw, 34px) var(--gutter)
-      clamp(90px, 118px - 2vw, 112px);
+    padding: clamp(24px, 2.4vw, 34px) var(--gutter) clamp(40px, 5vw, 72px);
   }
 
   /**

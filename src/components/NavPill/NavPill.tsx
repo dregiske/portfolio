@@ -4,7 +4,7 @@ import "./NavPill.css";
 
 /**
  * The floating anchor nav: one glass pill holding the four content sections.
- * Hidden on small screens, where the scroll indicator already lists all five.
+ * Wide layout only; compact, the same links live in `MobileMenu`'s dropdown.
  */
 export function NavPill({ className }: { className?: string }) {
   return (

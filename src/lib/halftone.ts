@@ -76,6 +76,18 @@ export const HALFTONE = {
   /** Backing-store resolution cap. Round dots want more than DPR 1, but DPR 3
    *  would be 9× the fill for nothing anyone can see. */
   MAX_DPR: 1.5,
+  /**
+   * Quiet zones — blocks of text the screen makes room for (see
+   * `HalftoneFrame.quiet`). Inside one, dots shrink to `QUIET_FLOOR` of their
+   * size, which leaves only specks too small to draw; they grow back to full
+   * over `QUIET_FALLOFF` px past its edge. `QUIET_PAD` widens each zone beyond
+   * the text's own box, so the clearing reaches past the outermost letters.
+   */
+  QUIET_PAD: 12,
+  QUIET_FALLOFF: 72,
+  QUIET_FLOOR: 0.08,
+  /** Most quiet zones a frame will honour. */
+  QUIET_MAX: 8,
 } as const;
 
 /** Everything a frame needs besides the shared morph state. */
@@ -88,6 +100,12 @@ export type HalftoneFrame = {
   pointer: number;
   /** Whether rows may tear. Off under reduced motion. */
   glitch: boolean;
+  /**
+   * Quiet zones in viewport CSS px, already padded, four numbers apiece —
+   * left, top, right, bottom — for the first `quietCount` of them.
+   */
+  quiet: Float32Array;
+  quietCount: number;
 };
 
 export type Halftone = {
@@ -448,6 +466,9 @@ export function renderHalftone(ht: Halftone, m: MorphState, f: HalftoneFrame) {
   const tearing = f.glitch && GLITCH > 0;
   const step = Math.floor(f.t * GLITCH_HZ);
 
+  const { QUIET_FALLOFF: fall, QUIET_FLOOR: floor } = HALFTONE;
+  const q = f.quiet;
+
   for (let j = 0; j < rows; j++) {
     // Row 0 is the padding row above the screen.
     const cy = (j - 0.5) * cell;
@@ -462,6 +483,13 @@ export function renderHalftone(ht: Halftone, m: MorphState, f: HalftoneFrame) {
     const dyp = cy - py;
     const row = j * cols;
 
+    // Which quiet zones reach this row at all: a bitmask, so the cell loop
+    // below does nothing extra on the (usual) rows no text is near.
+    let near = 0;
+    for (let k = 0; k < f.quietCount; k++) {
+      if (cy > q[k * 4 + 1] - fall && cy < q[k * 4 + 3] + fall) near |= 1 << k;
+    }
+
     for (let i = 0; i < cols; i++) {
       const cx = (i + 0.5) * cell;
       const nx = (cx + shift) * FREQ;
@@ -471,8 +499,26 @@ export function renderHalftone(ht: Halftone, m: MorphState, f: HalftoneFrame) {
       let d = smoothstep(LOW, HIGH, v);
       if (boost > 0) {
         const dx = cx - px;
-        const q = (dx * dx + dyp * dyp) / r2;
-        if (q < 1) d += boost * (1 - q) * (1 - q);
+        const qd = (dx * dx + dyp * dyp) / r2;
+        if (qd < 1) d += boost * (1 - qd) * (1 - qd);
+      }
+      // Make room for text: scale the dot by how far the cell is from the
+      // nearest quiet zone — `floor` inside it, easing back to 1 at `fall`.
+      // After the cursor swell, so hovering can't refill the clearing.
+      if (near !== 0 && d > 0) {
+        let keep = 1;
+        for (let k = 0; k < f.quietCount; k++) {
+          if ((near & (1 << k)) === 0) continue;
+          const o = k * 4;
+          const ex = Math.max(q[o] - cx, 0, cx - q[o + 2]);
+          const ey = Math.max(q[o + 1] - cy, 0, cy - q[o + 3]);
+          const dist2 = ex * ex + ey * ey;
+          if (dist2 >= fall * fall) continue;
+          const s = smoothstep(0, fall, Math.sqrt(dist2));
+          const z = floor + (1 - floor) * s;
+          if (z < keep) keep = z;
+        }
+        d *= keep;
       }
       data[row + i] = d >= 1 ? 255 : (d * 255) | 0;
     }

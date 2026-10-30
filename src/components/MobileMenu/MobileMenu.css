@@ -1,0 +1,91 @@
+@reference "../../index.css";
+
+@layer components {
+  /* The AG pill's glass, as a circle of the same 48px. Compact only — the nav
+     pill takes over at the breakpoint. */
+  .mobile-menu__button {
+    @apply flex h-12 w-12 items-center justify-center rounded-full border backdrop-blur-sm transition-colors wide:hidden;
+    background: var(--nav-pill-bg);
+    border-color: var(--nav-pill-border);
+    color: var(--nav-pill-fg);
+  }
+  .mobile-menu__button:hover {
+    background: var(--glass-bg-strong);
+  }
+
+  .mobile-menu__icon {
+    @apply h-5 w-5;
+  }
+
+  /**
+   * The cover: frosted glass over the whole screen, links in its middle.
+   *
+   * Closed, it's faded out and hidden rather than unmounted, so opening is a
+   * transition; `visibility` waits for the fade before switching off, and
+   * `inert` (set by the component) keeps it out of reach meanwhile. The heavy
+   * blur re-samples the animating background each frame, but only while the
+   * menu is open — closed, `visibility: hidden` takes it out of rendering.
+   */
+  .mobile-menu__cover {
+    @apply fixed inset-0 z-[60] flex flex-col items-center justify-center wide:hidden;
+    background: var(--menu-cover-bg);
+    color: var(--menu-cover-fg);
+    /* Unprefixed only: the build adds the -webkit- copy itself, and writing
+       both by hand gets them merged down to the prefixed one, which Chrome
+       ignores. */
+    backdrop-filter: blur(var(--menu-cover-blur));
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 220ms ease-out,
+      visibility 0s linear 220ms;
+  }
+  .mobile-menu__cover--open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 220ms ease-out;
+  }
+
+  /* Where the menu button sits in the top bar, so ☰ turns into ✕ in place. */
+  .mobile-menu__close {
+    @apply absolute;
+    top: clamp(24px, 2.4vw, 34px);
+    right: var(--gutter);
+  }
+
+  .mobile-menu__links {
+    @apply flex flex-col items-center gap-2;
+  }
+
+  /* The section titles' voice: regular, lowercase, tight. Each rises in a
+     beat after the one above it (`--i` is its index). */
+  .mobile-menu__link {
+    @apply rounded-2xl px-6 py-2 font-display font-normal lowercase leading-[1.1] tracking-[-0.04em] transition-colors;
+    font-size: clamp(40px, 11vw, 64px);
+    opacity: 0;
+    translate: 0 12px;
+    transition:
+      opacity 260ms ease-out,
+      translate 260ms ease-out,
+      background-color 150ms;
+  }
+  .mobile-menu__cover--open .mobile-menu__link {
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: calc(60ms + var(--i) * 45ms), calc(60ms + var(--i) * 45ms), 0ms;
+  }
+  .mobile-menu__link:hover,
+  .mobile-menu__link:focus-visible {
+    background: var(--glass-bg-strong);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu__cover,
+    .mobile-menu__cover--open,
+    .mobile-menu__link,
+    .mobile-menu__cover--open .mobile-menu__link {
+      transition: none;
+      translate: none;
+    }
+  }
+}
