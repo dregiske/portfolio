@@ -67,8 +67,11 @@
    * of its own — an auto margin here too would split the space three ways and
    * pull the photo off centre.
    */
+  /* `self-start` shrinks the block to its longest line rather than the
+     hero's width — it's a quiet zone for the halftone, and a full-width box
+     would clear the dots right across the screen. */
   .hero__tagline {
-    @apply relative z-1 flex flex-col items-start whitespace-nowrap font-normal leading-[1.12] tracking-[-0.02em] text-fg;
+    @apply relative z-1 flex flex-col items-start self-start whitespace-nowrap font-normal leading-[1.12] tracking-[-0.02em] text-fg;
     padding-top: clamp(24px, 4vw, 40px);
     font-size: min(5.2cqw, 2.87cqw + 8px, 56px);
     text-shadow: 0 2px 40px var(--hero-shadow);

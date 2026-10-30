@@ -323,9 +323,16 @@
 
   html {
     scroll-behavior: smooth;
-    /* The scroll indicator is the scroll affordance — hide the native bar. */
+    /* The native bar stays hidden: the nav is the scroll affordance. */
     scrollbar-width: none;
     -ms-overflow-style: none;
+    /* Last line of defence against sideways scrolling on phones. Overflow is
+       contained where it starts (`.home`, and the Projects / Skills / Contact
+       sections), but `clip` is newer than some phones' browsers; `hidden` on
+       the root works everywhere. On <html> it only governs the window's own
+       scrolling — vertical scroll, and everything reading `window.scrollY`,
+       carry on as before. */
+    overflow-x: hidden;
   }
   html::-webkit-scrollbar,
   body::-webkit-scrollbar {

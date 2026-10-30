@@ -148,7 +148,12 @@ export const Projects = () => {
   const isDesktop = useIsWide();
 
   return (
-    <SectionShell id="projects" title="Projects">
+    // `overflow-x-clip` contains the carousel's off-screen cards (up to
+    // ~1350px past the edge on a phone) right here, instead of leaving the
+    // page's sideways-scroll safety to `.home` alone. `clip`, not `hidden`:
+    // hidden would make the section a scroll container, and tabbing to an
+    // off-screen card would then scroll it sideways.
+    <SectionShell id="projects" title="Projects" className="overflow-x-clip">
       <Carousel
         className="projects__carousel"
         itemsPerView={isDesktop ? 3 : 1}

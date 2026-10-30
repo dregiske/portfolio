@@ -76,9 +76,16 @@ export const Hero = () => {
             layout (the other is `display: none`, so it's out of the
             accessibility tree too). Picking in JS would mean the prerendered
             page — which has no viewport — always shipped one set, then swapped
-            it on hydration. */}
+            it on hydration.
+
+            `data-halftone-quiet`: the halftone thins its dots out behind it
+            (see HalftoneLayer); the hidden set measures empty and is skipped. */}
         {(["narrow", "wide"] as const).map((set) => (
-          <p key={set} className={`hero__tagline hero__tagline--${set}`}>
+          <p
+            key={set}
+            className={`hero__tagline hero__tagline--${set}`}
+            data-halftone-quiet
+          >
             {INTRO.tagline.map((pace, i) => (
               <Typewriter key={i} text={TAGLINE_LINES[set][i]} {...pace} />
             ))}
