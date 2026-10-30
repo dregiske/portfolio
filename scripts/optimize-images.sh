@@ -25,6 +25,7 @@ cd "$(dirname "$0")/.."
 # relative path under assets-src/ | max long edge | jpeg quality | webp quality
 IMAGES=(
   "about/acm_group.jpg|1100|70|75"
+  "about/acm_participants.jpg|1100|70|75"
   # Already the smallest it can be: at 450×800 the original barely covers the
   # 250×320 frame on a 2× display, so this one is only ever re-encoded.
   "hero/profile.jpg|800|82|82"
