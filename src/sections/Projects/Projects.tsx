@@ -131,7 +131,12 @@ const ProjectCard = ({ project }: { project: Project }) => (
           </Tag>
         ))}
       </div>
-      <Pill href={project.link} target="_blank" rel="noopener noreferrer">
+      <Pill
+        href={project.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="project-card__link"
+      >
         Take a look
       </Pill>
     </div>

@@ -76,6 +76,6 @@
   }
 
   .project-card__link {
-    @apply mt-auto font-mono text-xs uppercase tracking-[0.08em] text-accent-brand hover:underline;
+    @apply mt-auto tracking-[0.08em];
   }
 }
