@@ -8,6 +8,7 @@ import { Photo } from "@/components/Photo/Photo";
 import { Tag } from "@/components/Tag/Tag";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import "./Projects.css";
+import { Pill } from "@/components/Pill/Pill";
 
 type Project = {
   name: string;
@@ -130,14 +131,9 @@ const ProjectCard = ({ project }: { project: Project }) => (
           </Tag>
         ))}
       </div>
-      <a
-        href={project.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="project-card__link"
-      >
-        View Project →
-      </a>
+      <Pill href={project.link} target="_blank" rel="noopener noreferrer">
+        Take a look
+      </Pill>
     </div>
   </Card>
 );
