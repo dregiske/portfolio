@@ -54,7 +54,7 @@
     @apply bg-tone-cobalt-subtle;
   }
   .contact__title {
-    @apply mb-6 text-3xl font-bold;
+    @apply mb-6 text-3xl font-medium tracking-[-0.02em];
   }
 
   /* The social glyphs are dark SVGs, so their circles hold the light end of the

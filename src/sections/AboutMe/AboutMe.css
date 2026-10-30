@@ -1,6 +1,13 @@
 @reference "../../index.css";
 
 @layer components {
+  /* The hero portrait hangs half its height into the top of this section, so
+     the section starts below it — otherwise the heading (narrow screens) or
+     the bio card (wide ones) would run into the photo. */
+  .section-shell.about {
+    padding-top: calc(var(--hero-portrait-w) * 0.64 + 1rem);
+  }
+
   .about__grid {
     @apply mt-10 grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-14;
   }

@@ -7,7 +7,13 @@ import "./AboutMe.css";
 
 export const AboutMe = () => {
   return (
-    <SectionShell id="about" num="02" eyebrow="ABOUT" title="About">
+    <SectionShell
+      id="about"
+      num="02"
+      eyebrow="ABOUT"
+      title="About"
+      className="about"
+    >
       <div className="about__grid">
         <Photo
           src={ABOUT_PHOTO_LINK}

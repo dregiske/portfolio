@@ -54,6 +54,6 @@
   }
 
   .scroll-indicator__num {
-    @apply font-display text-[15px] font-semibold sm:text-[21px];
+    @apply font-display text-[15px] font-medium sm:text-[21px];
   }
 }

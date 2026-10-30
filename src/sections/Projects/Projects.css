@@ -52,7 +52,7 @@
   }
 
   .project-card__title {
-    @apply mb-3 font-display text-xl font-semibold leading-tight tracking-[-0.02em];
+    @apply mb-3 font-display text-xl font-medium leading-tight tracking-[-0.02em];
   }
 
   /* Optional live-domain pill */

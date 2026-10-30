@@ -25,7 +25,7 @@
     /* `touch-none` (touch-action: none) is scoped to the nodes so dragging a
        node pans the node rather than scrolling the page — while empty space in
        the field stays scrollable. */
-    @apply absolute left-0 top-0 z-2 cursor-grab touch-none select-none whitespace-nowrap rounded-full border font-semibold;
+    @apply absolute left-0 top-0 z-2 cursor-grab touch-none select-none whitespace-nowrap rounded-full border font-medium;
     border-color: var(--glass-border);
     transform-origin: center;
     /* left/top stay at 0: the position and the hover scale both live in the

@@ -6,7 +6,7 @@
   }
 
   .top-bar__logo {
-    @apply font-display text-xl font-bold tracking-[0.04em];
+    @apply font-display text-xl font-medium tracking-[0.04em];
   }
 
   .top-bar__actions {

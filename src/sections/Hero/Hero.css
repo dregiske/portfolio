@@ -1,48 +1,81 @@
 @reference "../../index.css";
 
 @layer components {
+  /* No `overflow: hidden` — the portrait deliberately hangs out of the bottom
+     edge into About. Sideways overflow is still contained by `.home`'s
+     `overflow-x: clip`. */
   .hero {
-    @apply relative z-10 min-h-svh overflow-hidden;
+    @apply relative z-10 min-h-svh;
   }
 
+  /* A size container, so the wordmark, tagline and portrait can all size off
+     the content box (`cqw`) — gutters already subtracted, no scrollbar maths
+     the way `vw` would need, and they keep their proportions to each other at
+     every width. Also the portrait's positioning context. */
   .hero__inner {
-    @apply flex min-h-svh flex-col px-6 pb-28 pt-6 md:px-10 lg:px-[60px] lg:pb-[90px] lg:pt-[34px];
+    @apply relative flex min-h-svh flex-col px-6 pb-28 pt-6 md:px-10 lg:px-[60px] lg:pb-[90px] lg:pt-[34px];
+    container-type: inline-size;
   }
 
-  /* Text beside the portrait on wide screens, stacked above it below lg. */
-  .hero__body {
-    @apply flex flex-1 flex-col items-start justify-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-14;
-  }
-
-  .hero__intro {
-    @apply flex flex-col items-start text-left;
-  }
-
-  .hero__greeting {
-    @apply mb-0.5 text-xl tracking-[0.04em] text-accent-brand;
-  }
-
-  .hero__title {
-    /* One line wherever it fits — the name is the piece of type the whole
-       page is built around. */
-    @apply font-display text-[clamp(48px,9vw,104px)] font-semibold leading-[0.92] tracking-[-0.04em] md:whitespace-nowrap;
+  /**
+   * The name, edge to edge. Poppins 400 measures "andre giske" at 5.831em of
+   * advance; less 11 × 0.05em of tracking that's ~5.28em, so dividing the
+   * container by 5.3 fills it with a hair of slack for rounding. Change the
+   * name, weight or tracking and re-measure.
+   *
+   * The negative margin pulls the "a"'s left side-bearing (0.043em) out into
+   * the gutter, so the ink — not the glyph box — lines up with the text below.
+   */
+  .hero__wordmark {
+    @apply relative z-1 mt-8 font-display font-normal lowercase leading-[0.8] tracking-[-0.05em] whitespace-nowrap md:mt-12;
+    font-size: calc(100cqw / 5.3);
+    margin-left: -0.043em;
     text-shadow: 0 2px 40px var(--hero-shadow);
   }
 
   /**
+   * The statement, pushed to the foot of the hero.
+   *
    * A flex column, and specifically *not* `display: block` on the rows
    * themselves. Each row is a `Typewriter`, which needs `display: grid` while
    * it types in order to stack its ghost and its overlay — and a `display`
    * declared here would be a same-specificity rule in the same cascade layer,
    * so which one won would come down to stylesheet import order. Blockifying
-   * the rows as flex items instead sidesteps the conflict entirely: there is
-   * nothing to override, and a finished row stays on its own line once
-   * `Typewriter` drops the grid.
+   * the rows as flex items instead sidesteps the conflict entirely.
    *
-   * `max-w` stays as a safety net. The lines are authored to fit, so it should
-   * never bite — but if the copy changes it will wrap rather than overflow.
+   * The rows never wrap. Type is sized off the container from the longest
+   * authored line (see `TAGLINE_LINES` in Hero.tsx): ~18.3em on a phone, set
+   * to fill ~95% of the width; ~22.4em from `sm`, set to fill ~78% like the
+   * reference, and capped for very wide screens.
+   *
+   * It writes straight across the portrait on purpose: `relative z-1` lifts
+   * it (and the wordmark) above the absolutely positioned photo, which would
+   * otherwise paint on top. The shadow keeps white type legible where it
+   * crosses the brighter parts of the photo.
    */
   .hero__tagline {
-    @apply mt-5 flex max-w-[440px] flex-col items-start text-[17px] leading-relaxed sm:text-[19px];
+    @apply relative z-1 mt-auto flex flex-col items-start whitespace-nowrap pt-10 font-normal leading-[1.12] tracking-[-0.02em] text-fg;
+    font-size: 5.2cqw;
+    text-shadow: 0 2px 40px var(--hero-shadow);
+
+    @variant sm {
+      font-size: min(3.48cqw, 56px);
+    }
+  }
+
+  /**
+   * The portrait, behind the tagline and pushed half its own height down, so
+   * the seam between Hero and About runs through its middle. Size and place
+   * come from `--hero-portrait-w` / `--hero-portrait-right` on `.home`, shared
+   * with About, which starts below its lower half. The right offset is from
+   * the viewport edge, past the gutter, which pulls it in toward the centre.
+   * The component's fixed sizes are overridden here (`.portrait-card` in the
+   * selector outranks them), with the frame's 25:32 aspect kept.
+   */
+  .portrait-card.hero__portrait {
+    @apply absolute bottom-0 z-0 h-auto translate-y-1/2;
+    right: var(--hero-portrait-right);
+    width: var(--hero-portrait-w);
+    aspect-ratio: 25 / 32;
   }
 }

@@ -7,7 +7,9 @@
   .site-footer {
     @apply fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-sm;
     border-color: var(--glass-border);
-    background: var(--scrim);
+    /* `--scrim` is a bare rgb triplet, so it has to go through rgb() — on its
+       own it isn't a color, and the footer used to paint no fill at all. */
+    background: rgb(var(--scrim) / 0.8);
   }
 
   .site-footer__inner {

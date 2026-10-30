@@ -11,17 +11,21 @@
    tokens below. A role names a job ("the color of a dot", "the glass border"),
    never a hue, so the two themes are two value sets for one vocabulary:
 
-     .dark  (default) — the mockup's deep navy, white ink
+     .dark  (default) — near-black, white ink, monochrome aura
      :root  (light)   — white paper, near-black ink
 
+   The site currently ships dark-only: `index.html` always sets `.dark` and the
+   theme toggle is archived. The light set below is kept complete so the toggle
+   can come back without re-deriving a palette.
+
    The canvases can't read CSS variables directly, so `src/lib/themeColors.ts`
-   resolves the ones they need (--dot-color, --aura-*) through a hidden probe
-   element and re-resolves whenever `.dark` toggles on <html>.
+   resolves the ones they need (--aura-*, --halftone-ink-*) through a hidden
+   probe element and re-resolves whenever `.dark` toggles on <html>.
    ------------------------------------------------------------------------- */
 
 @theme inline {
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Sora", "Space Grotesk", ui-sans-serif, sans-serif;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* Role colors — the redesign's vocabulary */
@@ -97,9 +101,11 @@
   --glass-bg-strong: rgba(16, 19, 26, 0.06);
   --glass-border: rgba(16, 19, 26, 0.12);
 
-  /* Chrome */
-  --nav-pill-bg: rgba(16, 19, 26, 0.92);
-  --nav-pill-fg: #ffffff;
+  /* Chrome. The nav pill wears the glass surface (same as Contact's email
+     pill), but keeps its own roles so it can be restyled on its own. */
+  --nav-pill-bg: var(--glass-bg);
+  --nav-pill-border: var(--glass-border);
+  --nav-pill-fg: var(--fg);
   --scrim: 255 255 255; /* rgb triplet — scroll-indicator gradient */
   --hero-shadow: rgba(20, 30, 60, 0.22);
   --selection-bg: #3457c8;
@@ -113,6 +119,14 @@
   --aura-blob-3: rgb(111, 160, 240);
   --aura-blob-4: rgb(232, 238, 252);
   --aura-blob-5: rgb(169, 196, 255);
+
+  /* Halftone layer: three inks, offset top → middle → bottom in each cell and
+     added together, so where they overlap they burn to white. Roles, not hues:
+     swap any of them and the fringes follow. */
+  --halftone-ink-1: #2b4dff;
+  --halftone-ink-2: #3dff6e;
+  --halftone-ink-3: #ff3b30;
+  --halftone-opacity: 1;
 
   /* ---- Blue shade ladder -------------------------------------------------
      One hue family, five shades. Each rung turns the hue a few degrees and
@@ -206,49 +220,59 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Dark theme (default) — the mockup's navy
+   Dark theme (default) — near-black, white ink, monochrome aura
+
+   Everything here is greyscale on purpose: the halftone inks are the only
+   color on the page, so they pop against it.
    ------------------------------------------------------------------------- */
 .dark {
-  --bg-base: #0b1f4d;
+  --bg-base: #0a0a0a;
   --fg: #ffffff;
   --fg-muted: rgba(255, 255, 255, 0.62);
   --fg-faint: rgba(255, 255, 255, 0.42);
-  --accent-brand: #a9c4ff;
+  --accent-brand: #e5e5e5;
 
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-bg-strong: rgba(255, 255, 255, 0.09);
   --glass-border: rgba(255, 255, 255, 0.14);
 
-  --nav-pill-bg: rgba(255, 255, 255, 0.92);
-  --nav-pill-fg: #1a1a17;
-  --scrim: 9 20 54;
-  --hero-shadow: rgba(6, 16, 45, 0.6);
-  --selection-bg: #a9c4ff;
-  --selection-fg: #0b1f4d;
+  --nav-pill-bg: var(--glass-bg);
+  --nav-pill-border: var(--glass-border);
+  --nav-pill-fg: var(--fg);
+  --scrim: 10 10 10;
+  --hero-shadow: rgba(0, 0, 0, 0.6);
+  --selection-bg: #ffffff;
+  --selection-fg: #0a0a0a;
 
   --dot-color: #ffffff;
-  --aura-base: #0b1f4d;
-  --aura-blob-1: rgb(37, 99, 235);
-  --aura-blob-2: rgb(30, 58, 138);
-  --aura-blob-3: rgb(59, 130, 246);
-  --aura-blob-4: rgb(8, 22, 66);
-  --aura-blob-5: rgb(96, 130, 220);
+  --aura-base: #0a0a0a;
+  --aura-blob-1: rgb(42, 42, 42);
+  --aura-blob-2: rgb(22, 22, 22);
+  --aura-blob-3: rgb(58, 58, 58);
+  --aura-blob-4: rgb(15, 15, 15);
+  --aura-blob-5: rgb(38, 38, 38);
 
-  /* Base recipe (dark): bright ink L 0.82 / C 0.09 · subtle L 0.36 / C 0.045.
-     On navy the ladder climbs *out* of the page instead of down into it, so
-     the step direction flips — same rungs, same order, mirrored. */
+  --halftone-ink-1: #2b4dff;
+  --halftone-ink-2: #3dff6e;
+  --halftone-ink-3: #ff3b30;
+  --halftone-opacity: 1;
+
+  /* Base recipe (dark): bright ink L 0.82 · subtle L 0.36, chroma 0 — the
+     ladder keeps its lightness rungs but drains to grey to match the page.
+     Raise the two `-c` values to bring the blue back. The ladder climbs *out*
+     of the page instead of down into it, so the step direction flips. */
   --tone-step-dir: 1;
   --tone-ink-l: 0.82;
-  --tone-ink-c: 0.09;
+  --tone-ink-c: 0;
   --tone-subtle-l: 0.36;
-  --tone-subtle-c: 0.045;
+  --tone-subtle-c: 0;
 
   --constellation-line: rgba(255, 255, 255, 0.22);
   --constellation-line-active: var(--accent-brand);
   --shadow-color: 0 0 0;
 
   --primary: var(--accent-brand);
-  --primary-foreground: #0b1f4d;
+  --primary-foreground: #0a0a0a;
   --destructive: oklch(0.704 0.191 22.216);
 }
 

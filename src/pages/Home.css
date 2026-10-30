@@ -8,6 +8,18 @@
        `auto` and make `.home` its own scroll container, breaking the scroll-morph
        and the fixed nav. `clip` contains the overflow without any of that. */
     @apply relative min-h-svh overflow-x-clip;
+
+    /* The hero portrait's width, and its distance from the viewport's right
+       edge. It straddles the Hero/About seam, so both sections need it: the
+       hero to size and place it, About to start below it. Height is
+       width × 32/25, so the half that hangs into About is width × 0.64. */
+    --hero-portrait-w: min(68vw, 320px);
+    --hero-portrait-right: 8vw;
+
+    @variant lg {
+      --hero-portrait-w: min(32vw, 480px);
+      --hero-portrait-right: 12vw;
+    }
   }
 
   /* Everything readable sits above both background canvases (z-0 / z-1). The

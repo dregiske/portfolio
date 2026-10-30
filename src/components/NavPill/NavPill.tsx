@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import "./NavPill.css";
 
 /**
- * The floating anchor nav: one opaque pill holding the four content sections.
+ * The floating anchor nav: one glass pill holding the four content sections.
  * Hidden on small screens, where the scroll indicator already lists all five.
  */
 export function NavPill({ className }: { className?: string }) {

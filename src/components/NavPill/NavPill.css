@@ -1,9 +1,14 @@
 @reference "../../index.css";
 
 @layer components {
+  /* The same glass as Contact's email pill: a whisper of tint, a hairline
+     border and a light blur over whatever is behind it. It only exists in the
+     hero (the top bar scrolls away), so the blur re-sampling the animated
+     halftone is a small, short-lived cost. */
   .nav-pill {
-    @apply hidden items-center gap-2 rounded-[30px] px-[10px] py-2 text-sm font-medium sm:flex;
+    @apply hidden items-center gap-2 rounded-[30px] border px-[10px] py-2 text-sm font-medium backdrop-blur-sm sm:flex;
     background: var(--nav-pill-bg);
+    border-color: var(--nav-pill-border);
     color: var(--nav-pill-fg);
   }
 
