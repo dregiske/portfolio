@@ -1,8 +1,8 @@
 @reference "../../index.css";
 
 @layer components {
-  /* No `overflow: hidden` — the portrait deliberately hangs out of the bottom
-     edge into About. Sideways overflow is still contained by `.home`'s
+  /* No `overflow: hidden` — wide, the portrait deliberately hangs out of the
+     bottom edge into About. Sideways overflow is still contained by `.home`'s
      `overflow-x: clip`. */
   .hero {
     @apply relative z-10 min-h-svh;
@@ -11,10 +11,15 @@
   /* A size container, so the wordmark, tagline and portrait can all size off
      the content box (`cqw`) — gutters already subtracted, no scrollbar maths
      the way `vw` would need, and they keep their proportions to each other at
-     every width. Also the portrait's positioning context. */
+     every width. Also the portrait's positioning context.
+
+     The bottom pad clears the fixed scroll indicator, which is a little taller
+     on a phone relative to its type; both pads are fluid, so nothing steps. */
   .hero__inner {
-    @apply relative flex min-h-svh flex-col px-6 pb-28 pt-6 md:px-10 lg:px-[60px] lg:pb-[90px] lg:pt-[34px];
+    @apply relative flex min-h-svh flex-col;
     container-type: inline-size;
+    padding: clamp(24px, 2.4vw, 34px) var(--gutter)
+      clamp(90px, 118px - 2vw, 112px);
   }
 
   /**
@@ -25,16 +30,21 @@
    *
    * The negative margin pulls the "a"'s left side-bearing (0.043em) out into
    * the gutter, so the ink — not the glyph box — lines up with the text below.
+   * The bottom margin is the "g"'s descender, which the tight leading leaves
+   * hanging below the box — without it, a compact portrait with no space to
+   * spare would sit right under the box and the "g" would cross it.
    */
   .hero__wordmark {
-    @apply relative z-1 mt-8 font-display font-normal lowercase leading-[0.8] tracking-[-0.05em] whitespace-nowrap md:mt-12;
+    @apply relative z-1 font-display font-normal lowercase leading-[0.8] tracking-[-0.05em] whitespace-nowrap;
+    margin-top: clamp(32px, 4vw, 48px);
+    margin-bottom: 0.25em;
     font-size: calc(100cqw / 5.3);
     margin-left: -0.043em;
     text-shadow: 0 2px 40px var(--hero-shadow);
   }
 
   /**
-   * The statement, pushed to the foot of the hero.
+   * The statement, at the foot of the hero.
    *
    * A flex column, and specifically *not* `display: block` on the rows
    * themselves. Each row is a `Typewriter`, which needs `display: grid` while
@@ -43,40 +53,66 @@
    * so which one won would come down to stylesheet import order. Blockifying
    * the rows as flex items instead sidesteps the conflict entirely.
    *
-   * The rows never wrap. Type is sized off the container from the longest
-   * authored line (see `TAGLINE_LINES` in Hero.tsx): ~18.3em on a phone, set
-   * to fill ~95% of the width; ~22.4em from `sm`, set to fill ~78% like the
-   * reference, and capped for very wide screens.
+   * The rows never wrap, and the size is one continuous function of the
+   * container, across both line sets (see `TAGLINE_LINES` in Hero.tsx):
    *
-   * It writes straight across the portrait on purpose: `relative z-1` lifts
-   * it (and the wordmark) above the absolutely positioned photo, which would
-   * otherwise paint on top. The soft shadow helps white type where it
-   * crosses the brighter parts of the photo.
+   *   5.2cqw          narrowest phones: the compact set's ~18.3em fills ~95%
+   *   2.87cqw + 8px   from ~340px wide; at the breakpoint (~700px of
+   *                   container) the compact set fills ~73% and the wide set's
+   *                   ~22.4em ~90%, so the swap changes the breaks, not the
+   *                   size. ~78% at 1440, like the reference.
+   *   56px            cap for very wide screens
+   *
+   * Wide, it writes straight across the portrait on purpose: `relative z-1`
+   * lifts it (and the wordmark) above the absolutely positioned photo, and the
+   * soft shadow helps where it crosses the photo's brighter parts. Compact,
+   * the portrait's auto margins already push it to the foot, so it takes none
+   * of its own — an auto margin here too would split the space three ways and
+   * pull the photo off centre.
    */
   .hero__tagline {
-    @apply relative z-1 mt-auto flex flex-col items-start whitespace-nowrap pt-10 font-normal leading-[1.12] tracking-[-0.02em] text-fg;
-    font-size: 5.2cqw;
+    @apply relative z-1 flex flex-col items-start whitespace-nowrap font-normal leading-[1.12] tracking-[-0.02em] text-fg;
+    padding-top: clamp(24px, 4vw, 40px);
+    font-size: min(5.2cqw, 2.87cqw + 8px, 56px);
     text-shadow: 0 2px 40px var(--hero-shadow);
 
-    @variant sm {
-      font-size: min(3.48cqw, 56px);
+    @variant wide {
+      @apply mt-auto;
     }
   }
 
+  /* One line set per layout; the other is out of layout and out of the
+     accessibility tree. */
+  .hero__tagline--wide {
+    @apply hidden wide:flex;
+  }
+  .hero__tagline--narrow {
+    @apply wide:hidden;
+  }
+
   /**
-   * The portrait, behind the tagline and pushed part of its own height down
-   * (`--hero-portrait-hang`), so the seam between Hero and About runs across
-   * it. Size, place and hang all come from `.home`, shared with About, which
-   * starts below the part that hangs into it. The right offset is from
-   * the viewport edge, past the gutter, which pulls it in toward the centre.
-   * The component's fixed sizes are overridden here (`.portrait-card` in the
+   * The portrait. Size and placement come from `--hero-portrait-*` on
+   * `.home`, which About shares to clear whatever hangs into it. The
+   * component's fixed sizes are overridden here (`.portrait-card` in the
    * selector outranks them), with the frame's 25:32 aspect kept.
+   *
+   * Compact: in the flow between wordmark and tagline, and centred there both
+   * ways — auto margins top and bottom share out the free height.
+   *
+   * Wide: lifted out of the flow, behind the tagline, and pushed part of its
+   * own height down (`--hero-portrait-hang`) so the seam between Hero and
+   * About runs across it. The right offset is from the viewport edge, past
+   * the gutter, which pulls it in toward the centre.
    */
   .portrait-card.hero__portrait {
-    @apply absolute bottom-0 z-0 h-auto;
-    translate: 0 calc(var(--hero-portrait-hang) * 100%);
-    right: var(--hero-portrait-right);
+    @apply relative z-0 my-auto h-auto self-center;
     width: var(--hero-portrait-w);
     aspect-ratio: 25 / 32;
+
+    @variant wide {
+      @apply absolute bottom-0 my-0;
+      right: var(--hero-portrait-right);
+      translate: 0 calc(var(--hero-portrait-hang) * 100%);
+    }
   }
 }

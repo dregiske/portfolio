@@ -7,12 +7,14 @@
        toolbars-hidden height, so a centered section is taller than what's on
        screen and gets clipped top and bottom. `svh` is the always-visible height
        — the section fits the viewport whether the toolbars are up or not. */
-    @apply relative z-10 flex min-h-svh items-center py-16 md:py-24;
+    @apply relative z-10 flex min-h-svh items-center;
+    padding-block: var(--section-pad-y);
   }
 
   .section-shell__inner {
     /* Bottom padding clears the fixed scroll indicator. */
-    @apply mx-auto w-full max-w-[1180px] px-6 pb-24 md:px-10 lg:px-[60px];
+    @apply mx-auto w-full max-w-[1180px] pb-24;
+    padding-inline: var(--gutter);
   }
 
   /* The hero wordmark's voice, one size down: regular weight, lowercase, tight.

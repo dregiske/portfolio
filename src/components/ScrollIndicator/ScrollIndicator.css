@@ -14,7 +14,8 @@
   .scroll-indicator__inner {
     /* The bottom pad clears the iOS home indicator via the safe-area inset, so
        the labels sit flush at the true bottom edge on a phone. */
-    @apply mx-auto w-full max-w-[1180px] px-6 pt-8 md:px-10 lg:px-[60px];
+    @apply mx-auto w-full max-w-[1180px] pt-8;
+    padding-inline: var(--gutter);
     padding-bottom: calc(0.625rem + env(safe-area-inset-bottom));
   }
 
@@ -50,10 +51,14 @@
   }
 
   .scroll-indicator__label {
-    @apply text-[11px] font-medium sm:text-sm;
+    /* 11px on a phone up to 14px by ~860px wide, without a step. */
+    @apply font-medium;
+    font-size: clamp(11px, 1.4vw + 2px, 14px);
   }
 
   .scroll-indicator__num {
-    @apply font-display text-[15px] font-medium sm:text-[21px];
+    /* 15px on a phone up to 21px by ~860px wide. */
+    @apply font-display font-medium;
+    font-size: clamp(15px, 2.2vw + 2px, 21px);
   }
 }

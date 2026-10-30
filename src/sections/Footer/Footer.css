@@ -10,11 +10,15 @@
     /* `--scrim` is a bare rgb triplet, so it has to go through rgb() — on its
        own it isn't a color, and the footer used to paint no fill at all. */
     background: rgb(var(--scrim) / 0.8);
+    /* The parked position, until Footer's inline transform takes over — the
+       page is prerendered, so it paints before any JS has placed it. */
+    transform: translateY(100%);
   }
 
   .site-footer__inner {
     /* Bottom pad clears the iOS home indicator (safe-area inset). */
-    @apply mx-auto flex w-full max-w-[1180px] flex-col gap-3 px-6 pt-6 md:flex-row md:items-end md:justify-between md:px-10 lg:px-[60px];
+    @apply mx-auto flex w-full max-w-[1180px] flex-col gap-3 pt-6 wide:flex-row wide:items-end wide:justify-between;
+    padding-inline: var(--gutter);
     padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
   }
 

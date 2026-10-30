@@ -1,6 +1,5 @@
 import { HERO_PHOTO_LINK } from "@/constants/links";
 import { INTRO } from "@/constants/intro";
-import { useMediaQuery } from "@/lib/useMediaQuery";
 import { TopBar } from "@/components/TopBar/TopBar";
 import { PortraitCard } from "@/components/PortraitCard/PortraitCard";
 import { Typewriter } from "@/components/Typewriter/Typewriter";
@@ -19,17 +18,18 @@ type TaglineLines = readonly [string, string, string];
  *
  * There are two sets because a phone gets more lines-per-word than a desktop
  * can afford: the wide set's longest line is ~22.4em, which at phone widths
- * would make the type too small to read. The type sizes in `Hero.css` are
- * derived from these longest lines — change the copy and re-measure them.
+ * would make the type too small to read. They switch at the site breakpoint
+ * (`@/lib/breakpoint`). The type size in `Hero.css` is derived from these
+ * longest lines — change the copy and re-measure them.
  */
 const TAGLINE_LINES: { wide: TaglineLines; narrow: TaglineLines } = {
-  /** >=640px. Longest line ~22.4em (Poppins 400, -0.02em tracking). */
+  /** Wide layout. Longest line ~22.4em (Poppins 400, -0.02em tracking). */
   wide: [
     "CSE student at UC San Diego building backend",
     "systems and full-stack apps, feel free to",
     "connect!",
   ],
-  /** <640px. Longest line ~18.3em. */
+  /** Compact layout. Longest line ~18.3em. */
   narrow: [
     "CSE student at UC San Diego building",
     "backend systems and full-stack apps,",
@@ -43,18 +43,16 @@ const TAGLINE_LINES: { wide: TaglineLines; narrow: TaglineLines } = {
  * timings all live in `@/constants/intro`, so this section stays a description
  * of *what* is on screen rather than of how it arrives.
  *
- * The portrait hangs off the bottom-right corner, straddling the seam with
- * About: its top half in the hero, its bottom half over the next section. Its
- * slide-in entrance is still parked — to bring it back, wrap it in `<Reveal
- * from="right" {...INTRO.portrait}>` and move the `hero__portrait` positioning
- * onto the wrapper. It's above the fold, so an entrance delay lands on LCP.
+ * Wide, the portrait hangs off the bottom-right corner, straddling the seam
+ * with About, and the tagline writes across it. Compact, it sits centred
+ * between the wordmark and the tagline — it comes before the tagline in the
+ * markup for that, and wide positions it absolutely, so order doesn't matter
+ * there. Its slide-in entrance is still parked — to bring it back, wrap it in
+ * `<Reveal from="right" {...INTRO.portrait}>` and move the `hero__portrait`
+ * positioning onto the wrapper. It's above the fold, so an entrance delay
+ * lands on LCP.
  */
 export const Hero = () => {
-  // Matches the `sm` breakpoint, where `.hero__tagline` changes its type size
-  // and the line breaks move with it.
-  const wide = useMediaQuery("(min-width: 640px)");
-  const taglineLines = wide ? TAGLINE_LINES.wide : TAGLINE_LINES.narrow;
-
   return (
     <section id="hero" className="hero">
       <div className="hero__inner">
@@ -64,20 +62,28 @@ export const Hero = () => {
             search results get the name properly capitalised. */}
         <h1 className="hero__wordmark">Andre Giske</h1>
 
-        {/* One paragraph, three independently typed lines. Mapping over the
-            paces rather than the strings is what ties each line to its own
-            entry in the choreography. */}
-        <p className="hero__tagline">
-          {INTRO.tagline.map((pace, i) => (
-            <Typewriter key={i} text={taglineLines[i]} {...pace} />
-          ))}
-        </p>
-
         <PortraitCard
           src={HERO_PHOTO_LINK}
           alt="Andre Giske"
           className="hero__portrait"
         />
+
+        {/* One paragraph, three independently typed lines. Mapping over the
+            paces rather than the strings is what ties each line to its own
+            entry in the choreography.
+
+            Both line sets are rendered and CSS shows the one for the current
+            layout (the other is `display: none`, so it's out of the
+            accessibility tree too). Picking in JS would mean the prerendered
+            page — which has no viewport — always shipped one set, then swapped
+            it on hydration. */}
+        {(["narrow", "wide"] as const).map((set) => (
+          <p key={set} className={`hero__tagline hero__tagline--${set}`}>
+            {INTRO.tagline.map((pace, i) => (
+              <Typewriter key={i} text={TAGLINE_LINES[set][i]} {...pace} />
+            ))}
+          </p>
+        ))}
       </div>
     </section>
   );

@@ -8,7 +8,6 @@ import {
 } from "@/constants/links";
 import { Mail, Send } from "lucide-react";
 import { useState } from "react";
-import emailjs from "@emailjs/browser";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
 import { Button } from "@/components/Button/Button";
 import { ContactConstellation, type Social } from "./ContactConstellation";
@@ -36,6 +35,9 @@ export const Contacts = () => {
     setStatus("idle");
 
     try {
+      // Fetched on send rather than up front: most visitors never submit, so
+      // it has no business competing with the first paint.
+      const { default: emailjs } = await import("@emailjs/browser");
       await emailjs.sendForm(
         "service_udsep0o",
         "template_od2bcn2",

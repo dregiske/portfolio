@@ -4,8 +4,12 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
 import { watchThemeColors } from "@/lib/themeColors";
 import {
   HALFTONE,
+  type Halftone,
   createHalftone,
   destroyHalftone,
+  discardHalftone,
+  finishHalftone,
+  isHalftoneReady,
   renderHalftone,
   resizeHalftone,
   setHalftoneInks,
@@ -58,106 +62,28 @@ export function HalftoneLayer({ morph }: { morph: ScrollMorph }) {
     };
 
     // No WebGL: draw nothing and let the aura carry the background alone.
-    const ht = createHalftone(canvas);
-    if (!ht) return unlisten;
+    const pending = createHalftone(canvas);
+    if (!pending) return unlisten;
 
-    const state = morph.state;
-    const frame = { t: 0, scrollY: window.scrollY, pointer: 0, glitch: !reduced };
-    const draw = () => {
-      if (ht.gl.isContextLost()) return;
-      renderHalftone(ht, state, frame);
+    // The shaders compile in the background; wait for them a frame at a time
+    // rather than blocking the page's first paint on them.
+    let stop: (() => void) | undefined;
+    let poll = 0;
+    const wait = () => {
+      if (!isHalftoneReady(pending)) {
+        poll = requestAnimationFrame(wait);
+        return;
+      }
+      const ht = finishHalftone(pending);
+      stop = ht ? runHalftone(ht, canvas, morph, reduced) : () => {};
     };
-
-    // Same guard as the aura: assigning canvas.width clears it, and mobile
-    // browsers fire `resize` continuously while the URL bar slides.
-    let lastW = 0;
-    let lastH = 0;
-    let lastDpr = 0;
-    const resize = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, HALFTONE.MAX_DPR);
-      if (w === lastW && h === lastH && dpr === lastDpr) return;
-      lastW = w;
-      lastH = h;
-      lastDpr = dpr;
-      resizeHalftone(ht, canvas, w, h, dpr);
-    };
-    resize();
-
-    const stopWatching = watchThemeColors(COLOR_TOKENS, (colors) => {
-      setHalftoneInks(
-        ht,
-        INK_TOKENS.map((token) => colors[token]),
-        colors[OVERLAP_TOKEN],
-      );
-      if (reduced) draw();
-    });
-
-    draw();
-
-    // Scroll arrives by event and is cached, like `useScrollMorph` — reading
-    // `scrollY` inside the frame would force a layout flush every frame.
-    const onScroll = () => {
-      frame.scrollY = window.scrollY;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    // The swell follows a real mouse only. A touch has no hover, and without a
-    // pointer at all the eased position sits at the centre of the screen —
-    // which would leave a permanent bump there.
-    let pointerTarget = 0;
-    const onPointer = (e: PointerEvent) => {
-      pointerTarget = e.pointerType === "mouse" ? 1 : 0;
-    };
-    const onLeave = () => {
-      pointerTarget = 0;
-    };
-    const root = document.documentElement;
-
-    let raf = 0;
-    let last = 0;
-    const tick = (now: number) => {
-      raf = requestAnimationFrame(tick);
-      const dt = now - last;
-      if (dt < FRAME_MS) return;
-      last = now;
-      const step = Math.min(dt, MAX_STEP_MS);
-      frame.t += step / 1000;
-      frame.pointer +=
-        (pointerTarget - frame.pointer) * Math.min(1, step / POINTER_FADE_MS);
-      draw();
-    };
-
-    // Reduced motion: no loop, no clock, no glitch, no swell — repaint a still
-    // frame whenever the scroll position (and so the morph state) changes.
-    let unsubscribe: (() => void) | undefined;
-    if (reduced) {
-      unsubscribe = morph.subscribe(draw);
-    } else {
-      window.addEventListener("pointermove", onPointer, { passive: true });
-      root.addEventListener("mouseleave", onLeave);
-      window.addEventListener("blur", onLeave);
-      raf = requestAnimationFrame(tick);
-    }
-
-    const onResize = () => {
-      resize();
-      if (reduced) draw();
-    };
-    window.addEventListener("resize", onResize);
+    wait();
 
     return () => {
-      cancelAnimationFrame(raf);
-      unsubscribe?.();
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("pointermove", onPointer);
-      root.removeEventListener("mouseleave", onLeave);
-      window.removeEventListener("blur", onLeave);
-      stopWatching();
+      cancelAnimationFrame(poll);
+      if (stop) stop();
+      else discardHalftone(pending);
       unlisten();
-      if (!ht.gl.isContextLost()) destroyHalftone(ht);
     };
   }, [morph, reduced, generation]);
 
@@ -168,4 +94,116 @@ export function HalftoneLayer({ morph }: { morph: ScrollMorph }) {
       aria-hidden="true"
     />
   );
+}
+
+/**
+ * Drive a halftone whose shaders are ready: size it, feed it scroll, cursor
+ * and ink colors, and run its clock. Returns the cleanup.
+ */
+function runHalftone(
+  ht: Halftone,
+  canvas: HTMLCanvasElement,
+  morph: ScrollMorph,
+  reduced: boolean,
+) {
+  const state = morph.state;
+  const frame = { t: 0, scrollY: window.scrollY, pointer: 0, glitch: !reduced };
+  const draw = () => {
+    if (ht.gl.isContextLost()) return;
+    renderHalftone(ht, state, frame);
+  };
+
+  // Same guard as the aura: assigning canvas.width clears it, and mobile
+  // browsers fire `resize` continuously while the URL bar slides.
+  let lastW = 0;
+  let lastH = 0;
+  let lastDpr = 0;
+  const resize = () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, HALFTONE.MAX_DPR);
+    if (w === lastW && h === lastH && dpr === lastDpr) return;
+    lastW = w;
+    lastH = h;
+    lastDpr = dpr;
+    resizeHalftone(ht, canvas, w, h, dpr);
+  };
+  resize();
+
+  const stopWatching = watchThemeColors(COLOR_TOKENS, (colors) => {
+    setHalftoneInks(
+      ht,
+      INK_TOKENS.map((token) => colors[token]),
+      colors[OVERLAP_TOKEN],
+    );
+    if (reduced) draw();
+  });
+
+  draw();
+  // Fades the layer in (see SiteBackground.css), so it eases into a page
+  // that's already showing rather than popping on top of it.
+  canvas.dataset.drawn = "";
+
+  // Scroll arrives by event and is cached, like `useScrollMorph` — reading
+  // `scrollY` inside the frame would force a layout flush every frame.
+  const onScroll = () => {
+    frame.scrollY = window.scrollY;
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // The swell follows a real mouse only. A touch has no hover, and without a
+  // pointer at all the eased position sits at the centre of the screen —
+  // which would leave a permanent bump there.
+  let pointerTarget = 0;
+  const onPointer = (e: PointerEvent) => {
+    pointerTarget = e.pointerType === "mouse" ? 1 : 0;
+  };
+  const onLeave = () => {
+    pointerTarget = 0;
+  };
+  const root = document.documentElement;
+
+  let raf = 0;
+  let last = 0;
+  const tick = (now: number) => {
+    raf = requestAnimationFrame(tick);
+    const dt = now - last;
+    if (dt < FRAME_MS) return;
+    last = now;
+    const step = Math.min(dt, MAX_STEP_MS);
+    frame.t += step / 1000;
+    frame.pointer +=
+      (pointerTarget - frame.pointer) * Math.min(1, step / POINTER_FADE_MS);
+    draw();
+  };
+
+  // Reduced motion: no loop, no clock, no glitch, no swell — repaint a still
+  // frame whenever the scroll position (and so the morph state) changes.
+  let unsubscribe: (() => void) | undefined;
+  if (reduced) {
+    unsubscribe = morph.subscribe(draw);
+  } else {
+    window.addEventListener("pointermove", onPointer, { passive: true });
+    root.addEventListener("mouseleave", onLeave);
+    window.addEventListener("blur", onLeave);
+    raf = requestAnimationFrame(tick);
+  }
+
+  const onResize = () => {
+    resize();
+    if (reduced) draw();
+  };
+  window.addEventListener("resize", onResize);
+
+  return () => {
+    cancelAnimationFrame(raf);
+    unsubscribe?.();
+    window.removeEventListener("resize", onResize);
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("pointermove", onPointer);
+    root.removeEventListener("mouseleave", onLeave);
+    window.removeEventListener("blur", onLeave);
+    stopWatching();
+    if (!ht.gl.isContextLost()) destroyHalftone(ht);
+  };
 }

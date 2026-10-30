@@ -33,7 +33,9 @@ export function Footer({ morph }: { morph: ScrollMorph }) {
     <footer ref={ref} className="site-footer">
       <div className="site-footer__inner">
         <div className="site-footer__meta">
-          <span className="site-footer__copyright">
+          {/* The year is baked in at build time by the prerender, so a visit
+              in a later year than the last deploy legitimately differs. */}
+          <span className="site-footer__copyright" suppressHydrationWarning>
             © {new Date().getFullYear()} Andre Giske
           </span>
           <p>Thanks for scrolling this far!</p>

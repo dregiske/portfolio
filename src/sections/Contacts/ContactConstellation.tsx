@@ -60,6 +60,10 @@ export function ContactConstellation({ socials }: { socials: Social[] }) {
             src={`${SOCIALS_ICON_LINK}${social.src}`}
             alt={social.name}
             className="contact__social-img"
+            width={28}
+            height={28}
+            loading="lazy"
+            decoding="async"
           />
         </a>
       ))}

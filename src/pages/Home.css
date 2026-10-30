@@ -9,18 +9,31 @@
        and the fixed nav. `clip` contains the overflow without any of that. */
     @apply relative min-h-svh overflow-x-clip;
 
-    /* The hero portrait's width, and its distance from the viewport's right
-       edge. It straddles the Hero/About seam, so both sections need it: the
-       hero to size and place it, About to start below it. Height is
-       width × 32/25; `--hero-portrait-hang` is the fraction of that height
-       that hangs below the seam into About (0.5 would centre it on the seam). */
-    --hero-portrait-w: min(68vw, 320px);
-    --hero-portrait-right: 8vw;
-    --hero-portrait-hang: 0.35;
+    /* The hero portrait's width, its distance from the viewport's right edge,
+       and the fraction of its height that hangs below the seam into About
+       (0.5 would centre it on the seam). Shared because both sections need
+       them: the hero to size and place it, About to start below it. Height is
+       width × 32/25.
 
-    @variant lg {
+       Compact, it sits in the hero's flow and doesn't hang at all. Its width
+       is the smallest of: 64% of the screen, 340px, and what the *height*
+       leaves once the top bar, wordmark, tagline and paddings are paid for —
+       roughly 355px plus 20vw, as the wordmark and tagline grow with width,
+       which leaves ~20px clear above and below it on the shortest phones —
+       so a short phone gets a smaller photo instead of a collision. Floored
+       at 140px for landscape phones, where the hero simply grows taller. */
+    --hero-portrait-w: clamp(
+      140px,
+      (100svh - 355px - 20vw) * 25 / 32,
+      min(64vw, 340px)
+    );
+    --hero-portrait-right: 0px;
+    --hero-portrait-hang: 0;
+
+    @variant wide {
       --hero-portrait-w: min(32vw, 480px);
       --hero-portrait-right: 12vw;
+      --hero-portrait-hang: 0.35;
     }
   }
 

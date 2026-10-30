@@ -175,46 +175,86 @@ export function useConstellation({
       nodes[i].hx = hx;
       nodes[i].hy = hy;
     };
-    const resize = () => {
-      // A roaming canvas covers a whole section, so it keeps to 1.5× — the
-      // links are hairlines, and 2× would quadruple a full-screen backing store.
-      dpr = Math.min(window.devicePixelRatio || 1, roamEl ? 1.5 : 2);
+    // The canvas's drawing area in CSS px — the roam area, or the box plus its
+    // bleed — as of the last layout.
+    let areaW = 0;
+    let areaH = 0;
+    /** Homes, box height, scale and travel bounds for the current size. */
+    const layoutField = () => {
       const h = layoutRef.current(box, setHome);
       if (typeof h === "number") box.style.height = h + "px";
       scaleX = box.clientWidth / vw;
       scaleY = box.clientHeight / vh;
-      let cw: number;
-      let ch: number;
       if (roamEl) {
         const area = roamEl.getBoundingClientRect();
         const own = box.getBoundingClientRect();
         originX = own.left - area.left;
         originY = own.top - area.top;
-        cw = area.width;
-        ch = area.height;
+        areaW = area.width;
+        areaH = area.height;
       } else {
         originX = bleed * scaleX;
         originY = bleed * scaleY;
-        cw = box.clientWidth + originX * 2;
-        ch = box.clientHeight + originY * 2;
+        areaW = box.clientWidth + originX * 2;
+        areaH = box.clientHeight + originY * 2;
       }
       minX = -originX / scaleX;
       minY = -originY / scaleY;
-      maxX = (cw - originX) / scaleX;
-      maxY = (ch - originY) / scaleY;
-      canvas.width = cw * dpr;
-      canvas.height = ch * dpr;
+      maxX = (areaW - originX) / scaleX;
+      maxY = (areaH - originY) / scaleY;
       canvas.style.left = `${-originX}px`;
       canvas.style.top = `${-originY}px`;
-      canvas.style.width = `${cw}px`;
-      canvas.style.height = `${ch}px`;
+    };
+
+    // Reallocating the backing store is the expensive part of a resize — a
+    // roaming canvas is section-sized — so it's sized up to the next
+    // `CANVAS_STEP` px and only replaced when the area outgrows that, or
+    // shrinks a whole step below it. The surplus runs off the right and bottom
+    // and is clipped by the section. Dragging a window edge then reallocates
+    // every ~128px rather than every frame.
+    const CANVAS_STEP = 128;
+    let allocW = 0;
+    let allocH = 0;
+    let allocDpr = 0;
+    const sizeCanvas = () => {
+      // A roaming canvas covers a whole section, so it keeps to 1.5× — the
+      // links are hairlines, and 2× would quadruple a full-screen backing store.
+      dpr = Math.min(window.devicePixelRatio || 1, roamEl ? 1.5 : 2);
+      const w = Math.ceil(areaW / CANVAS_STEP) * CANVAS_STEP;
+      const h = Math.ceil(areaH / CANVAS_STEP) * CANVAS_STEP;
+      if (w === allocW && h === allocH && dpr === allocDpr) return;
+      allocW = w;
+      allocH = h;
+      allocDpr = dpr;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
       dirty = null;
     };
+
+    // Window resizes and the area observer below can both report the same
+    // change in one frame; fold them into one pass at the next frame. The
+    // canvas itself is only resized while the field is running — offscreen,
+    // nothing is drawn, so that waits until it comes back into view.
+    let canvasStale = false;
+    let resizeRaf = 0;
+    const resize = () => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0;
+        layoutField();
+        if (raf) sizeCanvas();
+        else canvasStale = true;
+      });
+    };
+
     // The canvas area that last frame's links were drawn in, so only that has
     // to be cleared — a roaming canvas is mostly empty, and wiping all of it
     // every frame would be wasted fill.
     let dirty: { x: number; y: number; w: number; h: number } | null = null;
-    resize();
+    layoutField();
+    sizeCanvas();
     nodes.forEach((n) => {
       n.x = n.hx;
       n.y = n.hy;
@@ -472,6 +512,11 @@ export function useConstellation({
       ([entry]) => {
         if (entry.isIntersecting) {
           if (!raf) {
+            // Catch up on a resize that happened while it was offscreen.
+            if (canvasStale) {
+              canvasStale = false;
+              sizeCanvas();
+            }
             lastNow = -1;
             frame(performance.now());
           }
@@ -486,6 +531,7 @@ export function useConstellation({
 
     return () => {
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(resizeRaf);
       window.removeEventListener("resize", resize);
       themeObserver.disconnect();
       sizeObserver.disconnect();

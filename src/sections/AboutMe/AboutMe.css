@@ -8,10 +8,12 @@
     padding-top: calc(var(--hero-portrait-w) * 1.28 * var(--hero-portrait-hang) + 1rem);
   }
 
-  /* Photos in a fixed column, bio in the rest. The bio column's negative
-     margin pulls it back over the photos' right edge (see .about__bio). */
+  /* Wide: photos in a column of up to half the width (520px at most), bio in
+     the rest. The bio column's negative margin pulls it back over the photos'
+     right edge (see .about__bio). */
   .about__grid {
-    @apply mt-10 grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,520px)_1fr] lg:gap-14;
+    @apply mt-10 grid grid-cols-1 items-center wide:grid-cols-[minmax(0,min(520px,50%))_minmax(0,1fr)];
+    gap: clamp(40px, 4vw, 56px);
   }
 
   .about__photos {
@@ -32,12 +34,19 @@
      shadow helps white type where it crosses. Set flush right, against the
      page's right edge, with the buttons following. */
   .about__bio {
-    @apply relative z-1 -mt-24 text-right lg:-ml-36 lg:mt-0;
+    @apply relative z-1 -mt-24 text-right wide:mt-0;
+
+    @variant wide {
+      /* ~75px at the breakpoint, 144px from 1440 up. */
+      margin-left: calc(-1 * clamp(64px, 10vw, 144px));
+    }
     text-shadow: 0 2px 40px var(--hero-shadow);
   }
 
   .about__text {
-    @apply text-[20px] leading-relaxed text-fg lg:text-[24px];
+    /* 20px on a phone, 24px from ~1330px wide. */
+    @apply leading-relaxed text-fg;
+    font-size: clamp(20px, 0.6vw + 16px, 24px);
   }
   .about__text + .about__text {
     @apply mt-4;

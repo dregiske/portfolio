@@ -25,10 +25,16 @@ import type { ResolvedColor } from "@/lib/themeColors";
  */
 
 export const HALFTONE = {
-  /** Grid pitch in CSS px, desktop / at or below `MOBILE_MAX_W`. */
-  CELL: 14,
-  CELL_MOBILE: 11,
-  MOBILE_MAX_W: 767,
+  /**
+   * Grid pitch in CSS px: `CELL_MIN` on a viewport `CELL_MIN_AT` wide or
+   * narrower, rising evenly to `CELL_MAX` at `CELL_MAX_AT` and up. Fluid
+   * rather than one size per layout, so resizing the window grows the dots
+   * instead of reshuffling the whole pattern at a breakpoint.
+   */
+  CELL_MIN: 11,
+  CELL_MAX: 14,
+  CELL_MIN_AT: 375,
+  CELL_MAX_AT: 1100,
   /**
    * Dot radius at full density, as a fraction of the cell. 0.5 is neighbours
    * touching; the shader only looks one cell up and down, so going past it
@@ -196,24 +202,37 @@ void main() {
 }
 `;
 
-function compile(gl: WebGLRenderingContext, type: number, src: string) {
-  const shader = gl.createShader(type);
-  if (!shader) return null;
-  gl.shaderSource(shader, src);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.warn("halftone shader:", gl.getShaderInfoLog(shader));
-    gl.deleteShader(shader);
-    return null;
-  }
-  return shader;
+/** A context whose shaders have been handed to the driver but may not have
+ *  finished compiling yet. */
+export type PendingHalftone = {
+  gl: WebGLRenderingContext;
+  program: WebGLProgram;
+  vs: WebGLShader;
+  fs: WebGLShader;
+  parallel: KHR_parallel_shader_compile | null;
+};
+
+function shader(gl: WebGLRenderingContext, type: number, src: string) {
+  const s = gl.createShader(type);
+  if (!s) return null;
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  return s;
 }
 
 /**
- * Set up WebGL on `canvas`. Returns null when WebGL isn't available — the
- * caller then simply draws nothing, and the layers beneath show alone.
+ * Get a WebGL context on `canvas` and start compiling the shaders. Returns
+ * null when WebGL isn't available — the caller then simply draws nothing, and
+ * the layers beneath show alone.
+ *
+ * Nothing here asks how the compile went: the first status query blocks the
+ * main thread until the driver is done, which on a phone is long enough to
+ * hold up the page's first paint. Wait for `isHalftoneReady`, then call
+ * `finishHalftone`.
  */
-export function createHalftone(canvas: HTMLCanvasElement): Halftone | null {
+export function createHalftone(
+  canvas: HTMLCanvasElement,
+): PendingHalftone | null {
   const gl = canvas.getContext("webgl", {
     alpha: true,
     premultipliedAlpha: true,
@@ -224,17 +243,58 @@ export function createHalftone(canvas: HTMLCanvasElement): Halftone | null {
   });
   if (!gl) return null;
 
-  const vs = compile(gl, gl.VERTEX_SHADER, VERT);
-  const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
+  // Lets the driver compile off the main thread, and lets us ask whether it's
+  // done without waiting for it.
+  const parallel = gl.getExtension("KHR_parallel_shader_compile");
+
+  const vs = shader(gl, gl.VERTEX_SHADER, VERT);
+  const fs = shader(gl, gl.FRAGMENT_SHADER, FRAG);
   const program = gl.createProgram();
   if (!vs || !fs || !program) return null;
   gl.attachShader(program, vs);
   gl.attachShader(program, fs);
   gl.linkProgram(program);
+  return { gl, program, vs, fs, parallel };
+}
+
+/**
+ * Whether `finishHalftone` can run without stalling. Without the parallel
+ * compile extension there's no way to ask, so it's always "ready" and the
+ * stall happens there instead — the same as it always did.
+ */
+export function isHalftoneReady(p: PendingHalftone): boolean {
+  if (p.gl.isContextLost()) return false;
+  if (!p.parallel) return true;
+  return p.gl.getProgramParameter(p.program, p.parallel.COMPLETION_STATUS_KHR) === true;
+}
+
+/** Throw away a context that never finished setting up. */
+export function discardHalftone(p: PendingHalftone) {
+  const { gl } = p;
+  if (gl.isContextLost()) return;
+  gl.deleteShader(p.vs);
+  gl.deleteShader(p.fs);
+  gl.deleteProgram(p.program);
+}
+
+/**
+ * Check the compiled program and build the rest of the pipeline on it.
+ * Returns null if the shaders failed, after logging why.
+ */
+export function finishHalftone(p: PendingHalftone): Halftone | null {
+  const { gl, program, vs, fs } = p;
+  const linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+  if (!linked) {
+    for (const s of [vs, fs]) {
+      const log = gl.getShaderInfoLog(s);
+      if (log) console.warn("halftone shader:", log);
+    }
+    console.warn("halftone program:", gl.getProgramInfoLog(program));
+  }
   gl.deleteShader(vs);
   gl.deleteShader(fs);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.warn("halftone program:", gl.getProgramInfoLog(program));
+  if (!linked) {
+    gl.deleteProgram(program);
     return null;
   }
   gl.useProgram(program);
@@ -285,7 +345,7 @@ export function createHalftone(canvas: HTMLCanvasElement): Halftone | null {
     w: 0,
     h: 0,
     dpr: 1,
-    cell: HALFTONE.CELL,
+    cell: HALFTONE.CELL_MAX,
     cols: 0,
     rows: 0,
     data: new Uint8Array(0),
@@ -309,7 +369,9 @@ export function resizeHalftone(
   ht.w = w;
   ht.h = h;
   ht.dpr = dpr;
-  ht.cell = w <= HALFTONE.MOBILE_MAX_W ? HALFTONE.CELL_MOBILE : HALFTONE.CELL;
+  const { CELL_MIN, CELL_MAX, CELL_MIN_AT, CELL_MAX_AT } = HALFTONE;
+  const k = Math.min(1, Math.max(0, (w - CELL_MIN_AT) / (CELL_MAX_AT - CELL_MIN_AT)));
+  ht.cell = CELL_MIN + (CELL_MAX - CELL_MIN) * k;
   ht.cols = Math.ceil(w / ht.cell);
   ht.rows = Math.ceil(h / ht.cell) + 2;
   ht.data = new Uint8Array(ht.cols * ht.rows);

@@ -12,8 +12,22 @@
     @apply z-0;
   }
 
+  /* Hidden until HalftoneLayer has drawn its first frame (it sets
+     `data-drawn`), then eased in — its shaders compile after the page has
+     painted, and a fade reads as intent where a pop reads as a hitch. */
   .site-bg--halftone {
     @apply z-[1];
+    opacity: 0;
+    transition: opacity 600ms ease-out;
+  }
+
+  .site-bg--halftone[data-drawn] {
     opacity: var(--halftone-opacity);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-bg--halftone {
+      transition: none;
+    }
   }
 }

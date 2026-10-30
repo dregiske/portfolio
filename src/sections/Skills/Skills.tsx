@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { TONES } from "@/constants/tones";
 import { useConstellation } from "@/lib/useConstellation";
+import { isWide } from "@/lib/breakpoint";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
 import "./Skills.css";
 
@@ -21,9 +22,10 @@ const skills: Skill[] = [
   { name: "Git", level: 90 },
 ];
 
-// Two layouts in a normalized 1000×1000 virtual space. The live layout is a
-// per-node blend between them, driven by container width — so the single
-// constellation morphs continuously from horizontal (wide) to vertical (narrow).
+// Two layouts in a normalized 1000×1000 virtual space, switched at the site
+// breakpoint (`@/lib/breakpoint`) along with everything else. The switch moves
+// each node's *home*; the spring in `useConstellation` then glides the node
+// there, so the change animates instead of snapping.
 // homesWide is the original landscape spread; homesTall is a loose, uneven
 // scatter for phones, placed by measured node size so no two pills touch at
 // ~330px wide. (It was a strict two-column zigzag, which read as a grid.)
@@ -58,17 +60,11 @@ const homesTall: [number, number][] = [
 
 const VW = 1000;
 const VH = 1000;
-const H_WIDE = 520; // field height (px) when fully horizontal
-const H_TALL = 620; // field height (px) when fully vertical — trimmed so the
-// narrow-screen Skills section isn't taller than a phone viewport.
-// Blend factor: t=0 at WIDE_AT px wide, t=1 at TALL_AT px wide.
-const WIDE_AT = 900;
-const TALL_AT = 480;
+const H_WIDE = 520; // field height (px), wide layout
+const H_TALL = 620; // field height (px), compact — trimmed so the phone
+// Skills section isn't taller than the viewport.
 
 const tints = TONES.map((tone) => `skill-node--${tone}`);
-
-const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
-const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
 
 export const Skills = () => {
   const boxRef = useRef<HTMLDivElement>(null);
@@ -85,18 +81,13 @@ export const Skills = () => {
     // Free to roam the whole Skills section, like the Contact socials. The
     // section's own overflow does the clipping.
     roam: "section",
-    // Blend each home + the field height between the wide and tall layouts,
-    // driven by container width, so the constellation morphs as it narrows.
-    layout: (box, setHome) => {
-      const t = clamp01((WIDE_AT - box.clientWidth) / (WIDE_AT - TALL_AT));
-      for (let i = 0; i < skills.length; i++) {
-        setHome(
-          i,
-          lerp(homesWide[i][0], homesTall[i][0], t),
-          lerp(homesWide[i][1], homesTall[i][1], t),
-        );
-      }
-      return lerp(H_WIDE, H_TALL, t);
+    // Pick the layout for the current side of the breakpoint. Within either,
+    // homes are in virtual units, so the spread still scales with the width.
+    layout: (_box, setHome) => {
+      const wide = isWide();
+      const homes = wide ? homesWide : homesTall;
+      homes.forEach(([hx, hy], i) => setHome(i, hx, hy));
+      return wide ? H_WIDE : H_TALL;
     },
   });
 

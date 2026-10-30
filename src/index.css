@@ -83,6 +83,34 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Layout: one breakpoint, everything else fluid
+   ---------------------------------------------------------------------------
+   `wide` is the only breakpoint — Tailwind's defaults are cleared, so `sm:`,
+   `md:` and `lg:` don't exist and a stray one fails the build. Below it is the
+   compact (phone) layout. Every layout switch uses it, in CSS (`wide:`,
+   `@variant wide`) and JS (`@/lib/breakpoint`, which mirrors this value and
+   checks it in development), so the page collapses all at once. `static` so
+   the variable is always emitted for that check to read.
+
+   What only *scales* with the viewport doesn't switch at all: the gutters and
+   section spacing below, and the type sizes in each component, are clamp()ed
+   so a window resize glides instead of snapping between steps. They're
+   resolved once per style pass — free when nothing is resizing.
+   ------------------------------------------------------------------------- */
+@theme static {
+  --breakpoint-*: initial;
+  --breakpoint-wide: 48rem;
+}
+
+:root {
+  /* Side margin of every full-width band: hero, sections, footer, indicator.
+     24px on a phone, 60px from ~1330px wide. */
+  --gutter: clamp(24px, 4.5vw, 60px);
+  /* Top/bottom padding of each content section. */
+  --section-pad-y: clamp(64px, 8vw, 96px);
+}
+
+/* ---------------------------------------------------------------------------
    Light theme — white paper, near-black ink
    ------------------------------------------------------------------------- */
 :root {

@@ -6,7 +6,7 @@ import { Card } from "@/components/Card/Card";
 import { Carousel } from "@/components/Carousel/Carousel";
 import { Photo } from "@/components/Photo/Photo";
 import { Tag } from "@/components/Tag/Tag";
-import { useMediaQuery } from "@/lib/useMediaQuery";
+import { useIsWide } from "@/lib/breakpoint";
 import "./Projects.css";
 import { Pill } from "@/components/Pill/Pill";
 
@@ -145,7 +145,7 @@ const ProjectCard = ({ project }: { project: Project }) => (
 
 export const Projects = () => {
   // Three cards abreast where there's room, one on a phone.
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useIsWide();
 
   return (
     <SectionShell id="projects" title="Projects">
