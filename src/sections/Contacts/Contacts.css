@@ -5,8 +5,17 @@
     @apply mt-10 grid grid-cols-1 gap-12 md:grid-cols-[0.9fr_1.1fr];
   }
 
+  /* Shrink-wrapped, so the "or" centres between the two pills — both
+     addresses are 21 characters of mono, so the pills are the same width. */
+  .contact__emails {
+    @apply mb-8 inline-flex flex-col items-center gap-2;
+  }
+  .contact__or {
+    @apply font-mono text-xs uppercase tracking-[0.08em] text-fg-faint;
+  }
+
   .contact__email {
-    @apply mb-8 inline-flex items-center gap-2.5 rounded-full border px-4 py-2.5 font-mono text-sm backdrop-blur-sm transition-colors;
+    @apply inline-flex items-center gap-2.5 rounded-full border px-4 py-2.5 font-mono text-sm backdrop-blur-sm transition-colors;
     background: var(--glass-bg);
     border-color: var(--glass-border);
   }
@@ -17,21 +26,23 @@
     @apply h-5 w-5 text-accent-brand;
   }
 
-  /* Unclipped, like Skills: icons can be dragged past the field's edge and over
-     the form beside it. The section clips, so nothing escapes the page.
+  /* Unclipped: icons can be dragged anywhere in the section, over the form and
+     the heading (the hook stretches the canvas over the whole section to keep
+     their links). The section itself clips, so nothing escapes the page.
      `touch-none`/`cursor-grab` are scoped to the nodes (see .contact__node), not
      here, so a touch on empty space scrolls the page instead of being trapped. */
   .contact__constellation {
-    @apply relative z-2 h-40 w-full;
+    @apply relative z-2 h-48 w-full;
   }
+  /* Section-sized, so it must never take a click meant for the form. */
   .contact__constellation-canvas {
-    @apply absolute inset-0 h-full w-full;
+    @apply pointer-events-none absolute inset-0 h-full w-full;
   }
 
   .contact__node {
     /* `touch-none` scoped here so dragging an icon pans it rather than scrolling
        the page, while empty field space stays scrollable. */
-    @apply absolute left-0 top-0 z-2 inline-flex h-11 w-11 flex-none cursor-grab touch-none select-none items-center justify-center rounded-full;
+    @apply absolute left-0 top-0 z-2 inline-flex h-14 w-14 flex-none cursor-grab touch-none select-none items-center justify-center rounded-full;
     transform-origin: center;
     /* See .skill-node: position and hover scale both ride the transform, so
        moving these every frame never touches layout. */
@@ -69,7 +80,7 @@
   }
 
   .contact__social-img {
-    @apply h-5 w-5;
+    @apply h-7 w-7;
   }
 
   .contact__form {

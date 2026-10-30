@@ -50,7 +50,7 @@
    *
    * It writes straight across the portrait on purpose: `relative z-1` lifts
    * it (and the wordmark) above the absolutely positioned photo, which would
-   * otherwise paint on top. The shadow keeps white type legible where it
+   * otherwise paint on top. The soft shadow helps white type where it
    * crosses the brighter parts of the photo.
    */
   .hero__tagline {
@@ -64,16 +64,17 @@
   }
 
   /**
-   * The portrait, behind the tagline and pushed half its own height down, so
-   * the seam between Hero and About runs through its middle. Size and place
-   * come from `--hero-portrait-w` / `--hero-portrait-right` on `.home`, shared
-   * with About, which starts below its lower half. The right offset is from
+   * The portrait, behind the tagline and pushed part of its own height down
+   * (`--hero-portrait-hang`), so the seam between Hero and About runs across
+   * it. Size, place and hang all come from `.home`, shared with About, which
+   * starts below the part that hangs into it. The right offset is from
    * the viewport edge, past the gutter, which pulls it in toward the centre.
    * The component's fixed sizes are overridden here (`.portrait-card` in the
    * selector outranks them), with the frame's 25:32 aspect kept.
    */
   .portrait-card.hero__portrait {
-    @apply absolute bottom-0 z-0 h-auto translate-y-1/2;
+    @apply absolute bottom-0 z-0 h-auto;
+    translate: 0 calc(var(--hero-portrait-hang) * 100%);
     right: var(--hero-portrait-right);
     width: var(--hero-portrait-w);
     aspect-ratio: 25 / 32;

@@ -23,6 +23,12 @@ export interface ConstellationOptions {
    * not clip (no `overflow-hidden`) for the bleed to be visible.
    */
   bleed?: number;
+  /**
+   * Selector for an ancestor of the box (e.g. "section") whose whole area a
+   * node may be dragged across. Replaces `bleed`: the canvas is stretched over
+   * that ancestor, so links follow a node anywhere inside it.
+   */
+  roam?: string;
   /** Scale applied to a hovered node. */
   hoverScale?: number;
   /**
@@ -67,6 +73,7 @@ export function useConstellation({
   neighbors = 2,
   floatAmp = 7,
   bleed = 0,
+  roam,
   hoverScale = 1.06,
   layout,
 }: ConstellationOptions) {
@@ -82,6 +89,7 @@ export function useConstellation({
     if (!box || !canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    const roamEl = roam ? box.closest<HTMLElement>(roam) : null;
 
     // Pull canvas colors from CSS tokens. A hidden probe lets the browser fully
     // resolve var()/color-mix() to a concrete rgb() the canvas can parse; we
@@ -153,31 +161,59 @@ export function useConstellation({
     let dpr = 1;
     let scaleX = 1;
     let scaleY = 1;
-    // The bleed margin in px — the canvas is grown and offset by this much so a
-    // node dragged outside the box keeps its links.
-    let bleedX = 0;
-    let bleedY = 0;
+    // Where the box's origin sits inside the canvas, in px — the canvas is
+    // grown past the box (by the bleed, or out to the roam area) so a node
+    // dragged outside it keeps its links.
+    let originX = 0;
+    let originY = 0;
+    // How far a node's centre may travel, in virtual units (box coordinates).
+    let minX = 0;
+    let maxX = vw;
+    let minY = 0;
+    let maxY = vh;
     const setHome: SetHome = (i, hx, hy) => {
       nodes[i].hx = hx;
       nodes[i].hy = hy;
     };
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // A roaming canvas covers a whole section, so it keeps to 1.5× — the
+      // links are hairlines, and 2× would quadruple a full-screen backing store.
+      dpr = Math.min(window.devicePixelRatio || 1, roamEl ? 1.5 : 2);
       const h = layoutRef.current(box, setHome);
       if (typeof h === "number") box.style.height = h + "px";
       scaleX = box.clientWidth / vw;
       scaleY = box.clientHeight / vh;
-      bleedX = bleed * scaleX;
-      bleedY = bleed * scaleY;
-      const cw = box.clientWidth + bleedX * 2;
-      const ch = box.clientHeight + bleedY * 2;
+      let cw: number;
+      let ch: number;
+      if (roamEl) {
+        const area = roamEl.getBoundingClientRect();
+        const own = box.getBoundingClientRect();
+        originX = own.left - area.left;
+        originY = own.top - area.top;
+        cw = area.width;
+        ch = area.height;
+      } else {
+        originX = bleed * scaleX;
+        originY = bleed * scaleY;
+        cw = box.clientWidth + originX * 2;
+        ch = box.clientHeight + originY * 2;
+      }
+      minX = -originX / scaleX;
+      minY = -originY / scaleY;
+      maxX = (cw - originX) / scaleX;
+      maxY = (ch - originY) / scaleY;
       canvas.width = cw * dpr;
       canvas.height = ch * dpr;
-      canvas.style.left = `${-bleedX}px`;
-      canvas.style.top = `${-bleedY}px`;
+      canvas.style.left = `${-originX}px`;
+      canvas.style.top = `${-originY}px`;
       canvas.style.width = `${cw}px`;
       canvas.style.height = `${ch}px`;
+      dirty = null;
     };
+    // The canvas area that last frame's links were drawn in, so only that has
+    // to be cleared — a roaming canvas is mostly empty, and wiping all of it
+    // every frame would be wasted fill.
+    let dirty: { x: number; y: number; w: number; h: number } | null = null;
     resize();
     nodes.forEach((n) => {
       n.x = n.hx;
@@ -186,6 +222,10 @@ export function useConstellation({
     });
     measureNodes();
     window.addEventListener("resize", resize);
+    // The roam area can change height without the window resizing (a status
+    // line under the form, a font swapping in), which moves its edges.
+    const areaObserver = roamEl ? new ResizeObserver(resize) : null;
+    areaObserver?.observe(roamEl as HTMLElement);
 
     let hovered = -1;
     let dragging = -1;
@@ -293,8 +333,8 @@ export function useConstellation({
       lastNow = now;
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
-        const halfW = n.w / 2 / scaleX - bleed;
-        const halfH = n.h / 2 / scaleY - bleed;
+        const halfW = n.w / 2 / scaleX;
+        const halfH = n.h / 2 / scaleY;
         if (dragging !== i) {
           const ax = (n.hx + Math.sin(t * 0.6 + n.phase) * amp - n.x) * 0.012;
           const ay = (n.hy + Math.cos(t * 0.5 + n.phase) * amp - n.y) * 0.012;
@@ -303,8 +343,8 @@ export function useConstellation({
           n.x += n.vx;
           n.y += n.vy;
         }
-        n.x = Math.max(halfW, Math.min(vw - halfW, n.x));
-        n.y = Math.max(halfH, Math.min(vh - halfH, n.y));
+        n.x = Math.max(minX + halfW, Math.min(maxX - halfW, n.x));
+        n.y = Math.max(minY + halfH, Math.min(maxY - halfH, n.y));
 
         // Position rides on the transform rather than left/top. Both look the
         // same, but left/top are layout properties: moving a dozen nodes that
@@ -329,11 +369,30 @@ export function useConstellation({
         }
       }
 
-      const W = canvas.width;
-      const H = canvas.height;
-      ctx.clearRect(0, 0, W, H);
-      const cx = (n: Node) => (n.x * scaleX + bleedX) * dpr;
-      const cy = (n: Node) => (n.y * scaleY + bleedY) * dpr;
+      const cx = (n: Node) => (n.x * scaleX + originX) * dpr;
+      const cy = (n: Node) => (n.y * scaleY + originY) * dpr;
+      if (dirty) ctx.clearRect(dirty.x, dirty.y, dirty.w, dirty.h);
+      // Every link runs between two node centres, so their bounding box (plus
+      // the active stroke's width) covers everything drawn this frame.
+      let x0 = Infinity;
+      let y0 = Infinity;
+      let x1 = -Infinity;
+      let y1 = -Infinity;
+      for (const n of nodes) {
+        const x = cx(n);
+        const y = cy(n);
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        if (y > y1) y1 = y;
+      }
+      const pad = 2 * dpr;
+      dirty = {
+        x: Math.floor(x0 - pad),
+        y: Math.floor(y0 - pad),
+        w: Math.ceil(x1 - x0 + pad * 2) + 1,
+        h: Math.ceil(y1 - y0 + pad * 2) + 1,
+      };
 
       linked.fill(0);
       let lit = 0;
@@ -430,6 +489,7 @@ export function useConstellation({
       window.removeEventListener("resize", resize);
       themeObserver.disconnect();
       sizeObserver.disconnect();
+      areaObserver?.disconnect();
       visibility.disconnect();
       probe.remove();
       cleanups.forEach((fn) => fn());
@@ -444,6 +504,7 @@ export function useConstellation({
     neighbors,
     floatAmp,
     bleed,
+    roam,
     hoverScale,
   ]);
 }

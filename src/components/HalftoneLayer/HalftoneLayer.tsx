@@ -17,6 +17,9 @@ const INK_TOKENS = [
   "--halftone-ink-2",
   "--halftone-ink-3",
 ] as const;
+/** What the inks' full overlap — the white — is pulled down to. */
+const OVERLAP_TOKEN = "--halftone-overlap";
+const COLOR_TOKENS = [...INK_TOKENS, OVERLAP_TOKEN] as const;
 
 /**
  * Redraw budget: ~60fps. The field moves slowly, so a 120Hz display doubling
@@ -82,8 +85,12 @@ export function HalftoneLayer({ morph }: { morph: ScrollMorph }) {
     };
     resize();
 
-    const stopWatching = watchThemeColors(INK_TOKENS, (colors) => {
-      setHalftoneInks(ht, INK_TOKENS.map((token) => colors[token]));
+    const stopWatching = watchThemeColors(COLOR_TOKENS, (colors) => {
+      setHalftoneInks(
+        ht,
+        INK_TOKENS.map((token) => colors[token]),
+        colors[OVERLAP_TOKEN],
+      );
       if (reduced) draw();
     });
 

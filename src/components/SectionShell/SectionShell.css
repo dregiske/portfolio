@@ -19,6 +19,6 @@
      Titles are authored in title case ("About") and lowercased here, so screen
      readers and the document outline keep the proper capitalisation. */
   .section-shell__title {
-    @apply mt-3.5 font-display text-[clamp(56px,10vw,120px)] font-normal lowercase leading-[0.9] tracking-[-0.05em];
+    @apply font-display text-[clamp(56px,10vw,120px)] font-normal lowercase leading-[0.9] tracking-[-0.05em];
   }
 }

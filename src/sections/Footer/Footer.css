@@ -18,8 +18,9 @@
     padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
   }
 
+  /* Full width so "Back to top" can push itself out to the right edge. */
   .site-footer__meta {
-    @apply flex items-center gap-6 font-mono text-xs;
+    @apply flex w-full items-center gap-6 font-mono text-xs;
   }
 
   .site-footer__copyright {
@@ -27,7 +28,7 @@
   }
 
   .site-footer__top {
-    @apply inline-flex items-center gap-1.5 uppercase tracking-[0.08em] text-accent-brand transition-opacity hover:opacity-70;
+    @apply ml-auto inline-flex shrink-0 items-center gap-1.5 uppercase tracking-[0.08em] text-accent-brand transition-opacity hover:opacity-70;
   }
 
   .site-footer__top-glyph {

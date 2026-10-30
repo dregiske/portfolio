@@ -1,43 +1,50 @@
 @reference "../../index.css";
 
 @layer components {
-  /* The hero portrait hangs half its height into the top of this section, so
-     the section starts below it — otherwise the heading (narrow screens) or
-     the bio card (wide ones) would run into the photo. */
+  /* The hero portrait hangs part of its height into the top of this section,
+     so the section starts below it — otherwise the heading (narrow screens) or
+     the bio (wide ones) would run into the photo. 1.28 is its 32/25 height. */
   .section-shell.about {
-    padding-top: calc(var(--hero-portrait-w) * 0.64 + 1rem);
+    padding-top: calc(var(--hero-portrait-w) * 1.28 * var(--hero-portrait-hang) + 1rem);
   }
 
+  /* Photos in a fixed column, bio in the rest. The bio column's negative
+     margin pulls it back over the photos' right edge (see .about__bio). */
   .about__grid {
-    @apply mt-10 grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-14;
+    @apply mt-10 grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,520px)_1fr] lg:gap-14;
   }
 
-  /* A little narrower than the source (2400×1344), so object-cover trims the
-     dead air at the sides. Fixed aspect means a different shot later reframes
-     rather than moving the bio. */
+  .about__photos {
+    @apply flex flex-col gap-6;
+  }
+
+  /* Both shots share one frame, a little narrower than either source (16:9
+     and 4:3), so object-cover trims the dead air at the edges. Fixed aspect
+     means a different shot later reframes rather than moving the bio. */
   .about__photo {
     @apply aspect-[3/2] w-full max-w-[520px] overflow-hidden rounded-2xl object-cover;
     box-shadow: 0 24px 50px -20px var(--hero-shadow);
   }
 
-  /* Match the project cards: no backdrop blur (it re-samples the animating dot
-     canvas every frame), just a bg-base scrim over the glass tint. The `.card`
-     in the selector outranks the base card's `backdrop-blur-sm`. The résumé
-     button keeps its own blur — that lives on the Pill, not this card. */
-  .card.about__bio {
-    @apply p-8 lg:p-10;
-    backdrop-filter: none;
-    background: color-mix(in srgb, var(--bg-base) 55%, var(--glass-bg));
+  /* No card: free-standing text, the hero tagline's treatment. It's lifted
+     above the photos and nudged back over them — up onto the second photo on
+     narrow screens, across their right edge on wide ones — and the same soft
+     shadow helps white type where it crosses. Set flush right, against the
+     page's right edge, with the buttons following. */
+  .about__bio {
+    @apply relative z-1 -mt-24 text-right lg:-ml-36 lg:mt-0;
+    text-shadow: 0 2px 40px var(--hero-shadow);
   }
 
   .about__text {
-    @apply text-[17px] leading-relaxed text-fg;
+    @apply text-[20px] leading-relaxed text-fg lg:text-[24px];
   }
   .about__text + .about__text {
     @apply mt-4;
   }
 
   .about__actions {
-    @apply mt-8 flex flex-wrap gap-3.5;
+    @apply mt-8 flex flex-wrap justify-end gap-3.5;
+    text-shadow: none;
   }
 }

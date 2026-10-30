@@ -1,30 +1,36 @@
-import { ABOUT_PHOTO_LINK, RESUME_LINK } from "@/constants/links";
+import {
+  ABOUT_PHOTO_LINK,
+  ABOUT_PHOTO_2_LINK,
+  RESUME_LINK,
+} from "@/constants/links";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
-import { Card } from "@/components/Card/Card";
 import { Photo } from "@/components/Photo/Photo";
 import { Pill } from "@/components/Pill/Pill";
 import "./AboutMe.css";
 
 export const AboutMe = () => {
   return (
-    <SectionShell
-      id="about"
-      num="02"
-      eyebrow="ABOUT"
-      title="About"
-      className="about"
-    >
+    <SectionShell id="about" title="About" className="about">
       <div className="about__grid">
-        <Photo
-          src={ABOUT_PHOTO_LINK}
-          alt="Andre with the ACM group at UC San Diego"
-          className="about__photo"
-          width={1100}
-          height={616}
-        />
+        <div className="about__photos">
+          <Photo
+            src={ABOUT_PHOTO_LINK}
+            alt="Andre with the ACM group at UC San Diego"
+            className="about__photo"
+            width={1100}
+            height={616}
+          />
+          <Photo
+            src={ABOUT_PHOTO_2_LINK}
+            alt="ACM event participants at UC San Diego"
+            className="about__photo"
+            width={1100}
+            height={825}
+          />
+        </div>
 
-        {/* Right — the bio, on glass over the globe. */}
-        <Card className="about__bio">
+        {/* Right — the bio, free-standing and overlapping the photos. */}
+        <div className="about__bio">
           <p className="about__text">
             I'm a Computer Science &amp; Engineering student with a keen
             interest in backend design and full-stack development. I love
@@ -50,10 +56,10 @@ export const AboutMe = () => {
               download
               rel="noopener noreferrer"
             >
-              Résumé →
+              Résumé
             </Pill>
           </div>
-        </Card>
+        </div>
       </div>
     </SectionShell>
   );

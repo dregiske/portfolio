@@ -5,8 +5,14 @@
     @apply flex items-center justify-between;
   }
 
+  /* The monogram in the same glass pill as the nav beside it — it wears the
+     nav pill's roles, so the two always match. 9px of padding around the 28px
+     line makes it the nav pill's 48px tall. */
   .top-bar__logo {
-    @apply font-display text-xl font-medium tracking-[0.04em];
+    @apply rounded-[30px] border px-4 py-[9px] font-display text-xl font-medium tracking-[0.04em] backdrop-blur-sm;
+    background: var(--nav-pill-bg);
+    border-color: var(--nav-pill-border);
+    color: var(--nav-pill-fg);
   }
 
   .top-bar__actions {

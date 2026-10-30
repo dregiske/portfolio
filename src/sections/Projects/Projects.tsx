@@ -147,7 +147,7 @@ export const Projects = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
-    <SectionShell id="projects" num="03" eyebrow="WORK" title="Projects">
+    <SectionShell id="projects" title="Projects">
       <Carousel
         className="projects__carousel"
         itemsPerView={isDesktop ? 3 : 1}

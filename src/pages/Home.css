@@ -12,9 +12,11 @@
     /* The hero portrait's width, and its distance from the viewport's right
        edge. It straddles the Hero/About seam, so both sections need it: the
        hero to size and place it, About to start below it. Height is
-       width × 32/25, so the half that hangs into About is width × 0.64. */
+       width × 32/25; `--hero-portrait-hang` is the fraction of that height
+       that hangs below the seam into About (0.5 would centre it on the seam). */
     --hero-portrait-w: min(68vw, 320px);
     --hero-portrait-right: 8vw;
+    --hero-portrait-hang: 0.35;
 
     @variant lg {
       --hero-portrait-w: min(32vw, 480px);

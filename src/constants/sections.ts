@@ -10,7 +10,8 @@ export type SectionMeta = {
   label: string;
   /** Two-digit index shown in the indicator and the section eyebrow. */
   num: string;
-  /** All-caps eyebrow word, e.g. "WORK" for Projects. */
+  /** All-caps eyebrow word, e.g. "WORK" for Projects. Unused while the
+   *  section eyebrows are archived (see SectionShell); kept for restoring. */
   eyebrow: string;
 };
 

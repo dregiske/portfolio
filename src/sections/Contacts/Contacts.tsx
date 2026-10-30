@@ -1,5 +1,6 @@
 import {
   EMAIL_ADDRESS,
+  EMAIL_ADDRESS_ALT,
   DISCORD_LINK,
   GITHUB_LINK,
   LINKEDIN_LINK,
@@ -53,18 +54,23 @@ export const Contacts = () => {
   return (
     <SectionShell
       id="contact"
-      num="05"
-      eyebrow="CONTACT"
       title="Contact"
       className="overflow-hidden"
     >
       <div className="contact__grid">
         {/* Left — where to find me */}
         <div>
-          <a href={`mailto:${EMAIL_ADDRESS}`} className="contact__email">
-            <Mail className="contact__email-glyph" />
-            {EMAIL_ADDRESS}
-          </a>
+          <div className="contact__emails">
+            <a href={`mailto:${EMAIL_ADDRESS}`} className="contact__email">
+              <Mail className="contact__email-glyph" />
+              {EMAIL_ADDRESS}
+            </a>
+            <span className="contact__or">or</span>
+            <a href={`mailto:${EMAIL_ADDRESS_ALT}`} className="contact__email">
+              <Mail className="contact__email-glyph" />
+              {EMAIL_ADDRESS_ALT}
+            </a>
+          </div>
 
           <ContactConstellation socials={socials} />
         </div>

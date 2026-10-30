@@ -9,7 +9,8 @@
     @apply bg-foreground text-background transition-opacity hover:opacity-90;
   }
 
+  /* The glass surface, same as Contact's email pills. */
   .pill--outline {
-    @apply border border-glass-border text-fg backdrop-blur-sm hover:border-accent-brand hover:text-accent-brand;
+    @apply border border-glass-border bg-glass text-fg backdrop-blur-sm hover:border-accent-brand hover:bg-glass-strong hover:text-accent-brand;
   }
 }

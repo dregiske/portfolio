@@ -8,8 +8,6 @@ export type Social = { name: string; url: string; src: string; tone: Tone };
 
 const VW = 1000;
 const VH = 400;
-/** Slack around the field a dragged icon may occupy — see `useConstellation`. */
-const BLEED = 150;
 
 /**
  * The contact socials laid out as an inline horizontal constellation: linked
@@ -27,7 +25,9 @@ export function ContactConstellation({ socials }: { socials: Social[] }) {
     count: socials.length,
     vw: VW,
     vh: VH,
-    bleed: BLEED,
+    // Free to roam the whole Contact section — which fills the screen while
+    // you're on it — rather than a margin around the field.
+    roam: "section",
     floatAmp: 16,
     hoverScale: 1.1,
     // Even horizontal spread with a gentle zigzag so the links read as a chain.

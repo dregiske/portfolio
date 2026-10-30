@@ -24,8 +24,9 @@ const skills: Skill[] = [
 // Two layouts in a normalized 1000×1000 virtual space. The live layout is a
 // per-node blend between them, driven by container width — so the single
 // constellation morphs continuously from horizontal (wide) to vertical (narrow).
-// homesWide is the original landscape spread; homesTall is a two-column zigzag,
-// index-matched so each node glides between its two homes without crossing.
+// homesWide is the original landscape spread; homesTall is a loose, uneven
+// scatter for phones, placed by measured node size so no two pills touch at
+// ~330px wide. (It was a strict two-column zigzag, which read as a grid.)
 const homesWide: [number, number][] = [
   [181, 238],
   [377, 181],
@@ -41,18 +42,18 @@ const homesWide: [number, number][] = [
   [650, 844],
 ];
 const homesTall: [number, number][] = [
-  [330, 250],
-  [312, 80],
-  [688, 230],
-  [700, 90],
-  [706, 370],
-  [322, 430],
-  [338, 620],
-  [700, 650],
-  [694, 510],
-  [686, 790],
-  [308, 820],
-  [704, 920],
+  [581, 210], // Python
+  [275, 65], // TypeScript
+  [153, 282], // C++
+  [856, 323], // Java
+  [703, 468], // SQL
+  [367, 395], // React
+  [520, 726], // SQLAlchemy
+  [810, 629], // Numpy
+  [275, 556], // FastAPI
+  [153, 839], // Nginx
+  [703, 879], // Docker
+  [765, 113], // Git
 ];
 
 const VW = 1000;
@@ -63,9 +64,6 @@ const H_TALL = 620; // field height (px) when fully vertical — trimmed so the
 // Blend factor: t=0 at WIDE_AT px wide, t=1 at TALL_AT px wide.
 const WIDE_AT = 900;
 const TALL_AT = 480;
-// Slack around the field, in virtual units, that a dragged node may occupy —
-// ~18% of the field on every side. The section's own overflow does the clipping.
-const BLEED = 180;
 
 const tints = TONES.map((tone) => `skill-node--${tone}`);
 
@@ -84,7 +82,9 @@ export const Skills = () => {
     count: skills.length,
     vw: VW,
     vh: VH,
-    bleed: BLEED,
+    // Free to roam the whole Skills section, like the Contact socials. The
+    // section's own overflow does the clipping.
+    roam: "section",
     // Blend each home + the field height between the wide and tall layouts,
     // driven by container width, so the constellation morphs as it narrows.
     layout: (box, setHome) => {
@@ -103,8 +103,6 @@ export const Skills = () => {
   return (
     <SectionShell
       id="skills"
-      num="04"
-      eyebrow="STACK"
       title="Skills"
       className="overflow-hidden"
     >

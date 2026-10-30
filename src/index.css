@@ -122,10 +122,13 @@
 
   /* Halftone layer: three inks, offset top → middle → bottom in each cell and
      added together, so where they overlap they burn to white. Roles, not hues:
-     swap any of them and the fringes follow. */
+     swap any of them and the fringes follow. `--halftone-overlap` is what that
+     burnt-out white is pulled down to — kept below the text's white so type
+     still reads where it crosses a dense patch. The fringes are untouched. */
   --halftone-ink-1: #2b4dff;
   --halftone-ink-2: #3dff6e;
   --halftone-ink-3: #ff3b30;
+  --halftone-overlap: #b3b3b3;
   --halftone-opacity: 1;
 
   /* ---- Blue shade ladder -------------------------------------------------
@@ -255,6 +258,7 @@
   --halftone-ink-1: #2b4dff;
   --halftone-ink-2: #3dff6e;
   --halftone-ink-3: #ff3b30;
+  --halftone-overlap: #b3b3b3;
   --halftone-opacity: 1;
 
   /* Base recipe (dark): bright ink L 0.82 · subtle L 0.36, chroma 0 — the

@@ -97,6 +97,7 @@ export type Halftone = {
     maxR: WebGLUniformLocation | null;
     offset: WebGLUniformLocation | null;
     ink: WebGLUniformLocation | null;
+    overlap: WebGLUniformLocation | null;
   };
   /** Viewport, CSS px. */
   w: number;
@@ -160,6 +161,7 @@ uniform float uCell;
 uniform float uMaxR;
 uniform float uOffset;
 uniform vec3 uInk[3];
+uniform vec3 uOverlap;
 
 void main() {
   vec2 p = vec2(gl_FragCoord.x, uViewport.y * uDpr - gl_FragCoord.y) / uDpr;
@@ -185,6 +187,11 @@ void main() {
 
   // Premultiplied: the gaps stay transparent so the aura shows through.
   col = min(col, vec3(1.0));
+  // The share all three inks have in common is the white; re-tint just that
+  // part toward the overlap color. A lone ink barely changes, a full overlap
+  // becomes exactly uOverlap.
+  float w = min(col.r, min(col.g, col.b));
+  col += w * (uOverlap - 1.0);
   gl_FragColor = vec4(col, max(col.r, max(col.g, col.b)));
 }
 `;
@@ -273,6 +280,7 @@ export function createHalftone(canvas: HTMLCanvasElement): Halftone | null {
       maxR: loc("uMaxR"),
       offset: loc("uOffset"),
       ink: loc("uInk"),
+      overlap: loc("uOverlap"),
     },
     w: 0,
     h: 0,
@@ -326,8 +334,15 @@ export function resizeHalftone(
   gl.uniform1f(u.offset, HALFTONE.CHANNEL_OFFSET);
 }
 
-/** Point the three inks at new colors (e.g. after a token change). */
-export function setHalftoneInks(ht: Halftone, inks: readonly ResolvedColor[]) {
+/**
+ * Point the three inks, and the color their full overlap resolves to, at new
+ * colors (e.g. after a token change).
+ */
+export function setHalftoneInks(
+  ht: Halftone,
+  inks: readonly ResolvedColor[],
+  overlap: ResolvedColor,
+) {
   for (let k = 0; k < 3; k++) {
     const c = inks[k];
     ht.inks[k * 3] = c ? c.r / 255 : 0;
@@ -335,6 +350,12 @@ export function setHalftoneInks(ht: Halftone, inks: readonly ResolvedColor[]) {
     ht.inks[k * 3 + 2] = c ? c.b / 255 : 0;
   }
   ht.gl.uniform3fv(ht.u.ink, ht.inks);
+  ht.gl.uniform3f(
+    ht.u.overlap,
+    overlap.r / 255,
+    overlap.g / 255,
+    overlap.b / 255,
+  );
 }
 
 const smoothstep = (lo: number, hi: number, x: number) => {
