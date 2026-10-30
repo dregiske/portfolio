@@ -63,6 +63,14 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- The build prerenders the home page into #root. Every other path (nginx
+         falls back to this file) is the 404, so drop that markup before it can
+         paint; main.tsx then renders the right page. Mirrors isHomePath. -->
+    <script>
+      if (!/^\/(index\.html)?$/.test(location.pathname)) {
+        document.getElementById("root").replaceChildren();
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
