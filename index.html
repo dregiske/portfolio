@@ -43,12 +43,22 @@
     <meta name="twitter:description" content="CSE student at UCSD." />
     <meta name="twitter:image" content="https://andregiske.com/profile.jpg" />
 
+    <!-- The hero wordmark is the largest thing on first paint; fetch its face
+         up front so it doesn't land as a visible swap. -->
+    <link
+      rel="preload"
+      href="/fonts/Poppins-400-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Dark-only while the theme toggle is archived. Unconditional on purpose:
+         a visitor who once chose light still has `theme=light` stored, and with
+         no toggle on the page they'd have no way back. To restore the toggle,
+         put back the `localStorage.getItem("theme") !== "light"` check. -->
     <script>
-      (function () {
-        if (localStorage.getItem("theme") !== "light") {
-          document.documentElement.classList.add("dark");
-        }
-      })();
+      document.documentElement.classList.add("dark");
     </script>
   </head>
   <body>
