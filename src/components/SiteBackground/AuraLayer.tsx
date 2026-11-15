@@ -57,17 +57,19 @@ export function AuraLayer({ morph }: { morph: ScrollMorph }) {
 
     // Assigning to canvas.width reallocates the backing store and clears it,
     // whether or not the number changed — and mobile browsers fire `resize`
-    // continuously while the URL bar slides away. Only act on a real change.
+    // continuously while the URL bar slides away. Only act on a real change,
+    // and report it so the caller can repaint before the frame is presented.
     let lastW = 0;
     let lastH = 0;
     const resize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      if (w === lastW && h === lastH) return;
+      if (w === lastW && h === lastH) return false;
       lastW = w;
       lastH = h;
       canvas.width = Math.max(1, Math.round(w * AURA_SCALE));
       canvas.height = Math.max(1, Math.round(h * AURA_SCALE));
+      return true;
     };
     resize();
 
@@ -112,9 +114,11 @@ export function AuraLayer({ morph }: { morph: ScrollMorph }) {
       raf = requestAnimationFrame(tick);
     }
 
+    // The resize just wiped the canvas. Repaint now, in the same task, rather
+    // than leaving it to the throttled loop — otherwise the frame goes out
+    // blank and a window drag (a resize nearly every frame) strobes the clouds.
     const onResize = () => {
-      resize();
-      if (reduced) drawStill();
+      if (resize()) drawStill();
     };
     window.addEventListener("resize", onResize);
 
