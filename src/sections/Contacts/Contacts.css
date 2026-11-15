@@ -6,31 +6,41 @@
     gap: var(--stack-lg);
   }
 
+  /* Compact, the addresses and the socials side by side — the 2×2 of
+     socials is about as tall as the two pills and their "or". Wide, the
+     socials drop to a row under the addresses. */
+  .contact__where {
+    @apply flex items-center justify-between gap-2 wide:block;
+  }
+
   /* Shrink-wrapped, so the "or" centres between the two pills — both
      addresses are 21 characters of mono, so the pills are the same width. */
   .contact__emails {
-    @apply inline-flex flex-col items-center gap-2;
-    margin-bottom: var(--stack-md);
+    @apply inline-flex min-w-0 flex-col items-center gap-2;
+
+    @variant wide {
+      margin-bottom: var(--stack-md);
+    }
   }
   .contact__or {
     @apply type-label text-fg-faint;
   }
 
   .contact__email {
-    @apply glass glass-flat glass-hover inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 font-mono text-sm transition-colors;
+    @apply glass glass-flat glass-hover inline-flex items-center gap-2 rounded-full px-3 py-2.5 font-mono text-xs transition-colors wide:gap-2.5 wide:px-4 wide:text-sm;
   }
   .contact__email-glyph {
-    @apply h-5 w-5 text-accent-brand;
+    @apply h-4 w-4 shrink-0 text-accent-brand wide:h-5 wide:w-5;
   }
 
   .contact__socials {
-    @apply flex items-center gap-3;
+    @apply grid shrink-0 grid-cols-2 gap-x-4 gap-y-3 wide:flex wide:items-center wide:gap-3;
   }
 
-  /* Still, round, 52px: each in its app's own colors (`--social-brand` /
+  /* Still, round, 44px compact and 52px wide: each in its app's own colors (`--social-brand` /
      `--social-ink`, set inline from SOCIALS), lifting a little on hover. */
   .contact__social {
-    @apply inline-flex h-13 w-13 items-center justify-center rounded-full transition duration-200 hover:-translate-y-0.5 hover:scale-105;
+    @apply inline-flex h-11 w-11 wide:h-13 wide:w-13 items-center justify-center rounded-full transition duration-200 hover:-translate-y-0.5 hover:scale-105;
     background: var(--social-brand);
     color: var(--social-ink);
     box-shadow: var(--shadow-node);
@@ -42,7 +52,7 @@
   /* The icon file as a mask over `currentColor`, so the glyph takes the
      app's ink whatever the file's own fill. */
   .contact__social-glyph {
-    @apply block h-6 w-6;
+    @apply block h-5 w-5 wide:h-6 wide:w-6;
     background: currentColor;
     mask-repeat: no-repeat;
     mask-position: center;
@@ -68,8 +78,9 @@
     @apply resize-y;
   }
 
+  /* Compact, the full width of the form, like About's CTA; wide, shrink-wrapped. */
   .contact__submit {
-    @apply self-start;
+    @apply self-stretch wide:self-start;
   }
   .contact__submit-icon {
     @apply ml-2 inline-block h-4 w-4;

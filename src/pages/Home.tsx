@@ -1,5 +1,6 @@
 import { useScrollMorph } from "@/lib/useScrollMorph";
 import { SiteBackground } from "@/components/SiteBackground/SiteBackground";
+import { MobileMenu } from "@/components/MobileMenu/MobileMenu";
 import { Hero } from "@/sections/Hero/Hero";
 import { AboutMe } from "@/sections/AboutMe/AboutMe";
 import { Projects } from "@/sections/Projects/Projects";
@@ -10,7 +11,8 @@ import "./Home.css";
 
 /**
  * One scroll, three layers: the background canvases at the bottom, the five
- * transparent sections above them, and the chrome on top. The morph engine is
+ * transparent sections above them, and the chrome (footer, compact menu) on
+ * top. The morph engine is
  * created here and shared by reference, so the artwork and the footer are
  * driven by the same numbers on the same frame.
  */
@@ -30,6 +32,11 @@ export const Home = () => {
       </main>
 
       <Footer morph={morph} />
+
+      {/* Here rather than in the hero's top bar: its button stays fixed to
+          the screen, and inside the hero's stacking context the sections
+          below would paint over it. */}
+      <MobileMenu />
     </div>
   );
 };

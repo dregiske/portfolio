@@ -7,6 +7,16 @@
     @apply glass glass-nav glass-hover flex h-12 w-12 items-center justify-center rounded-full transition-colors wide:hidden;
   }
 
+  /* Fixed where the top bar would put it — the end of the AG pill's row — so
+     it lines up with the monogram at the top of the page and then stays on
+     screen as the page scrolls. Under the cover, whose ✕ lands on it. */
+  .mobile-menu__open {
+    @apply fixed;
+    top: var(--topbar-pad);
+    right: var(--gutter);
+    z-index: var(--z-menu-button);
+  }
+
   .mobile-menu__icon {
     @apply h-5 w-5;
   }
@@ -41,7 +51,7 @@
     transition: opacity 220ms ease-out;
   }
 
-  /* Where the menu button sits in the top bar, so ☰ turns into ✕ in place. */
+  /* Where the menu button sits, so ☰ turns into ✕ in place. */
   .mobile-menu__close {
     @apply absolute;
     top: var(--topbar-pad);

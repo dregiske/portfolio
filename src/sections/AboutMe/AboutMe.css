@@ -26,7 +26,10 @@
     margin-top: var(--stack-sm);
   }
 
+  /* Compact, the full width of the column — a thumb-sized target at the end
+     of the bio; wide, shrink-wrapped. */
   .about__link {
+    @apply w-full wide:w-auto;
     margin-top: var(--stack-md);
   }
 

@@ -1,29 +1,19 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  type CSSProperties,
-} from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Menu, X } from "lucide-react";
 import { NAV_SECTIONS, sectionHref } from "@/constants/sections";
 import { useIsWide } from "@/lib/breakpoint";
 import { cn } from "@/lib/utils";
 import "./MobileMenu.css";
 
-const noSubscribe = () => () => {};
-
 /**
- * The compact layout's navigation: a glass button in the top bar that opens a
- * full-screen glass cover with the same four links the nav pill shows when
- * wide, stacked in the middle of the screen. Both swap at the site
- * breakpoint, so exactly one of them is ever on screen.
+ * The compact layout's navigation: a glass button fixed to the top right of
+ * the screen — where the top bar's nav would be, but it stays put as the page
+ * scrolls — that opens a full-screen glass cover with the same four links the
+ * nav pill shows when wide, stacked in the middle of the screen. Both swap at
+ * the site breakpoint, so exactly one of them is ever on screen.
  *
- * The cover is portalled to <body>. The top bar lives inside the hero, whose
- * stacking context the later sections paint over — a fixed cover left in
- * there would slide under them. Portals don't exist when prerendering, so it
- * only mounts on the client, after hydration; closed, it's invisible anyway.
+ * Mounted at page level (see `Home`), above the sections and the footer, so
+ * neither the button nor the cover needs a portal.
  *
  * Open, it behaves as a modal dialog: focus moves into it and Tab can't leave
  * it, the page behind can't scroll, and Escape, the ✕ or a tap on empty glass
@@ -34,11 +24,6 @@ export function MobileMenu() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const coverRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
-  const isClient = useSyncExternalStore(
-    noSubscribe,
-    () => true,
-    () => false,
-  );
   // Widening past the breakpoint hides the menu; don't leave it open behind
   // the scenes to reappear on the way back down.
   const wide = useIsWide();
@@ -90,7 +75,7 @@ export function MobileMenu() {
       <button
         ref={menuButtonRef}
         type="button"
-        className="mobile-menu__button"
+        className="mobile-menu__button mobile-menu__open"
         aria-label="Open menu"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
@@ -99,49 +84,45 @@ export function MobileMenu() {
         <Menu className="mobile-menu__icon" aria-hidden="true" />
       </button>
 
-      {isClient &&
-        createPortal(
-          <div
-            ref={coverRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menu"
-            className={cn(
-              "mobile-menu__cover",
-              isOpen && "mobile-menu__cover--open",
-            )}
-            inert={!isOpen}
-            // Only a press on the glass itself, not on a link or the ✕.
-            onClick={(e) => {
-              if (e.target === e.currentTarget) close(true);
-            }}
-          >
-            <button
-              ref={closeRef}
-              type="button"
-              className="mobile-menu__button mobile-menu__close"
-              aria-label="Close menu"
-              onClick={() => close(true)}
-            >
-              <X className="mobile-menu__icon" aria-hidden="true" />
-            </button>
-
-            <nav aria-label="Sections" className="mobile-menu__links">
-              {NAV_SECTIONS.map((section, i) => (
-                <a
-                  key={section.id}
-                  href={sectionHref(section.id)}
-                  className="mobile-menu__link"
-                  style={{ "--i": i } as CSSProperties}
-                  onClick={() => close(false)}
-                >
-                  {section.label}
-                </a>
-              ))}
-            </nav>
-          </div>,
-          document.body,
+      <div
+        ref={coverRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu"
+        className={cn(
+          "mobile-menu__cover",
+          isOpen && "mobile-menu__cover--open",
         )}
+        inert={!isOpen}
+        // Only a press on the glass itself, not on a link or the ✕.
+        onClick={(e) => {
+          if (e.target === e.currentTarget) close(true);
+        }}
+      >
+        <button
+          ref={closeRef}
+          type="button"
+          className="mobile-menu__button mobile-menu__close"
+          aria-label="Close menu"
+          onClick={() => close(true)}
+        >
+          <X className="mobile-menu__icon" aria-hidden="true" />
+        </button>
+
+        <nav aria-label="Sections" className="mobile-menu__links">
+          {NAV_SECTIONS.map((section, i) => (
+            <a
+              key={section.id}
+              href={sectionHref(section.id)}
+              className="mobile-menu__link"
+              style={{ "--i": i } as CSSProperties}
+              onClick={() => close(false)}
+            >
+              {section.label}
+            </a>
+          ))}
+        </nav>
+      </div>
     </>
   );
 }

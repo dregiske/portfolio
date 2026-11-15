@@ -83,8 +83,9 @@
     }
   }
 
+  /* Compact, centred under the left-aligned tagline; wide, back on its edge. */
   .hero__actions {
-    @apply flex flex-wrap gap-3.5;
+    @apply flex flex-wrap justify-center gap-3.5 self-stretch wide:justify-start wide:self-auto;
   }
 
   /**
@@ -97,6 +98,7 @@
    *   --portrait-min      wide floor, for short laptop screens, where the
    *                       hero simply grows taller
    *
+   * Compact, it's centred in the column.
    * Wide, it fills its column but is never taller than what the chrome
    * leaves of the first screen, so the whole hero lands in one view.
    */
@@ -104,7 +106,7 @@
     --portrait-max: 280px;
     --portrait-chrome: 500px;
     --portrait-min: 240px;
-    @apply relative z-0 w-full;
+    @apply relative z-0 mx-auto w-full wide:mx-0;
     max-width: var(--portrait-max);
     aspect-ratio: 25 / 32;
 

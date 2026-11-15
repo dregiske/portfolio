@@ -11,7 +11,7 @@ import "./Contacts.css";
 /**
  * Two columns: where to find me on the left (both addresses, then a still row
  * of socials in their own colors), and the form on the right. Compact, they
- * stack in that order.
+ * stack in that order, with the addresses and a 2×2 of socials side by side.
  */
 export const Contacts = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,7 +43,7 @@ export const Contacts = () => {
     <SectionShell id="contact">
       <div className="contact__grid">
         {/* Left — where to find me */}
-        <div>
+        <div className="contact__where">
           <div className="contact__emails">
             <a href={`mailto:${PROFILE.email}`} className="contact__email">
               <Mail className="contact__email-glyph" />

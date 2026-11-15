@@ -11,8 +11,4 @@
   .top-bar__logo {
     @apply glass glass-nav rounded-[30px] px-4 py-[9px] font-display text-xl font-medium tracking-[0.04em];
   }
-
-  .top-bar__actions {
-    @apply flex items-center gap-2;
-  }
 }

@@ -1,13 +1,13 @@
 import { sectionHref } from "@/constants/sections";
 import { PROFILE } from "@/content/profile";
 import { NavPill } from "@/components/NavPill/NavPill";
-import { MobileMenu } from "@/components/MobileMenu/MobileMenu";
 import "./TopBar.css";
 
 /**
- * Wordmark + nav, across the top of the hero: the nav pill when wide, the
- * dropdown menu when compact. It scrolls away with the hero, so nothing
- * crowds the artwork further down.
+ * Wordmark + nav pill, across the top of the hero. It scrolls away with the
+ * hero, so nothing crowds the page further down. Compact, the pill is hidden
+ * and `MobileMenu`'s button — fixed to the screen, not part of this bar —
+ * takes its place at the right end of the row.
  */
 export function TopBar() {
   return (
@@ -19,11 +19,7 @@ export function TopBar() {
       >
         {PROFILE.monogram}
       </a>
-      <div className="top-bar__actions">
-        {/* One or the other, swapped at the site breakpoint. */}
-        <NavPill />
-        <MobileMenu />
-      </div>
+      <NavPill />
     </div>
   );
 }
