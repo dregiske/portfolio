@@ -1,11 +1,16 @@
 import { useEffect, useRef } from "react";
 import { createKoiPond } from "@/lib/koi";
+import { REDUCED_MOTION_QUERY } from "@/lib/useReducedMotion";
+
+/** What a click can land on without feeding the koi: anything interactive. */
+const INTERACTIVE =
+  "a, button, input, textarea, select, label, [role='button'], [role='dialog']";
 
 /**
- * DEMO — koi swimming over the whole page (see `@/lib/koi`), on one fixed
- * canvas above the aura. A click on empty space (anything that isn't a
- * link, button or form control) drops food, and the nearby koi come to eat.
- * Off with `?koi=off`; `?koi=trace` draws each fish's recent path (debug).
+ * Koi swimming over the whole page (see `@/lib/koi`), on one fixed canvas
+ * above the aura. A click on empty space drops food, and the nearby koi come
+ * to eat. Off with `?koi=off`. In development, `?koi=trace` also draws each
+ * fish's recent path.
  */
 export function KoiLayer() {
   const world = useRef<HTMLCanvasElement>(null);
@@ -16,10 +21,10 @@ export function KoiLayer() {
     const w = world.current;
     if (!w) return;
 
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const motion = window.matchMedia(REDUCED_MOTION_QUERY);
     const pond = createKoiPond(w, {
       reducedMotion: () => motion.matches,
-      trace: mode === "trace", // debug: draw each fish's recent path
+      trace: import.meta.env.DEV && mode === "trace",
     });
     pond.resize();
     pond.start();
@@ -28,8 +33,7 @@ export function KoiLayer() {
     const onDown = (ev: PointerEvent) => {
       if (ev.button !== 0 || !ev.isPrimary) return;
       const t = ev.target as Element | null;
-      if (t?.closest("a, button, input, textarea, select, label, [role='button'], [role='dialog']"))
-        return;
+      if (t?.closest(INTERACTIVE)) return;
       pond.feed(ev.clientX, ev.clientY);
     };
     const onVisibility = () => (document.hidden ? pond.stop() : pond.start());

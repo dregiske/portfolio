@@ -1,7 +1,7 @@
 /**
  * Canvas ↔ CSS-token bridge.
  *
- * A canvas can't read `var(--dot-color)`, and the tokens may be hex, rgb(), or
+ * A canvas can't read `var(--aura-base)`, and the tokens may be hex, rgb(), or
  * a color-mix() the canvas would choke on. So we hand the value to a hidden
  * probe element and let the browser resolve it to a concrete rgb() we can both
  * hand to `fillStyle` and pick apart into numbers (radial-gradient stops need

@@ -25,10 +25,10 @@
  * lines. Trails, ripples and the feeding splash are monospace glyphs.
  */
 
+import { clamp, lerp } from "@/lib/math";
+
 const TAU = Math.PI * 2;
 const sq = (x: number) => x * x;
-const clamp = (x: number, a: number, b: number) => (x < a ? a : x > b ? b : x);
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const rand = (a = 0, b = 1) => a + Math.random() * (b - a);
 const pick = <T,>(arr: readonly T[]) => arr[(Math.random() * arr.length) | 0];
 const ell = (u: number, v: number, cu: number, cv: number, ru: number, rv: number) =>

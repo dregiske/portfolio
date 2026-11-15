@@ -1,4 +1,3 @@
-import { SECTIONS } from "@/constants/sections";
 import { useScrollMorph } from "@/lib/useScrollMorph";
 import { SiteBackground } from "@/components/SiteBackground/SiteBackground";
 import { Hero } from "@/sections/Hero/Hero";
@@ -14,19 +13,9 @@ import "./Home.css";
  * transparent sections above them, and the chrome on top. The morph engine is
  * created here and shared by reference, so the artwork and the footer are
  * driven by the same numbers on the same frame.
- *
- * ARCHIVED — the bottom navigation bar (`ScrollIndicator`: the progress line
- * over the five sections). Navigation is the top bar now: the nav pill when
- * wide, the dropdown menu when compact. The component is untouched in
- * `src/components/ScrollIndicator/`, and the engine still computes the
- * `frac` it reads. To restore it, import it and render
- * `<ScrollIndicator morph={morph} />` before `<Footer />`, then put back the
- * bottom padding that kept content clear of it: `pb-24` on
- * `.section-shell__inner`, and the hero's bottom pad of
- * `clamp(90px, 118px - 2vw, 112px)` (with 355px in `--hero-portrait-w`).
  */
 export const Home = () => {
-  const morph = useScrollMorph(SECTIONS);
+  const morph = useScrollMorph();
 
   return (
     <div className="home">

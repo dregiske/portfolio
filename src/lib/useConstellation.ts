@@ -1,4 +1,5 @@
 import { useEffect, useRef, type RefObject } from "react";
+import { REDUCED_MOTION_QUERY } from "@/lib/useReducedMotion";
 
 type SetHome = (i: number, hx: number, hy: number) => void;
 
@@ -122,9 +123,7 @@ export function useConstellation({
       attributeFilter: ["class"],
     });
 
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const reduce = window.matchMedia(REDUCED_MOTION_QUERY).matches;
     const amp = reduce ? 0 : floatAmp;
 
     const nodes: Node[] = Array.from({ length: count }, (_, i) => ({

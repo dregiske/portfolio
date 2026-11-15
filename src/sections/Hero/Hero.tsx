@@ -47,10 +47,7 @@ const TAGLINE_LINES: { wide: TaglineLines; narrow: TaglineLines } = {
  * with About, and the tagline writes across it. Compact, it sits centred
  * between the wordmark and the tagline — it comes before the tagline in the
  * markup for that, and wide positions it absolutely, so order doesn't matter
- * there. Its slide-in entrance is still parked — to bring it back, wrap it in
- * `<Reveal from="right" {...INTRO.portrait}>` and move the `hero__portrait`
- * positioning onto the wrapper. It's above the fold, so an entrance delay
- * lands on LCP.
+ * there.
  */
 export const Hero = () => {
   return (
@@ -76,15 +73,11 @@ export const Hero = () => {
             layout (the other is `display: none`, so it's out of the
             accessibility tree too). Picking in JS would mean the prerendered
             page — which has no viewport — always shipped one set, then swapped
-            it on hydration.
-
-            `data-halftone-quiet`: the halftone thins its dots out behind it
-            (see HalftoneLayer); the hidden set measures empty and is skipped. */}
+            it on hydration. */}
         {(["narrow", "wide"] as const).map((set) => (
           <p
             key={set}
             className={`hero__tagline hero__tagline--${set}`}
-            data-halftone-quiet
           >
             {INTRO.tagline.map((pace, i) => (
               <Typewriter key={i} text={TAGLINE_LINES[set][i]} {...pace} />

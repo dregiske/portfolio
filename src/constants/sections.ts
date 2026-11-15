@@ -1,27 +1,25 @@
 /**
  * The five sections of the page, in scroll order — the single source of truth
- * for the nav pill, the scroll indicator, the section eyebrows, and the morph
- * engine's scroll boundaries. `id` is the anchor contract (`#about`, …).
+ * for section anchors, titles, the nav, and the morph engine's scroll
+ * boundaries. `id` is the anchor contract (`#about`, …); `label` is the nav
+ * text and, for every section but the hero, its heading.
  */
-export type SectionMeta = {
-  /** Anchor id on the <section> element. */
-  id: string;
-  /** Short label in the nav pill / scroll indicator. */
-  label: string;
-  /** Two-digit index shown in the indicator and the section eyebrow. */
-  num: string;
-  /** All-caps eyebrow word, e.g. "WORK" for Projects. Unused while the
-   *  section eyebrows are archived (see SectionShell); kept for restoring. */
-  eyebrow: string;
-};
-
-export const SECTIONS: readonly SectionMeta[] = [
-  { id: "hero", label: "Me", num: "01", eyebrow: "ME" },
-  { id: "about", label: "About", num: "02", eyebrow: "ABOUT" },
-  { id: "projects", label: "Projects", num: "03", eyebrow: "WORK" },
-  { id: "skills", label: "Skills", num: "04", eyebrow: "STACK" },
-  { id: "contact", label: "Contact", num: "05", eyebrow: "CONTACT" },
+export const SECTIONS = [
+  { id: "hero", label: "Me" },
+  { id: "about", label: "About" },
+  { id: "projects", label: "Projects" },
+  { id: "skills", label: "Skills" },
+  { id: "contact", label: "Contact" },
 ] as const;
 
-/** The four sections the nav pill links to (everything but the hero). */
+export type SectionId = (typeof SECTIONS)[number]["id"];
+
+/** Link target for a section, e.g. `#about`. */
+export const sectionHref = (id: SectionId) => `#${id}`;
+
+/** A section's display label, e.g. "Projects". */
+export const sectionLabel = (id: SectionId) =>
+  SECTIONS.find((s) => s.id === id)!.label;
+
+/** The four sections the nav links to (everything but the hero). */
 export const NAV_SECTIONS = SECTIONS.filter((s) => s.id !== "hero");

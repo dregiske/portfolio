@@ -29,18 +29,15 @@ export const AboutMe = () => {
           />
         </div>
 
-        {/* Right — the bio, free-standing and overlapping the photos. Its
-            paragraphs are `data-halftone-quiet`: the halftone thins its dots
-            out behind them (see HalftoneLayer), so the type reads clean
-            without a shadow or a backing. */}
+        {/* Right — the bio, free-standing and overlapping the photos. */}
         <div className="about__bio">
-          <p className="about__text" data-halftone-quiet>
+          <p className="about__text">
             I'm a Computer Science &amp; Engineering student with a keen
             interest in backend design and full-stack development. I love
             exploring new technologies and applying them to solve real-world
             problems.
           </p>
-          <p className="about__text" data-halftone-quiet>
+          <p className="about__text">
             In my free time I work on personal projects, contribute to
             open-source, and surf the San Diego beaches. Always eager to
             connect, so reach out if you'd like to collaborate or just chat!

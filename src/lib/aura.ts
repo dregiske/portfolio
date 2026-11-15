@@ -68,9 +68,12 @@ export function renderAura(
   m: MorphState,
   t: number,
 ) {
-  // Clouds fill the hero, thin out as the globe forms, and roll back in for
+  // Clouds fill the hero, thin out on the way into About, and roll back in for
   // Contact — so the site opens and closes on the same weather.
-  const fade = Math.max(1 - Math.min(1, m.p), Math.min(1, m.s));
+  const fade = Math.max(
+    1 - Math.min(1, m.leaveHero),
+    Math.min(1, m.reachContact),
+  );
 
   // Gone for the middle of the site. Once the base has been laid down over the
   // last of them there is nothing left to repaint until they return.
