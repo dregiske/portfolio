@@ -43,7 +43,7 @@ export const PROJECTS: Project[] = [
   },
   {
     name: "My Portfolio",
-    summary: "This site: interactive, animated, built by hand.",
+    summary: "This site: interactive, animated, innovative.",
     description:
       "My fun and innovative portfolio, with interactive components, animated rendering, and theming. This website is meant to showcase my projects, skills, and myself as a programmer!",
     link: "https://andregiske.com",
