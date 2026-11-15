@@ -2,7 +2,7 @@
 
 @layer components {
   .tag {
-    @apply inline-flex items-center gap-2.5 rounded-full px-2.5 py-1.5 font-mono text-[11px];
+    @apply inline-flex items-center gap-2.5 rounded-full px-2.5 py-1.5 type-tag;
     background: var(--tone-surface);
     color: var(--tone-ink);
   }

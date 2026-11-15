@@ -109,10 +109,13 @@ const SPECIES = {
     { base: [236, 232, 226], patch: [214, 48, 36], thr: 0.5 },
     { base: [236, 232, 226], patch: [205, 45, 35], thr: 0.55, dark: [30, 30, 34] },
     { base: [244, 196, 44], patch: [250, 150, 30], thr: 0.72 },
-    { base: [240, 118, 38], patch: [255, 172, 72], thr: 0.68 },
     { base: [214, 220, 228], patch: [176, 186, 202], thr: 0.6 },
-  ] as { base: RGB; patch: RGB; thr: number; dark?: RGB }[],
+  ] as Palette[],
+  /** The orange koi: its body comes from the page (`KoiInk.orange`). */
+  orange: { patch: [255, 172, 72] as RGB, thr: 0.68 },
 };
+
+type Palette = { base: RGB; patch: RGB; thr: number; dark?: RGB };
 
 /* -------------------------------------------------------------- shapes -- */
 
@@ -129,7 +132,7 @@ type Fish = {
   y: number;
   z: number;
   seed: number;
-  pal: (typeof SPECIES.variants)[number];
+  pal: Palette;
   phase: number;
   rateMul: number;
   speedMul: number;
@@ -213,10 +216,11 @@ function sampleKoi(u: number, v: number, e: Fish) {
 
 /**
  * What the koi leave on the page — trails, ripples, the splash when they eat,
- * and the food itself. Theme colors, set from CSS tokens (`--koi-*`) by the
- * caller; the fish keep their own natural colors in `SPECIES`.
+ * and the food itself — plus the orange koi's body, which the site's accent
+ * shares. Set from CSS tokens (`--koi-*`) by the caller; the other fish keep
+ * their own natural colors in `SPECIES`.
  */
-export type KoiInk = { trail: RGB; ripple: RGB; splash: RGB; food: RGB };
+export type KoiInk = { trail: RGB; ripple: RGB; splash: RGB; food: RGB; orange: RGB };
 
 export type KoiPond = {
   resize(): void;
@@ -267,6 +271,10 @@ export function createKoiPond(
   let last = 0;
   const foods: Food[] = [];
   let ink = opts.ink;
+  // One palette object shared by every orange fish, so re-inking recolors
+  // the ones already swimming.
+  const orangeKoi: Palette = { ...SPECIES.orange, base: ink.orange };
+  const palettes = [...SPECIES.variants, orangeKoi];
   const ripples: {
     x: number; y: number; age: number; dur: number; maxR: number; chars: string; color: RGB;
   }[] = [];
@@ -313,7 +321,7 @@ export function createKoiPond(
       y: rand(0, R.H),
       z: o.z ?? Math.pow(Math.random(), 0.85),
       seed: (seedCounter++ * 2654435761) >>> 16,
-      pal: pick(SPECIES.variants),
+      pal: pick(palettes),
       phase: rand(0, TAU),
       rateMul: rand(0.85, 1.15),
       speedMul: rand(0.75, 1.25),
@@ -739,6 +747,7 @@ export function createKoiPond(
     feed,
     setInk(next) {
       ink = next;
+      orangeKoi.base = next.orange;
     },
     start() {
       if (raf) return;

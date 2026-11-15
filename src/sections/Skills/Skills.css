@@ -1,9 +1,10 @@
 @reference "../../index.css";
 
 @layer components {
-  /* Heights mirror `FIELD_HEIGHT` in Skills.tsx, so the prerendered page
-     reserves the space before the constellation measures itself and sets
-     the same value inline. */
+  /* The field's one height source: the constellation scales its homes to
+     whatever box this gives it, and the prerendered page reserves the space
+     before any JS runs. Compact is trimmed so the phone Skills section isn't
+     taller than the viewport. */
   .skills__field {
     height: 620px;
 

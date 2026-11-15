@@ -12,6 +12,7 @@ const INK_TOKENS = [
   "--koi-ripple",
   "--koi-splash",
   "--koi-food",
+  "--koi-orange",
 ] as const;
 
 const rgb = (c: ResolvedColor) => [c.r, c.g, c.b] as const;
@@ -45,6 +46,7 @@ export function KoiLayer() {
         ripple: rgb(colors["--koi-ripple"]),
         splash: rgb(colors["--koi-splash"]),
         food: rgb(colors["--koi-food"]),
+        orange: rgb(colors["--koi-orange"]),
       };
       if (pond) pond.setInk(ink);
       else

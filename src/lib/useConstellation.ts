@@ -25,14 +25,8 @@ export interface ConstellationOptions {
   /** Idle float amplitude, in virtual units. */
   floatAmp?: number;
   /**
-   * How far past the box a node may be dragged, in virtual units. The canvas
-   * grows by the same margin so links still draw out there. The box itself must
-   * not clip (no `overflow-hidden`) for the bleed to be visible.
-   */
-  bleed?: number;
-  /**
    * Selector for an ancestor of the box (e.g. "section") whose whole area a
-   * node may be dragged across. Replaces `bleed`: the canvas is stretched over
+   * node may be dragged across. The canvas is stretched over
    * that ancestor, so links follow a node anywhere inside it.
    */
   roam?: string;
@@ -78,7 +72,6 @@ export function useConstellation({
   vh = 1000,
   neighbors = 2,
   floatAmp = 7,
-  bleed = 0,
   roam,
   hoverScale = 1.06,
   layout,
@@ -147,7 +140,7 @@ export function useConstellation({
     let scaleX = 1;
     let scaleY = 1;
     // Where the box's origin sits inside the canvas, in px — the canvas is
-    // grown past the box (by the bleed, or out to the roam area) so a node
+    // grown past the box (out to the roam area, if any) so a node
     // dragged outside it keeps its links.
     let originX = 0;
     let originY = 0;
@@ -160,8 +153,8 @@ export function useConstellation({
       nodes[i].hx = hx;
       nodes[i].hy = hy;
     };
-    // The canvas's drawing area in CSS px — the roam area, or the box plus its
-    // bleed — as of the last layout.
+    // The canvas's drawing area in CSS px — the roam area, or just the box —
+    // as of the last layout.
     let areaW = 0;
     let areaH = 0;
     /** Homes, box height, scale and travel bounds for the current size. */
@@ -178,10 +171,10 @@ export function useConstellation({
         areaW = area.width;
         areaH = area.height;
       } else {
-        originX = bleed * scaleX;
-        originY = bleed * scaleY;
-        areaW = box.clientWidth + originX * 2;
-        areaH = box.clientHeight + originY * 2;
+        originX = 0;
+        originY = 0;
+        areaW = box.clientWidth;
+        areaH = box.clientHeight;
       }
       minX = -originX / scaleX;
       minY = -originY / scaleY;
@@ -532,7 +525,6 @@ export function useConstellation({
     vh,
     neighbors,
     floatAmp,
-    bleed,
     roam,
     hoverScale,
   ]);

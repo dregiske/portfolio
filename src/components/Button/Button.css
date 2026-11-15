@@ -28,20 +28,6 @@
 
   /* Glass with no edge, its label lighting up in the brand accent on hover. */
   .btn--outline {
-    @apply glass text-fg hover:text-accent-brand;
-    border-width: 0;
-  }
-  .btn--outline:hover {
-    --glass-fill: var(--glass-bg-strong);
-  }
-
-  /* Bare text button — just the label (+ arrow), underline on hover. */
-  .btn--text {
-    @apply type-label text-accent-brand hover:underline;
-  }
-
-  /* Bare button for icon buttons; inherits the ink unless an icon sets its own. */
-  .btn--ghost {
-    @apply text-fg;
+    @apply glass glass-flat glass-hover text-fg hover:text-accent-brand;
   }
 }

@@ -6,11 +6,6 @@ import { SectionShell } from "@/components/SectionShell/SectionShell";
 import { Constellation } from "@/components/Constellation/Constellation";
 import "./Skills.css";
 
-/** The field's height in px on each side of the breakpoint. Compact is
- *  trimmed so the phone Skills section isn't taller than the viewport.
- *  Mirrored by the heights in Skills.css. */
-const FIELD_HEIGHT = { wide: 520, tall: 620 };
-
 /**
  * Node size follows proficiency: the weakest listed skill renders at
  * `MIN_SCALE` of the base pill, the strongest at `MAX_SCALE`.
@@ -38,14 +33,12 @@ export const Skills = () => (
       toneOf={(_, i) => toneAt(i)}
       // Free to roam the whole section; the section clips it.
       roam="section"
-      // Homes are in virtual units, so the spread scales with the width; the
+      // Homes are in virtual units, so the spread scales with the field; the
       // layout set switches at the site breakpoint, and the field's spring
-      // glides each node to its new home.
+      // glides each node to its new home. The field's height is Skills.css's.
       layout={(_box, setHome) => {
-        const wide = isWide();
-        const homes = wide ? SKILL_HOMES.wide : SKILL_HOMES.tall;
+        const homes = isWide() ? SKILL_HOMES.wide : SKILL_HOMES.tall;
         homes.forEach(([hx, hy], i) => setHome(i, hx, hy));
-        return wide ? FIELD_HEIGHT.wide : FIELD_HEIGHT.tall;
       }}
       renderNode={(skill, node) => (
         <div

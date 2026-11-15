@@ -8,7 +8,7 @@
     @apply relative;
     z-index: var(--z-content);
     padding-block: var(--section-pad-y);
-    /* Clear the fixed top bar when a nav link jumps here. */
+    /* A little air above the heading when a nav link jumps here. */
     scroll-margin-top: clamp(16px, 2vw, 24px);
   }
 

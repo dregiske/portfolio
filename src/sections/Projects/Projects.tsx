@@ -22,11 +22,8 @@ const ProjectCard = ({ project }: { project: Project }) => {
   const more = project.tools.length - shown.length;
 
   return (
-    // Scrim, not glass: several of these tile the viewport, and a backdrop
-    // blur over the animated background would re-blur it every frame.
     <Card
       as="article"
-      variant="scrim"
       className={project.featured ? "project-card project-card--featured" : "project-card"}
     >
       <div className="project-card__media">

@@ -152,8 +152,8 @@
   --menu-cover-fg: var(--fg);
   --scrim: 255 255 255; /* rgb triplet, so it can take an alpha */
   --shadow-ink: rgba(20, 30, 60, 0.22);
-  --selection-bg: #3457c8;
-  --selection-fg: #ffffff;
+  --selection-bg: var(--accent-brand);
+  --selection-fg: var(--accent-ink);
 
   /* Canvas colors (read by themeColors.ts) */
   --aura-base: #ffffff;
@@ -169,6 +169,10 @@
   --koi-ripple: rgb(70, 110, 160);
   --koi-splash: rgb(90, 125, 170);
   --koi-food: rgb(204, 126, 58);
+  /* The orange koi's body. The fish read it from here (their other colors
+     are their own, in `SPECIES`), and the dark theme's accent is this same
+     color, so the two can't drift apart. Not themed: a fish is a fish. */
+  --koi-orange: rgb(240, 118, 38);
 
   --constellation-line: rgba(16, 19, 26, 0.18);
   --constellation-line-active: var(--accent-brand);
@@ -199,9 +203,8 @@
   --fg: #ffffff;
   --fg-muted: rgba(255, 255, 255, 0.62);
   --fg-faint: rgba(255, 255, 255, 0.42);
-  /* The orange koi's body color (`SPECIES` in koi.ts): the one accent on
-     the page is borrowed from the fish. */
-  --accent-brand: #f07626;
+  /* The one accent on the page is borrowed from the orange koi. */
+  --accent-brand: var(--koi-orange);
   --accent-ink: #0a0a0a;
   --danger: oklch(0.704 0.191 22.216);
 
@@ -254,6 +257,25 @@
   border-color: var(--glass-edge, var(--glass-border));
 }
 
+/* Glass with no hairline: for pills and cards that sit on glass-colored
+   surroundings, where the edge would read as a double line. */
+@utility glass-flat {
+  border-width: 0;
+}
+
+/* The one hover for glass controls: the tint deepens a step. */
+@utility glass-hover {
+  &:hover {
+    --glass-fill: var(--glass-bg-strong);
+  }
+}
+
+/* A photo in a soft-shadowed rounded frame; the image inside crops to fill. */
+@utility photo-frame {
+  @apply overflow-hidden rounded-2xl;
+  box-shadow: var(--shadow-photo);
+}
+
 /* The nav chrome's glass: same surface, through the `--nav-pill-*` roles. */
 @utility glass-nav {
   --glass-fill: var(--nav-pill-bg);
@@ -285,6 +307,7 @@
      type-body     running text              16px
      type-small    meta, captions            14px
      type-label    mono uppercase labels     12px
+     type-tag      mono tags and counts      11px
    ------------------------------------------------------------------------- */
 @utility type-h2 {
   @apply type-display;
@@ -309,11 +332,16 @@
   @apply text-sm leading-normal;
 }
 
+@utility type-tag {
+  @apply font-mono text-[11px];
+}
+
 /* ---- Blue shade ladder ----------------------------------------------------
    One class per rung of `TONES` (src/constants/tones.ts) — keep the two lists
    in step. Each sets `--tone-ink` (text) and `--tone-surface` (fill) from the
    theme's recipe above, resolved on the element itself, so a component can
-   re-tune the recipe for its own children (see `.contact__constellation`). */
+   re-tune the recipe for its own children by overriding the `--tone-*-l/-c`
+   variables on a wrapper. */
 @utility tone-frost {
   --tone-h: 232;
   --tone-step: 0;
@@ -357,8 +385,7 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     /* Last line of defence against sideways scrolling on phones. Overflow is
-       contained where it starts (`.home`, and the Projects / Skills / Contact
-       sections), but `clip` is newer than some phones' browsers; `hidden` on
+       contained where it starts (`.home`, and the Skills section), but `clip` is newer than some phones' browsers; `hidden` on
        the root works everywhere. On <html> it only governs the window's own
        scrolling — vertical scroll, and everything reading `window.scrollY`,
        carry on as before. */

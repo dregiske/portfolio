@@ -1,6 +1,7 @@
 import { useState, type CSSProperties, type FormEvent } from "react";
 import { Mail, Send } from "lucide-react";
 import { EMAILJS } from "@/config/emailjs";
+import { CONTACT } from "@/content/contact";
 import { PROFILE } from "@/content/profile";
 import { SOCIALS } from "@/content/socials";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
@@ -87,16 +88,15 @@ export const Contacts = () => {
         </div>
 
         {/* Right — say something. The prompts sit inside the boxes; each
-            field also carries an aria-label, since a placeholder disappears
-            once typing starts and isn't a reliable name on its own. */}
+            field also carries an aria-label (see `CONTACT.fields`). */}
         <div>
-          <h3 className="contact__title">Say Something!</h3>
+          <h3 className="contact__title">{CONTACT.formTitle}</h3>
           <form onSubmit={handleSubmit} className="contact__form">
             <input
               type="text"
               name="name"
-              placeholder="Your Name"
-              aria-label="Your name"
+              placeholder={CONTACT.fields.name.placeholder}
+              aria-label={CONTACT.fields.name.label}
               autoComplete="name"
               required
               className="field"
@@ -104,16 +104,16 @@ export const Contacts = () => {
             <input
               type="email"
               name="email"
-              placeholder="Your Email"
-              aria-label="Your email"
+              placeholder={CONTACT.fields.email.placeholder}
+              aria-label={CONTACT.fields.email.label}
               autoComplete="email"
               required
               className="field"
             />
             <textarea
               name="message"
-              placeholder="Your Message"
-              aria-label="Your message"
+              placeholder={CONTACT.fields.message.placeholder}
+              aria-label={CONTACT.fields.message.label}
               rows={5}
               required
               className="field field--area"
@@ -124,17 +124,17 @@ export const Contacts = () => {
               disabled={isSubmitting}
               className="contact__submit"
             >
-              {isSubmitting ? "Sending..." : "Send Message"}
+              {isSubmitting ? CONTACT.sending : CONTACT.submit}
               <Send className="contact__submit-icon" />
             </Button>
             {status === "success" && (
               <p className="contact__status contact__status--ok" role="status">
-                Message sent! I'll get back to you soon.
+                {CONTACT.success}
               </p>
             )}
             {status === "error" && (
               <p className="contact__status contact__status--err" role="alert">
-                Something went wrong. Please try again or email me directly.
+                {CONTACT.error}
               </p>
             )}
           </form>

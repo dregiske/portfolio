@@ -94,7 +94,7 @@
     @apply mt-5 flex flex-wrap items-center gap-2;
   }
   .project-card__more {
-    @apply px-1 font-mono text-[11px] text-fg-faint;
+    @apply type-tag px-1 text-fg-faint;
   }
 
   /* Pushed to the bottom so the feet line up across a row of cards. */

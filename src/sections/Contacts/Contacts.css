@@ -2,24 +2,22 @@
 
 @layer components {
   .contact__grid {
-    @apply grid grid-cols-1 gap-12 wide:grid-cols-[0.9fr_1.1fr];
+    @apply grid grid-cols-1 wide:grid-cols-[0.9fr_1.1fr];
+    gap: var(--stack-lg);
   }
 
   /* Shrink-wrapped, so the "or" centres between the two pills — both
      addresses are 21 characters of mono, so the pills are the same width. */
   .contact__emails {
-    @apply mb-8 inline-flex flex-col items-center gap-2;
+    @apply inline-flex flex-col items-center gap-2;
+    margin-bottom: var(--stack-md);
   }
   .contact__or {
     @apply type-label text-fg-faint;
   }
 
   .contact__email {
-    @apply glass inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 font-mono text-sm transition-colors;
-    border-width: 0;
-  }
-  .contact__email:hover {
-    --glass-fill: var(--glass-bg-strong);
+    @apply glass glass-flat glass-hover inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 font-mono text-sm transition-colors;
   }
   .contact__email-glyph {
     @apply h-5 w-5 text-accent-brand;
@@ -52,7 +50,8 @@
   }
 
   .contact__title {
-    @apply mb-6 text-3xl font-medium tracking-[-0.02em];
+    @apply type-h3;
+    margin-bottom: var(--stack-sm);
   }
 
   .contact__form {

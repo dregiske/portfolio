@@ -1,3 +1,4 @@
+import { CONTACT } from "@/content/contact";
 import { BIO, PHOTOS } from "@/content/profile";
 import { sectionHref } from "@/constants/sections";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
@@ -23,7 +24,7 @@ export const AboutMe = () => {
           ))}
 
           <Button href={sectionHref("contact")} variant="outline" className="about__link">
-            Get in touch
+            {CONTACT.cta}
           </Button>
         </div>
 

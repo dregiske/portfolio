@@ -6,7 +6,7 @@
        space (e.g. a constellation node roaming past the section's edge).
        `clip`, not `hidden`: hidden would force `overflow-y` to `auto` and make
        `.home` its own scroll container, breaking the scroll-morph and the
-       fixed nav. `clip` contains the overflow without any of that. */
+       fixed footer. `clip` contains the overflow without any of that. */
     @apply relative min-h-svh overflow-x-clip;
   }
 

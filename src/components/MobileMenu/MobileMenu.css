@@ -4,10 +4,7 @@
   /* The AG pill's glass, as a circle of the same 48px. Compact only — the nav
      pill takes over at the breakpoint. */
   .mobile-menu__button {
-    @apply glass glass-nav flex h-12 w-12 items-center justify-center rounded-full transition-colors wide:hidden;
-  }
-  .mobile-menu__button:hover {
-    --glass-fill: var(--glass-bg-strong);
+    @apply glass glass-nav glass-hover flex h-12 w-12 items-center justify-center rounded-full transition-colors wide:hidden;
   }
 
   .mobile-menu__icon {

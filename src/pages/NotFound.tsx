@@ -1,4 +1,3 @@
-import { Eyebrow } from "@/components/Eyebrow/Eyebrow";
 import { Button } from "@/components/Button/Button";
 import "./NotFound.css";
 
@@ -6,8 +5,6 @@ export const NotFound = () => {
   return (
     <div className="notfound">
       <div className="notfound__inner">
-        <Eyebrow num="404" label="OFF THE TRAIL" />
-
         <h1 className="notfound__title">Not found :(</h1>
 
         <p className="notfound__text">

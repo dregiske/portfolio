@@ -23,11 +23,11 @@
     @apply type-body-lg text-fg;
   }
   .about__text + .about__text {
-    @apply mt-4;
+    margin-top: var(--stack-sm);
   }
 
   .about__link {
-    @apply mt-8;
+    margin-top: var(--stack-md);
   }
 
   .about__photos {
@@ -38,8 +38,7 @@
   /* Both shots share one frame, a little narrower than either source (16:9
      and 4:3), so object-cover trims the dead air at the edges. */
   .about__photo {
-    @apply aspect-[3/2] w-full overflow-hidden rounded-2xl object-cover;
-    box-shadow: var(--shadow-photo);
+    @apply photo-frame aspect-[3/2] w-full object-cover;
   }
 
   /* The second shot is wide-layout only: stacked in one column, two photos

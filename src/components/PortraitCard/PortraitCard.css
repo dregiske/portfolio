@@ -4,8 +4,7 @@
   /* A soft-shadowed rounded frame that crops its photo to fill. Size comes
      from the caller. */
   .portrait-card {
-    @apply flex-none overflow-hidden rounded-2xl;
-    box-shadow: var(--shadow-photo);
+    @apply photo-frame flex-none;
   }
 
   .portrait-card__img {

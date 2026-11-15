@@ -88,20 +88,32 @@
   }
 
   /**
-   * The portrait, in a 25:32 frame. Compact, up to 280px wide, after the
-   * actions, so the name, tagline and actions all fit the first screen. Wide, it fills its column but never taller than what's left
-   * of the first screen once the bar, the name and the paddings are paid for
-   * (~500px at 1440 wide), so the whole hero lands in one view; floored at
-   * 240px for short laptop screens, where the hero simply grows taller.
+   * The portrait, in a 25:32 frame.
+   *
+   *   --portrait-max      compact cap, after the actions, so the name,
+   *                       tagline and actions all fit the first screen
+   *   --portrait-chrome   wide: the first screen's height already spent on
+   *                       the bar, the name and the paddings (~1440 wide)
+   *   --portrait-min      wide floor, for short laptop screens, where the
+   *                       hero simply grows taller
+   *
+   * Wide, it fills its column but is never taller than what the chrome
+   * leaves of the first screen, so the whole hero lands in one view.
    */
   .hero__portrait {
+    --portrait-max: 280px;
+    --portrait-chrome: 500px;
+    --portrait-min: 240px;
     @apply relative z-0 w-full;
-    max-width: 280px;
+    max-width: var(--portrait-max);
     aspect-ratio: 25 / 32;
 
     @variant wide {
       @apply justify-self-end;
-      max-width: max(240px, (100svh - 500px) * 25 / 32);
+      max-width: max(
+        var(--portrait-min),
+        (100svh - var(--portrait-chrome)) * 25 / 32
+      );
     }
   }
 }

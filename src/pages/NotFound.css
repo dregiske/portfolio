@@ -11,7 +11,7 @@
   }
 
   .notfound__title {
-    @apply type-display mt-3.5 text-[clamp(60px,12vw,96px)];
+    @apply type-h2;
   }
 
   .notfound__text {

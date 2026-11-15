@@ -1,5 +1,6 @@
 import { INTRO } from "@/constants/intro";
 import { sectionHref } from "@/constants/sections";
+import { CONTACT } from "@/content/contact";
 import { PHOTOS, PROFILE, TAGLINE } from "@/content/profile";
 import { TopBar } from "@/components/TopBar/TopBar";
 import { PortraitCard } from "@/components/PortraitCard/PortraitCard";
@@ -39,7 +40,7 @@ export const Hero = () => {
             </p>
 
             <div className="hero__actions">
-              <Button href={sectionHref("contact")}>Get in touch</Button>
+              <Button href={sectionHref("contact")}>{CONTACT.cta}</Button>
               {/* `download` forces a direct file download rather than opening
                   the PDF inline — inline viewing errors out on a lot of mobile
                   browsers. Same-origin, so the download is honoured. */}
