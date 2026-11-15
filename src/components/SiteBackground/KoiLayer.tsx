@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { createKoiPond, type KoiInk, type KoiPond } from "@/lib/koi";
 import { watchThemeColors, type ResolvedColor } from "@/lib/themeColors";
 import { REDUCED_MOTION_QUERY } from "@/lib/useReducedMotion";
+import "./SiteBackground.css";
 
 /** What a click can land on without feeding the koi: anything interactive. */
 const INTERACTIVE =

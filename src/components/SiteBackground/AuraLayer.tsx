@@ -3,6 +3,7 @@ import type { ScrollMorph } from "@/lib/useScrollMorph";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { watchThemeColors, type ResolvedColor } from "@/lib/themeColors";
 import { createAura, renderAura, AURA_BLOB_COUNT } from "@/lib/aura";
+import "./SiteBackground.css";
 
 const AURA_TOKENS = [
   "--aura-base",

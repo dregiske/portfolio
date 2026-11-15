@@ -1,7 +1,6 @@
 import type { ScrollMorph } from "@/lib/useScrollMorph";
 import { AuraLayer } from "./AuraLayer";
 import { KoiLayer } from "./KoiLayer";
-import "./SiteBackground.css";
 
 /**
  * The whole site's background: a fixed stack of full-screen canvases behind
@@ -14,9 +13,10 @@ import "./SiteBackground.css";
  * so there is never a seam between them — the background is one continuous
  * piece of weather that the sections happen to sit in front of.
  *
- * Each layer owns its canvas, its clock, its redraw budget and the color tokens
- * it reads, so a layer can be added, removed or swapped here without touching
- * the others.
+ * Each layer owns its canvas, its clock, its redraw budget, the color tokens
+ * it reads and the shared layer styles, so a layer can be added, removed or
+ * swapped here — or used on its own, as the 404 page does with the koi —
+ * without touching the others.
  */
 export function SiteBackground({ morph }: { morph: ScrollMorph }) {
   return (
