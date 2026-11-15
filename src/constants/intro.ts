@@ -13,8 +13,7 @@
    the copy or a `cps` and the ones below it want recomputing, or the overlaps
    drift.
 
-   End to end: ~3.15s on desktop, ~3.53s on mobile (whose tagline lines break
-   at different words and so are a little longer).
+   End to end: ~3.5s. The same three lines type at every width.
    ------------------------------------------------------------------------- */
 
 export type TypeLine = {
@@ -37,6 +36,6 @@ export const INTRO = {
   tagline: [
     { delay: 400, cps: 30 },
     { delay: 1590, cps: 25 },
-    { delay: 2936, cps: 34 },
+    { delay: 2536, cps: 34 },
   ] as readonly [TypeLine, TypeLine, TypeLine],
 } as const;

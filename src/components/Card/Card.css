@@ -4,17 +4,20 @@
   /* Cards are glass, not panels: the background keeps moving behind them,
      just far enough out of focus that text stays readable on top. */
   .card {
-    @apply rounded-2xl border transition-colors;
+    @apply rounded-2xl transition-colors;
   }
 
   .card--glass {
     @apply glass;
+    border-width: 0;
   }
 
+  /* Mostly opaque: these hold running text, so the koi pass behind them as a
+     shadow rather than through the words. */
   .card--scrim {
-    background: color-mix(in srgb, var(--bg-base) 55%, var(--glass-bg));
+    background: color-mix(in srgb, var(--bg-base) 82%, var(--glass-bg));
   }
   .card--scrim:hover {
-    background: color-mix(in srgb, var(--bg-base) 55%, var(--glass-bg-strong));
+    background: color-mix(in srgb, var(--bg-base) 82%, var(--glass-bg-strong));
   }
 }

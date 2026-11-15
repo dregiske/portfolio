@@ -1,23 +1,23 @@
 @reference "../../index.css";
 
 @layer components {
-  /* No `overflow: hidden` — wide, the portrait deliberately hangs out of the
-     bottom edge into About. Sideways overflow is still contained by `.home`'s
-     `overflow-x: clip`. */
   .hero {
     @apply relative min-h-svh;
     z-index: var(--z-content);
   }
 
-  /* A size container, so the wordmark, tagline and portrait can all size off
-     the content box (`cqw`) — gutters already subtracted, no scrollbar maths
-     the way `vw` would need, and they keep their proportions to each other at
-     every width. Also the portrait's positioning context. Both vertical pads
-     are fluid, so nothing steps. */
+  /* On the same measure and gutters as every section below, so the name, the
+     section headings and their content all share one left edge.
+
+     A size container, so the wordmark and tagline can size off the content
+     box (`cqw`): gutters already subtracted, no scrollbar maths the way `vw`
+     would need, and they keep their proportions to each other at every
+     width. */
   .hero__inner {
-    @apply relative flex min-h-svh flex-col;
+    @apply relative mx-auto flex min-h-svh w-full flex-col;
+    max-width: var(--content-max);
     container-type: inline-size;
-    padding: var(--topbar-pad) var(--gutter) clamp(40px, 5vw, 72px);
+    padding: var(--topbar-pad) var(--gutter) var(--section-pad-y);
   }
 
   /**
@@ -29,8 +29,7 @@
    * The negative margin pulls the "a"'s left side-bearing (0.043em) out into
    * the gutter, so the ink — not the glyph box — lines up with the text below.
    * The bottom margin is the "g"'s descender, which the tight leading leaves
-   * hanging below the box — without it, a compact portrait with no space to
-   * spare would sit right under the box and the "g" would cross it.
+   * hanging below the box.
    */
   .hero__wordmark {
     @apply type-display relative z-1 whitespace-nowrap;
@@ -42,75 +41,67 @@
     text-shadow: var(--shadow-text);
   }
 
-  /**
-   * The statement, at the foot of the hero.
-   *
-   * A flex column, and specifically *not* `display: block` on the rows
-   * themselves. Each row is a `Typewriter`, which needs `display: grid` while
-   * it types in order to stack its ghost and its overlay — and a `display`
-   * declared here would be a same-specificity rule in the same cascade layer,
-   * so which one won would come down to stylesheet import order. Blockifying
-   * the rows as flex items instead sidesteps the conflict entirely.
-   *
-   * The rows never wrap, and the size is one continuous function of the
-   * container, across both line sets (see `TAGLINE` in content/profile.ts):
-   *
-   *   5.2cqw          narrowest phones: the compact set's ~18.3em fills ~95%
-   *   2.87cqw + 8px   from ~340px wide; at the breakpoint (~700px of
-   *                   container) the compact set fills ~73% and the wide set's
-   *                   ~22.4em ~90%, so the swap changes the breaks, not the
-   *                   size. ~78% at 1440, like the reference.
-   *   56px            cap for very wide screens
-   *
-   * Wide, it writes straight across the portrait on purpose: `relative z-1`
-   * lifts it (and the wordmark) above the absolutely positioned photo, and the
-   * soft shadow helps where it crosses the photo's brighter parts. Compact,
-   * the portrait's auto margins already push it to the foot, so it takes none
-   * of its own — an auto margin here too would split the space three ways and
-   * pull the photo off centre.
-   */
-  .hero__tagline {
-    @apply relative z-1 flex flex-col items-start self-start whitespace-nowrap font-normal leading-[1.12] tracking-[-0.02em] text-fg;
-    padding-top: clamp(24px, 4vw, 40px);
-    font-size: min(5.2cqw, 2.87cqw + 8px, 56px);
-    text-shadow: var(--shadow-text);
+  /* Tagline + actions, then the portrait. Compact, one column. Wide, the
+     tagline takes two thirds and the portrait the last third, top-aligned so
+     the tagline stays right under the name it describes. */
+  .hero__body {
+    --hero-gap: clamp(32px, 4cqw, 64px);
+    @apply flex flex-col;
+    gap: var(--stack-lg);
+    margin-top: var(--stack-md);
 
     @variant wide {
-      @apply mt-auto;
+      @apply grid items-start;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+      column-gap: var(--hero-gap);
     }
   }
 
-  /* One line set per layout; the other is out of layout and out of the
-     accessibility tree. */
-  .hero__tagline--wide {
-    @apply hidden wide:flex;
-  }
-  .hero__tagline--narrow {
-    @apply wide:hidden;
+  .hero__intro {
+    @apply flex flex-col items-start;
+    gap: var(--stack-md);
   }
 
   /**
-   * The portrait. Size and placement come from `--hero-portrait-*` on
-   * `.home`, which About shares to clear whatever hangs into it. The frame
-   * keeps a 25:32 aspect.
+   * A flex column, and specifically *not* `display: block` on the rows
+   * themselves. Each row is a `Typewriter`, which needs `display: grid` while
+   * it types in order to stack its ghost and its overlay — blockifying the
+   * rows as flex items sidesteps any cascade fight over `display`.
    *
-   * Compact: in the flow between wordmark and tagline, and centred there both
-   * ways — auto margins top and bottom share out the free height.
-   *
-   * Wide: lifted out of the flow, behind the tagline, and pushed part of its
-   * own height down (`--hero-portrait-hang`) so the seam between Hero and
-   * About runs across it. The right offset is from the viewport edge, past
-   * the gutter, which pulls it in toward the centre.
+   * The rows never wrap: the size is derived from the longest line (~18.3em,
+   * see `TAGLINE`), so it fills ~95% of whatever it sits in. Compact, that's
+   * the whole container; wide, it's the two-thirds column (container less the
+   * gap, × 2/3), capped for very wide screens.
+   */
+  .hero__tagline {
+    @apply relative z-1 flex flex-col items-start whitespace-nowrap font-normal leading-[1.15] tracking-[-0.02em] text-fg;
+    font-size: 5.2cqw;
+    text-shadow: var(--shadow-text);
+
+    @variant wide {
+      font-size: min(calc((100cqw - var(--hero-gap)) * 2 / 3 / 19.2), 44px);
+    }
+  }
+
+  .hero__actions {
+    @apply flex flex-wrap gap-3.5;
+  }
+
+  /**
+   * The portrait, in a 25:32 frame. Compact, up to 280px wide, after the
+   * actions, so the name, tagline and actions all fit the first screen. Wide, it fills its column but never taller than what's left
+   * of the first screen once the bar, the name and the paddings are paid for
+   * (~500px at 1440 wide), so the whole hero lands in one view; floored at
+   * 240px for short laptop screens, where the hero simply grows taller.
    */
   .hero__portrait {
-    @apply relative z-0 my-auto self-center;
-    width: var(--hero-portrait-w);
+    @apply relative z-0 w-full;
+    max-width: 280px;
     aspect-ratio: 25 / 32;
 
     @variant wide {
-      @apply absolute bottom-0 my-0;
-      right: var(--hero-portrait-right);
-      translate: 0 calc(var(--hero-portrait-hang) * 100%);
+      @apply justify-self-end;
+      max-width: max(240px, (100svh - 500px) * 25 / 32);
     }
   }
 }

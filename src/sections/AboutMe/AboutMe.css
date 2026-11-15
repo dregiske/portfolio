@@ -1,32 +1,44 @@
 @reference "../../index.css";
 
 @layer components {
-  /* The usual section padding, plus whatever of the hero portrait hangs into
-     the top of this section (wide only; compact, it doesn't hang), so the
-     heading or bio never runs into the photo. */
-  .section-shell.about {
-    padding-top: calc(var(--section-pad-y) + var(--hero-overhang));
+  /* Wide: bio in the first seven twelfths, photos in the last five, both
+     top-aligned so the bio sits right under its heading. Compact: one
+     column, photo first. */
+  .about__grid {
+    @apply grid grid-cols-1 items-start;
+    gap: var(--stack-lg);
+
+    @variant wide {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
   }
 
-  /* Wide: photos in a column of up to half the width (520px at most), bio in
-     the rest. The bio column's negative margin pulls it back over the photos'
-     right edge (see .about__bio). Compact: one column, the bio a short gap
-     below the photo. */
-  .about__grid {
-    @apply mt-10 grid grid-cols-1 items-center wide:grid-cols-[minmax(0,min(520px,50%))_minmax(0,1fr)];
-    row-gap: 24px;
-    column-gap: clamp(40px, 4vw, 56px);
+  /* Left-aligned, at a readable measure. */
+  .about__bio {
+    @apply flex flex-col items-start;
+    max-width: var(--measure);
+  }
+
+  .about__text {
+    @apply type-body-lg text-fg;
+  }
+  .about__text + .about__text {
+    @apply mt-4;
+  }
+
+  .about__link {
+    @apply mt-8;
   }
 
   .about__photos {
-    @apply flex flex-col gap-6;
+    /* Compact, above the bio; wide, back to its own column on the right. */
+    @apply -order-1 flex flex-col gap-6 wide:order-none;
   }
 
   /* Both shots share one frame, a little narrower than either source (16:9
-     and 4:3), so object-cover trims the dead air at the edges. Fixed aspect
-     means a different shot later reframes rather than moving the bio. */
+     and 4:3), so object-cover trims the dead air at the edges. */
   .about__photo {
-    @apply aspect-[3/2] w-full max-w-[520px] overflow-hidden rounded-2xl object-cover;
+    @apply aspect-[3/2] w-full overflow-hidden rounded-2xl object-cover;
     box-shadow: var(--shadow-photo);
   }
 
@@ -36,34 +48,5 @@
      since it's lazy-loaded, a hidden one is never fetched. */
   .about__photo--wide-only {
     @apply hidden wide:block;
-  }
-
-  /* No card: free-standing text, the hero tagline's treatment. Wide, it's
-     lifted above the photos and nudged back across their right edge, and the
-     same soft shadow helps white type where it crosses. Compact, it sits
-     clear below the photo. Set flush right, against the page's right edge,
-     with the buttons following. */
-  .about__bio {
-    @apply relative z-1 text-right;
-
-    @variant wide {
-      /* ~75px at the breakpoint, 144px from 1440 up. */
-      margin-left: calc(-1 * clamp(64px, 10vw, 144px));
-    }
-    text-shadow: var(--shadow-text);
-  }
-
-  .about__text {
-    /* 20px on a phone, 24px from ~1330px wide. */
-    @apply leading-relaxed text-fg;
-    font-size: clamp(20px, 0.6vw + 16px, 24px);
-  }
-  .about__text + .about__text {
-    @apply mt-4;
-  }
-
-  .about__actions {
-    @apply mt-8 flex flex-wrap justify-end gap-3.5;
-    text-shadow: none;
   }
 }

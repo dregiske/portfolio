@@ -41,6 +41,7 @@
   --color-fg-muted: var(--fg-muted);
   --color-fg-faint: var(--fg-faint);
   --color-accent-brand: var(--accent-brand);
+  --color-accent-ink: var(--accent-ink);
   --color-danger: var(--danger);
   --color-glass: var(--glass-bg);
   --color-glass-strong: var(--glass-bg-strong);
@@ -80,8 +81,16 @@
   --gutter: clamp(24px, 4.5vw, 60px);
   /* The measure every band's content is centred on. */
   --content-max: 1180px;
-  /* Top/bottom padding of each content section. */
-  --section-pad-y: clamp(64px, 8vw, 96px);
+  /* Top/bottom padding of each content section. Sections take their
+     content's height, so two of these back to back are the whole gap between
+     one section and the next: the page's one vertical rhythm. */
+  --section-pad-y: clamp(56px, 7vw, 96px);
+  /* Heading to content inside a section, and between blocks within one. */
+  --stack-lg: clamp(40px, 4.5vw, 64px);
+  --stack-md: clamp(24px, 2.5vw, 32px);
+  --stack-sm: 16px;
+  /* The most a running paragraph is allowed to stretch: ~65 characters. */
+  --measure: 62ch;
   /* Distance from the top of the screen to the top bar — and to the compact
      menu's ✕, which sits exactly where the ☰ was. */
   --topbar-pad: clamp(24px, 2.4vw, 34px);
@@ -118,7 +127,10 @@
   --fg: #10131a;
   --fg-muted: rgba(16, 19, 26, 0.55);
   --fg-faint: rgba(16, 19, 26, 0.38);
-  --accent-brand: #3457c8;
+  /* The koi's orange — the one accent: primary actions, links, focus.
+     Never a large fill. Deepened on white for contrast. */
+  --accent-brand: #c2560f;
+  --accent-ink: #ffffff; /* text on an accent fill */
   --danger: oklch(0.577 0.245 27.325);
 
   /* Glass — the only "card" surface: a whisper of ink over the live
@@ -179,14 +191,18 @@
    Dark theme (default) — near-black, white ink, monochrome aura
 
    Everything here is greyscale on purpose, so the koi are the only color on
-   the page. Only values that differ from the light set are listed.
+   the page, apart from the accent, which is borrowed from the orange koi.
+   Only values that differ from the light set are listed.
    ------------------------------------------------------------------------- */
 .dark {
   --bg-base: #0a0a0a;
   --fg: #ffffff;
   --fg-muted: rgba(255, 255, 255, 0.62);
   --fg-faint: rgba(255, 255, 255, 0.42);
-  --accent-brand: #e5e5e5;
+  /* The orange koi's body color (`SPECIES` in koi.ts): the one accent on
+     the page is borrowed from the fish. */
+  --accent-brand: #f07626;
+  --accent-ink: #0a0a0a;
   --danger: oklch(0.704 0.191 22.216);
 
   --glass-bg: rgba(255, 255, 255, 0.05);
@@ -255,6 +271,42 @@
 /* The small mono label: "or", "back to top", "take a look". */
 @utility type-label {
   @apply font-mono text-xs uppercase tracking-[0.08em];
+}
+
+/* ---- Type scale -----------------------------------------------------------
+   One ladder, ~1.25 apart at the body end and opening up toward the display
+   end, every step fluid between a phone and ~1440px. Components pick a step;
+   they don't invent sizes.
+
+     type-display  the hero name, the one giant thing (sized in Hero.css)
+     type-h2       section headings          56 → 120px
+     type-h3       card + sub-headings       22 → 28px
+     type-body-lg  lead paragraphs (bio)     18 → 20px
+     type-body     running text              16px
+     type-small    meta, captions            14px
+     type-label    mono uppercase labels     12px
+   ------------------------------------------------------------------------- */
+@utility type-h2 {
+  @apply type-display;
+  font-size: clamp(56px, 10vw, 120px);
+}
+
+@utility type-h3 {
+  @apply font-display font-medium leading-tight tracking-[-0.02em];
+  font-size: clamp(22px, 0.5vw + 18px, 28px);
+}
+
+@utility type-body-lg {
+  @apply leading-relaxed;
+  font-size: clamp(18px, 0.25vw + 16px, 20px);
+}
+
+@utility type-body {
+  @apply text-base leading-relaxed;
+}
+
+@utility type-small {
+  @apply text-sm leading-normal;
 }
 
 /* ---- Blue shade ladder ----------------------------------------------------

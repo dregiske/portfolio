@@ -7,7 +7,8 @@ import { Constellation } from "@/components/Constellation/Constellation";
 import "./Skills.css";
 
 /** The field's height in px on each side of the breakpoint. Compact is
- *  trimmed so the phone Skills section isn't taller than the viewport. */
+ *  trimmed so the phone Skills section isn't taller than the viewport.
+ *  Mirrored by the heights in Skills.css. */
 const FIELD_HEIGHT = { wide: 520, tall: 620 };
 
 /**
@@ -30,12 +31,12 @@ function nodeStyle(level: number): CSSProperties {
 }
 
 export const Skills = () => (
-  <SectionShell id="skills" className="overflow-hidden">
+  <SectionShell id="skills" className="overflow-x-clip">
     <Constellation
       className="skills__field"
       items={SKILLS}
       toneOf={(_, i) => toneAt(i)}
-      // Free to roam the whole section; its own overflow does the clipping.
+      // Free to roam the whole section; the section clips it.
       roam="section"
       // Homes are in virtual units, so the spread scales with the width; the
       // layout set switches at the site breakpoint, and the field's spring

@@ -1,54 +1,113 @@
 @reference "../../index.css";
 
 @layer components {
-  /* The carousel spans the full section width so the chevrons sit out at the
-     edges; only the card row is capped, so the slots stay tight and the cards
-     sit close together. The ~60px left on each side is where the chevrons
-     live. */
-  .projects__carousel {
-    @apply mt-10;
-    --carousel-max: 940px;
+  .projects {
+    @apply flex flex-col;
+    gap: var(--stack-md);
   }
 
-  /* Slimmer cards: capped and centred in their slot. Most visible on a phone,
-     where one card would otherwise span edge to edge. */
+  /* As many ~300px columns as fit: three under the featured card on a
+     laptop, one on a phone. */
+  .projects__grid {
+    @apply grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: var(--stack-md);
+  }
+
+  /* `relative` so the title's stretched link can cover the whole card. A
+     slight lift on hover and when the link inside has keyboard focus. */
   .project-card {
-    @apply mx-auto flex max-w-[320px] flex-col overflow-hidden transition duration-300 ease-out hover:relative hover:z-1 hover:scale-[1.03];
+    @apply relative flex flex-col overflow-hidden transition duration-300 ease-out;
+  }
+  .project-card:hover,
+  .project-card:has(:focus-visible) {
+    @apply -translate-y-1;
   }
 
-  .project-card__img {
-    @apply h-40 w-full object-cover;
-    /* The art sits on its own tinted shelf so photos with light backgrounds
-       don't punch a hole in the glass. */
+  /* The featured card: wide, media on the left (7 twelfths), text beside it. */
+  .project-card--featured {
+    @variant wide {
+      @apply grid items-stretch;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+  }
+
+  /* The art sits on its own tinted shelf so screenshots with light
+     backgrounds don't punch a hole in the card. 2:1 matches the screenshots,
+     so almost nothing is cropped. */
+  .project-card__media {
+    @apply overflow-hidden;
     background: var(--glass-bg-strong);
+  }
+  /* Featured, the text column is taller than a 2:1 image, so rather than
+     stretch the image to fill (and crop its sides), it's framed: inset on
+     the card, rounded, centred in its column, like a screenshot laid on it. */
+  .project-card--featured .project-card__media {
+    @variant wide {
+      @apply flex items-center bg-transparent p-7 pr-0;
+    }
+  }
+  .project-card--featured .project-card__img {
+    @apply wide:rounded-xl;
+  }
+  .project-card__img {
+    @apply block aspect-[2/1] w-full object-cover transition-transform duration-500 ease-out;
+  }
+  .project-card:hover .project-card__img {
+    @apply scale-[1.03];
   }
 
   .project-card__body {
-    @apply flex flex-1 flex-col p-6;
+    @apply flex flex-1 flex-col p-6 wide:p-7;
+  }
+  .project-card--featured .project-card__body {
+    @apply wide:justify-center wide:p-10;
   }
 
   .project-card__title {
-    @apply mb-3 font-display text-xl font-medium leading-tight tracking-[-0.02em];
+    @apply type-h3;
+  }
+  /* The stretched link: its box is the title, its hit area the whole card. */
+  .project-card__title a {
+    @apply focus-visible:outline-none;
+  }
+  .project-card__title a::after {
+    content: "";
+    @apply absolute inset-0 z-1 rounded-2xl;
+  }
+  .project-card__title a:focus-visible::after {
+    @apply outline-2 outline-offset-2 outline-accent-brand;
   }
 
-  /* The live-domain pill under the title. */
-  .project-card__site {
-    @apply mb-4 inline-flex items-center gap-1.5 self-start rounded-full px-2.5 py-1 font-mono text-[11px] text-accent-brand transition-opacity hover:opacity-80;
-    background: var(--glass-bg-strong);
-  }
-  .project-card__site-icon {
-    @apply h-3 w-3;
+  .project-card__summary {
+    @apply type-body mt-1.5 text-fg-muted;
   }
 
+  /* Compact, three lines and an ellipsis: the summary above already says what
+     it is, and four full cards stacked on a phone were ~2,600px of scrolling.
+     The whole card links to the project for the rest. */
   .project-card__desc {
-    @apply mb-5 text-sm leading-relaxed text-fg;
+    @apply type-small mt-4 line-clamp-3 text-fg wide:line-clamp-none;
   }
 
   .project-card__tags {
-    @apply mb-6 flex flex-wrap gap-2;
+    @apply mt-5 flex flex-wrap items-center gap-2;
+  }
+  .project-card__more {
+    @apply px-1 font-mono text-[11px] text-fg-faint;
   }
 
-  .project-card__link {
-    @apply mt-auto tracking-[0.08em];
+  /* Pushed to the bottom so the feet line up across a row of cards. */
+  .project-card__foot {
+    @apply mt-auto flex items-center justify-between gap-4 pt-6 font-mono text-xs text-fg-faint;
+  }
+  .project-card__visit {
+    @apply type-label inline-flex items-center gap-1 text-accent-brand;
+  }
+  .project-card__visit-glyph {
+    @apply h-3.5 w-3.5 transition-transform;
+  }
+  .project-card:hover .project-card__visit-glyph {
+    @apply -translate-y-0.5 translate-x-0.5;
   }
 }

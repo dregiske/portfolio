@@ -11,7 +11,7 @@ type SectionShellProps = {
 };
 
 /**
- * A content section: at least a full viewport tall, entirely transparent, and
+ * A content section: as tall as its content, entirely transparent, and
  * centred on the content measure. Every section is a window onto the one
  * background behind the page — none of them paint a surface of their own.
  */

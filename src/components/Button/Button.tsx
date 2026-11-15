@@ -6,12 +6,14 @@ import type {
 import { cn } from "@/lib/utils";
 import "./Button.css";
 
-type Variant = "solid" | "outline" | "text" | "ghost";
+type Variant = "solid" | "light" | "outline" | "text" | "ghost";
 
 type Common = {
   /**
-   * "solid" = filled pill CTA · "outline" = glass pill CTA · "text" = bare
-   * label (+ arrow), underline on hover · "ghost" = bare, e.g. icon buttons.
+   * "solid" = accent-filled pill CTA · "light" = the same pill in the page's
+   * ink, inverted (white on the dark theme) · "outline" = glass pill CTA ·
+   * "text" = bare label (+ arrow), underline on hover · "ghost" = bare, e.g.
+   * icon buttons.
    */
   variant?: Variant;
   className?: string;

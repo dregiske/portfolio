@@ -1,23 +1,20 @@
-import { BIO, PHOTOS, PROFILE } from "@/content/profile";
+import { BIO, PHOTOS } from "@/content/profile";
 import { sectionHref } from "@/constants/sections";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
 import { Photo } from "@/components/Photo/Photo";
 import { Button } from "@/components/Button/Button";
 import "./AboutMe.css";
 
+/**
+ * The bio beside a column of photos. Text first in the markup (and on the
+ * left, wide) so it's what's read first; compact, CSS lifts the one photo
+ * above it. The hero already carries the filled button, so this ends on a
+ * single glass one.
+ */
 export const AboutMe = () => {
   return (
-    <SectionShell id="about" className="about">
+    <SectionShell id="about">
       <div className="about__grid">
-        <div className="about__photos">
-          <Photo {...PHOTOS.aboutGroup} className="about__photo" />
-          <Photo
-            {...PHOTOS.aboutParticipants}
-            className="about__photo about__photo--wide-only"
-          />
-        </div>
-
-        {/* Right — the bio, free-standing and overlapping the photos. */}
         <div className="about__bio">
           {BIO.map((paragraph) => (
             <p key={paragraph} className="about__text">
@@ -25,20 +22,17 @@ export const AboutMe = () => {
             </p>
           ))}
 
-          <div className="about__actions">
-            <Button href={sectionHref("contact")}>Get in Touch</Button>
-            {/* `download` forces a direct file download rather than opening the
-                PDF inline in a new tab — inline viewing errors out on a lot of
-                mobile browsers. Same-origin, so the download is honoured. */}
-            <Button
-              href={PROFILE.resume}
-              variant="outline"
-              download
-              rel="noopener noreferrer"
-            >
-              Résumé
-            </Button>
-          </div>
+          <Button href={sectionHref("contact")} variant="outline" className="about__link">
+            Get in touch
+          </Button>
+        </div>
+
+        <div className="about__photos">
+          <Photo {...PHOTOS.aboutGroup} className="about__photo" />
+          <Photo
+            {...PHOTOS.aboutParticipants}
+            className="about__photo about__photo--wide-only"
+          />
         </div>
       </div>
     </SectionShell>

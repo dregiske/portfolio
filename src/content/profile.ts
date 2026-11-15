@@ -19,28 +19,18 @@ export type TaglineLines = readonly [string, string, string];
  * The breaks are authored rather than left to the browser because each line
  * types itself separately, so the typing boundaries have to *be* the visual
  * boundaries. The lines never wrap: `.hero__tagline` sizes its type off the
- * hero's width, so a line that fits once fits at every width in its range.
+ * column it sits in, so a line that fits once fits at every width.
  *
- * There are two sets because a phone gets more lines-per-word than a desktop
- * can afford: the wide set's longest line is ~22.4em, which at phone widths
- * would make the type too small to read. They switch at the site breakpoint.
- * The type size in `Hero.css` is derived from these longest lines — change
- * the copy and re-measure them.
+ * One set for every width: wide, the tagline has its own column beside the
+ * portrait, which is about as narrow (in ems) as a phone. The type size in
+ * `Hero.css` is derived from the longest line, ~18.3em (Poppins 400, -0.02em
+ * tracking). Change the copy and re-measure it.
  */
-export const TAGLINE: { wide: TaglineLines; narrow: TaglineLines } = {
-  /** Wide layout. Longest line ~22.4em (Poppins 400, -0.02em tracking). */
-  wide: [
-    "CSE student at UC San Diego building backend",
-    "systems and full-stack apps, feel free to",
-    "connect!",
-  ],
-  /** Compact layout. Longest line ~18.3em. */
-  narrow: [
-    "CSE student at UC San Diego building",
-    "backend systems and full-stack apps,",
-    "feel free to connect!",
-  ],
-};
+export const TAGLINE: TaglineLines = [
+  "CSE student at UC San Diego building",
+  "backend systems and full-stack apps,",
+  "feel free to connect!",
+];
 
 export const BIO = [
   "I'm a Computer Science & Engineering student with a keen interest in backend design and full-stack development. I love exploring new technologies and applying them to solve real-world problems.",

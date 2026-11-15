@@ -1,20 +1,17 @@
-import { useState, type FormEvent } from "react";
+import { useState, type CSSProperties, type FormEvent } from "react";
 import { Mail, Send } from "lucide-react";
 import { EMAILJS } from "@/config/emailjs";
 import { PROFILE } from "@/content/profile";
 import { SOCIALS } from "@/content/socials";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
 import { Button } from "@/components/Button/Button";
-import { Constellation } from "@/components/Constellation/Constellation";
 import "./Contacts.css";
 
 /**
- * The socials' homes in the field's 1000×400 virtual space: spread evenly
- * between the side margins, zigzagging above and below the midline so the
- * links read as a chain.
+ * Two columns: where to find me on the left (both addresses, then a still row
+ * of socials in their own colors), and the form on the right. Compact, they
+ * stack in that order.
  */
-const FIELD = { vw: 1000, vh: 400, margin: 160, zigzag: 70 };
-
 export const Contacts = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -42,7 +39,7 @@ export const Contacts = () => {
   };
 
   return (
-    <SectionShell id="contact" className="overflow-hidden">
+    <SectionShell id="contact">
       <div className="contact__grid">
         {/* Left — where to find me */}
         <div>
@@ -58,74 +55,72 @@ export const Contacts = () => {
             </a>
           </div>
 
-          <Constellation
-            className="contact__constellation"
-            items={SOCIALS}
-            toneOf={(social) => social.tone}
-            vw={FIELD.vw}
-            vh={FIELD.vh}
-            // Free to roam the whole Contact section — which fills the screen
-            // while you're on it — rather than a margin around the field.
-            roam="section"
-            floatAmp={16}
-            hoverScale={1.1}
-            layout={(_box, setHome) => {
-              const n = SOCIALS.length;
-              const span = FIELD.vw - 2 * FIELD.margin;
-              SOCIALS.forEach((_, i) => {
-                const hx = n > 1 ? FIELD.margin + (span * i) / (n - 1) : FIELD.vw / 2;
-                const hy = FIELD.vh / 2 + (i % 2 === 0 ? -1 : 1) * FIELD.zigzag;
-                setHome(i, hx, hy);
-              });
-            }}
-            renderNode={(social, node) => (
-              <a
-                key={social.name}
-                {...node}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.name}
-                className={`${node.className} contact__node`}
-              >
-                <img
-                  src={social.icon}
-                  alt={social.name}
-                  className="contact__social-img"
-                  width={28}
-                  height={28}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </a>
-            )}
-          />
+          <ul className="contact__socials">
+            {SOCIALS.map((social) => (
+              <li key={social.name}>
+                <a
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
+                  title={social.name}
+                  className="contact__social"
+                  style={
+                    {
+                      "--social-brand": social.brand,
+                      "--social-ink": social.ink,
+                    } as CSSProperties
+                  }
+                >
+                  <span
+                    className="contact__social-glyph"
+                    style={{
+                      maskImage: `url(${social.icon})`,
+                      WebkitMaskImage: `url(${social.icon})`,
+                    }}
+                    aria-hidden="true"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* Right — say something */}
+        {/* Right — say something. The prompts sit inside the boxes; each
+            field also carries an aria-label, since a placeholder disappears
+            once typing starts and isn't a reliable name on its own. */}
         <div>
-          <h2 className="contact__title">Say Something!</h2>
+          <h3 className="contact__title">Say Something!</h3>
           <form onSubmit={handleSubmit} className="contact__form">
             <input
               type="text"
               name="name"
               placeholder="Your Name"
+              aria-label="Your name"
+              autoComplete="name"
+              required
               className="field"
             />
             <input
               type="email"
               name="email"
               placeholder="Your Email"
+              aria-label="Your email"
+              autoComplete="email"
+              required
               className="field"
             />
             <textarea
               name="message"
               placeholder="Your Message"
+              aria-label="Your message"
               rows={5}
+              required
               className="field field--area"
-            ></textarea>
+            />
             <Button
               type="submit"
+              variant="light"
               disabled={isSubmitting}
               className="contact__submit"
             >
@@ -133,12 +128,12 @@ export const Contacts = () => {
               <Send className="contact__submit-icon" />
             </Button>
             {status === "success" && (
-              <p className="contact__status contact__status--ok">
+              <p className="contact__status contact__status--ok" role="status">
                 Message sent! I'll get back to you soon.
               </p>
             )}
             {status === "error" && (
-              <p className="contact__status contact__status--err">
+              <p className="contact__status contact__status--err" role="alert">
                 Something went wrong. Please try again or email me directly.
               </p>
             )}

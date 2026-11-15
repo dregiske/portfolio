@@ -3,45 +3,11 @@
 @layer components {
   .home {
     /* `overflow-x: clip` locks the page against horizontal scrolling into empty
-       space (e.g. the carousel's off-screen track, which `clip-path` hides but
-       doesn't contain). `clip`, not `hidden`: hidden would force `overflow-y` to
-       `auto` and make `.home` its own scroll container, breaking the scroll-morph
-       and the fixed nav. `clip` contains the overflow without any of that. */
+       space (e.g. a constellation node roaming past the section's edge).
+       `clip`, not `hidden`: hidden would force `overflow-y` to `auto` and make
+       `.home` its own scroll container, breaking the scroll-morph and the
+       fixed nav. `clip` contains the overflow without any of that. */
     @apply relative min-h-svh overflow-x-clip;
-
-    /* The hero portrait's width, its distance from the viewport's right edge,
-       and the fraction of its height that hangs below the seam into About
-       (0.5 would centre it on the seam). Shared because both sections need
-       them: the hero to size and place it, About to start below it. Height is
-       width × 32/25.
-
-       Compact, it sits in the hero's flow and doesn't hang at all. Its width
-       is the smallest of: 64% of the screen, 340px, and what the *height*
-       leaves once the top bar, wordmark, tagline and paddings are paid for —
-       roughly 285px plus 20vw, as the wordmark and tagline grow with width,
-       which leaves ~20px clear above and below it on the shortest phones —
-       so a short phone gets a smaller photo instead of a collision. Floored
-       at 140px for landscape phones, where the hero simply grows taller.
-
-       `--hero-overhang` is the one number About reads: how far the photo
-       hangs into it, in px. */
-    --hero-portrait-w: clamp(
-      140px,
-      (100svh - 285px - 20vw) * 25 / 32,
-      min(64vw, 340px)
-    );
-    --hero-portrait-right: 0px;
-    --hero-portrait-hang: 0;
-
-    @variant wide {
-      --hero-portrait-w: min(32vw, 480px);
-      --hero-portrait-right: 12vw;
-      --hero-portrait-hang: 0.35;
-    }
-
-    --hero-overhang: calc(
-      var(--hero-portrait-w) * 32 / 25 * var(--hero-portrait-hang)
-    );
   }
 
   /* Everything readable sits above the background canvases. The tail is

@@ -7,20 +7,29 @@
 
   /* The two pill CTAs share a shape and a voice. */
   .btn--solid,
+  .btn--light,
   .btn--outline {
     @apply rounded-full px-6 py-3.5 font-mono text-xs uppercase tracking-widest;
   }
 
-  /* Filled: the page's ink, inverted. */
+  /* Filled in the accent: the primary action, so at most one per view. */
   .btn--solid {
+    @apply hover:opacity-90;
+    background: var(--accent-brand);
+    color: var(--accent-ink);
+  }
+
+  /* Filled in the page's ink, inverted. */
+  .btn--light {
     @apply hover:opacity-90;
     background: var(--fg);
     color: var(--bg-base);
   }
 
-  /* Glass, lighting up in the brand accent on hover. */
+  /* Glass with no edge, its label lighting up in the brand accent on hover. */
   .btn--outline {
-    @apply glass text-fg hover:border-accent-brand hover:text-accent-brand;
+    @apply glass text-fg hover:text-accent-brand;
+    border-width: 0;
   }
   .btn--outline:hover {
     --glass-fill: var(--glass-bg-strong);

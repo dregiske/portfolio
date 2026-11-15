@@ -2,7 +2,7 @@
 
 @layer components {
   .contact__grid {
-    @apply mt-10 grid grid-cols-1 gap-12 wide:grid-cols-[0.9fr_1.1fr];
+    @apply grid grid-cols-1 gap-12 wide:grid-cols-[0.9fr_1.1fr];
   }
 
   /* Shrink-wrapped, so the "or" centres between the two pills — both
@@ -16,6 +16,7 @@
 
   .contact__email {
     @apply glass inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 font-mono text-sm transition-colors;
+    border-width: 0;
   }
   .contact__email:hover {
     --glass-fill: var(--glass-bg-strong);
@@ -24,22 +25,30 @@
     @apply h-5 w-5 text-accent-brand;
   }
 
-  /* The field sits above the form so icons dragged over it stay on top.
-     The social glyphs are dark SVGs, so their circles hold the light end of
-     the ladder in both themes: the tone recipe is re-tuned for this field. */
-  .contact__constellation {
-    @apply z-2 h-48;
-    --tone-step-dir: -1;
-    --tone-subtle-l: 0.94;
-    --tone-subtle-c: 0.05;
+  .contact__socials {
+    @apply flex items-center gap-3;
   }
 
-  .contact__node {
-    @apply inline-flex h-14 w-14 flex-none items-center justify-center;
+  /* Still, round, 52px: each in its app's own colors (`--social-brand` /
+     `--social-ink`, set inline from SOCIALS), lifting a little on hover. */
+  .contact__social {
+    @apply inline-flex h-13 w-13 items-center justify-center rounded-full transition duration-200 hover:-translate-y-0.5 hover:scale-105;
+    background: var(--social-brand);
+    color: var(--social-ink);
+    box-shadow: var(--shadow-node);
+  }
+  .contact__social:hover {
+    box-shadow: var(--shadow-node-lifted);
   }
 
-  .contact__social-img {
-    @apply h-7 w-7;
+  /* The icon file as a mask over `currentColor`, so the glyph takes the
+     app's ink whatever the file's own fill. */
+  .contact__social-glyph {
+    @apply block h-6 w-6;
+    background: currentColor;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
   }
 
   .contact__title {

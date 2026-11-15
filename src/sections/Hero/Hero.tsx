@@ -1,21 +1,21 @@
 import { INTRO } from "@/constants/intro";
+import { sectionHref } from "@/constants/sections";
 import { PHOTOS, PROFILE, TAGLINE } from "@/content/profile";
 import { TopBar } from "@/components/TopBar/TopBar";
 import { PortraitCard } from "@/components/PortraitCard/PortraitCard";
 import { Typewriter } from "@/components/Typewriter/Typewriter";
+import { Button } from "@/components/Button/Button";
 import "./Hero.css";
 
 /**
- * The opening: the name as a full-width wordmark across the top, and the
- * tagline at the foot, each of its lines typing itself at its own pace — the
- * timings all live in `@/constants/intro` and the copy in `@/content/profile`,
- * so this section stays a description of *where* things go.
+ * The opening, read top to bottom in one glance: who (the name, edge to edge
+ * of the content measure), what (the tagline, each line typing itself at its
+ * own pace) and what next (the two actions). Wide, the portrait takes its own
+ * column beside the tagline, so no text ever sits on the photo. Compact, it
+ * follows the actions.
  *
- * Wide, the portrait hangs off the bottom-right corner, straddling the seam
- * with About, and the tagline writes across it. Compact, it sits centred
- * between the wordmark and the tagline — it comes before the tagline in the
- * markup for that, and wide positions it absolutely, so order doesn't matter
- * there.
+ * Timings live in `@/constants/intro` and the copy in `@/content/profile`, so
+ * this section stays a description of *where* things go.
  */
 export const Hero = () => {
   return (
@@ -27,24 +27,35 @@ export const Hero = () => {
             search results get the name properly capitalised. */}
         <h1 className="hero__wordmark">{PROFILE.name}</h1>
 
-        <PortraitCard {...PHOTOS.portrait} className="hero__portrait" />
+        <div className="hero__body">
+          <div className="hero__intro">
+            {/* One paragraph, three independently typed lines. Mapping over
+                the paces rather than the strings is what ties each line to its
+                own entry in the choreography. */}
+            <p className="hero__tagline">
+              {INTRO.tagline.map((pace, i) => (
+                <Typewriter key={i} text={TAGLINE[i]} {...pace} />
+              ))}
+            </p>
 
-        {/* One paragraph, three independently typed lines. Mapping over the
-            paces rather than the strings is what ties each line to its own
-            entry in the choreography.
+            <div className="hero__actions">
+              <Button href={sectionHref("contact")}>Get in touch</Button>
+              {/* `download` forces a direct file download rather than opening
+                  the PDF inline — inline viewing errors out on a lot of mobile
+                  browsers. Same-origin, so the download is honoured. */}
+              <Button
+                href={PROFILE.resume}
+                variant="outline"
+                download
+                rel="noopener noreferrer"
+              >
+                Résumé
+              </Button>
+            </div>
+          </div>
 
-            Both line sets are rendered and CSS shows the one for the current
-            layout (the other is `display: none`, so it's out of the
-            accessibility tree too). Picking in JS would mean the prerendered
-            page — which has no viewport — always shipped one set, then swapped
-            it on hydration. */}
-        {(["narrow", "wide"] as const).map((set) => (
-          <p key={set} className={`hero__tagline hero__tagline--${set}`}>
-            {INTRO.tagline.map((pace, i) => (
-              <Typewriter key={i} text={TAGLINE[set][i]} {...pace} />
-            ))}
-          </p>
-        ))}
+          <PortraitCard {...PHOTOS.portrait} className="hero__portrait" />
+        </div>
       </div>
     </section>
   );
