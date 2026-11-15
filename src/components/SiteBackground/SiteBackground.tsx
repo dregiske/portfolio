@@ -1,6 +1,6 @@
 import type { ScrollMorph } from "@/lib/useScrollMorph";
-import { HalftoneLayer } from "@/components/HalftoneLayer/HalftoneLayer";
 import { AuraLayer } from "./AuraLayer";
+import { KoiLayer } from "./KoiLayer";
 import "./SiteBackground.css";
 
 /**
@@ -8,7 +8,7 @@ import "./SiteBackground.css";
  * everything, one per layer, back to front.
  *
  *   AuraLayer      z-0  monochrome clouds over a flat base
- *   HalftoneLayer  z-1  the three-ink halftone field
+ *   KoiLayer       z-2  pixel koi swimming over everything
  *
  * Deliberately not per-section: sections are transparent and scroll over this,
  * so there is never a seam between them — the background is one continuous
@@ -17,6 +17,15 @@ import "./SiteBackground.css";
  * Each layer owns its canvas, its clock, its redraw budget and the color tokens
  * it reads, so a layer can be added, removed or swapped here without touching
  * the others.
+ *
+ * ARCHIVED — the three-ink halftone field (2026-11-15, replaced by the koi).
+ * `HalftoneLayer` and `@/lib/halftone` are untouched and simply no longer
+ * mounted. To bring it back, re-add
+ *   import { HalftoneLayer } from "@/components/HalftoneLayer/HalftoneLayer";
+ * and render `<HalftoneLayer morph={morph} />` between the aura and the koi.
+ * Its CSS (`.site-bg--halftone`), its color tokens (`--halftone-*`) and the
+ * `data-halftone-quiet` markers on the hero tagline and About bio were all
+ * left in place, so that's the whole restore.
  *
  * ARCHIVED — the morphing dot field (wave → globe → streams → starfield →
  * mirrored wave). `src/lib/dotField.ts` is untouched and simply no longer
@@ -29,7 +38,7 @@ export function SiteBackground({ morph }: { morph: ScrollMorph }) {
   return (
     <>
       <AuraLayer morph={morph} />
-      <HalftoneLayer morph={morph} />
+      <KoiLayer />
     </>
   );
 }

@@ -30,4 +30,9 @@
       transition: none;
     }
   }
+
+  /* DEMO — koi pond, above the aura, still behind the sections. */
+  .site-bg--koi {
+    @apply z-[2];
+  }
 }

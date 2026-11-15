@@ -1,3 +1,8 @@
+/**
+ * ARCHIVED (2026-11-15) — no longer mounted; the site background is now the
+ * koi pond. Kept intact so it can be restored: see the ARCHIVED note in
+ * `src/components/SiteBackground/SiteBackground.tsx`.
+ */
 import type { MorphState } from "@/lib/useScrollMorph";
 import type { ResolvedColor } from "@/lib/themeColors";
 
