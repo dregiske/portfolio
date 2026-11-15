@@ -5,7 +5,8 @@
      bottom edge into About. Sideways overflow is still contained by `.home`'s
      `overflow-x: clip`. */
   .hero {
-    @apply relative z-10 min-h-svh;
+    @apply relative min-h-svh;
+    z-index: var(--z-content);
   }
 
   /* A size container, so the wordmark, tagline and portrait can all size off
@@ -16,7 +17,7 @@
   .hero__inner {
     @apply relative flex min-h-svh flex-col;
     container-type: inline-size;
-    padding: clamp(24px, 2.4vw, 34px) var(--gutter) clamp(40px, 5vw, 72px);
+    padding: var(--topbar-pad) var(--gutter) clamp(40px, 5vw, 72px);
   }
 
   /**
@@ -32,12 +33,13 @@
    * spare would sit right under the box and the "g" would cross it.
    */
   .hero__wordmark {
-    @apply relative z-1 font-display font-normal lowercase leading-[0.8] tracking-[-0.05em] whitespace-nowrap;
+    @apply type-display relative z-1 whitespace-nowrap;
+    line-height: 0.8;
     margin-top: clamp(32px, 4vw, 48px);
     margin-bottom: 0.25em;
     font-size: calc(100cqw / 5.3);
     margin-left: -0.043em;
-    text-shadow: 0 2px 40px var(--hero-shadow);
+    text-shadow: var(--shadow-text);
   }
 
   /**
@@ -51,7 +53,7 @@
    * the rows as flex items instead sidesteps the conflict entirely.
    *
    * The rows never wrap, and the size is one continuous function of the
-   * container, across both line sets (see `TAGLINE_LINES` in Hero.tsx):
+   * container, across both line sets (see `TAGLINE` in content/profile.ts):
    *
    *   5.2cqw          narrowest phones: the compact set's ~18.3em fills ~95%
    *   2.87cqw + 8px   from ~340px wide; at the breakpoint (~700px of
@@ -71,7 +73,7 @@
     @apply relative z-1 flex flex-col items-start self-start whitespace-nowrap font-normal leading-[1.12] tracking-[-0.02em] text-fg;
     padding-top: clamp(24px, 4vw, 40px);
     font-size: min(5.2cqw, 2.87cqw + 8px, 56px);
-    text-shadow: 0 2px 40px var(--hero-shadow);
+    text-shadow: var(--shadow-text);
 
     @variant wide {
       @apply mt-auto;
@@ -89,9 +91,8 @@
 
   /**
    * The portrait. Size and placement come from `--hero-portrait-*` on
-   * `.home`, which About shares to clear whatever hangs into it. The
-   * component's fixed sizes are overridden here (`.portrait-card` in the
-   * selector outranks them), with the frame's 25:32 aspect kept.
+   * `.home`, which About shares to clear whatever hangs into it. The frame
+   * keeps a 25:32 aspect.
    *
    * Compact: in the flow between wordmark and tagline, and centred there both
    * ways — auto margins top and bottom share out the free height.
@@ -101,8 +102,8 @@
    * About runs across it. The right offset is from the viewport edge, past
    * the gutter, which pulls it in toward the centre.
    */
-  .portrait-card.hero__portrait {
-    @apply relative z-0 my-auto h-auto self-center;
+  .hero__portrait {
+    @apply relative z-0 my-auto self-center;
     width: var(--hero-portrait-w);
     aspect-ratio: 25 / 32;
 

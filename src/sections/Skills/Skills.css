@@ -1,54 +1,11 @@
 @reference "../../index.css";
 
 @layer components {
-  /* Deliberately not clipped: nodes can be dragged anywhere in the section (see
-     the `roam` option). The section clips instead, so nothing escapes the page. */
-  /* No `touch-none`/`cursor-grab` on the container: it would swallow vertical
-     scrolling anywhere in the field, which makes the section hard to scroll past
-     on a phone. Only the nodes opt out of scrolling (see .skill-node), so a
-     touch on empty space scrolls the page as usual. */
-  .constellation {
-    @apply relative mt-8 w-full;
+  .skills__field {
+    @apply mt-8;
   }
 
-  /* Section-sized, so it must never take a touch or click meant for the page. */
-  .constellation__canvas {
-    @apply pointer-events-none absolute inset-0 h-full w-full;
-  }
-
-  /* No backdrop-blur here, deliberately: the tone backgrounds below are opaque
-     oklch, so there is nothing behind a node to show through and be blurred.
-     The filter was invisible and the cost was not — these twelve move every
-     frame, and a moving backdrop-filter makes the compositor re-sample and
-     re-blur a fresh region of the animating canvas underneath, every frame,
-     twelve times over. */
-  .skill-node {
-    /* `touch-none` (touch-action: none) is scoped to the nodes so dragging a
-       node pans the node rather than scrolling the page — while empty space in
-       the field stays scrollable. */
-    @apply absolute left-0 top-0 z-2 cursor-grab touch-none select-none whitespace-nowrap rounded-full border font-medium;
-    border-color: var(--glass-border);
-    transform-origin: center;
-    /* left/top stay at 0: the position and the hover scale both live in the
-       transform, which keeps the per-frame updates off the layout path. The
-       scale is eased in JS, so there is no transition on transform to smear
-       every position write. */
-    will-change: transform;
-    transition: box-shadow 0.2s;
-  }
-  .skill-node--frost {
-    @apply bg-tone-frost-subtle text-tone-frost;
-  }
-  .skill-node--ice {
-    @apply bg-tone-ice-subtle text-tone-ice;
-  }
-  .skill-node--sky {
-    @apply bg-tone-sky-subtle text-tone-sky;
-  }
-  .skill-node--azure {
-    @apply bg-tone-azure-subtle text-tone-azure;
-  }
-  .skill-node--cobalt {
-    @apply bg-tone-cobalt-subtle text-tone-cobalt;
+  .skills__node {
+    @apply whitespace-nowrap border font-medium;
   }
 }

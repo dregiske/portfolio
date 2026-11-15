@@ -11,76 +11,39 @@
     @apply mb-8 inline-flex flex-col items-center gap-2;
   }
   .contact__or {
-    @apply font-mono text-xs uppercase tracking-[0.08em] text-fg-faint;
+    @apply type-label text-fg-faint;
   }
 
   .contact__email {
-    @apply inline-flex items-center gap-2.5 rounded-full border px-4 py-2.5 font-mono text-sm backdrop-blur-sm transition-colors;
-    background: var(--glass-bg);
-    border-color: var(--glass-border);
+    @apply glass inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 font-mono text-sm transition-colors;
   }
   .contact__email:hover {
-    background: var(--glass-bg-strong);
+    --glass-fill: var(--glass-bg-strong);
   }
   .contact__email-glyph {
     @apply h-5 w-5 text-accent-brand;
   }
 
-  /* Unclipped: icons can be dragged anywhere in the section, over the form and
-     the heading (the hook stretches the canvas over the whole section to keep
-     their links). The section itself clips, so nothing escapes the page.
-     `touch-none`/`cursor-grab` are scoped to the nodes (see .contact__node), not
-     here, so a touch on empty space scrolls the page instead of being trapped. */
+  /* The field sits above the form so icons dragged over it stay on top.
+     The social glyphs are dark SVGs, so their circles hold the light end of
+     the ladder in both themes: the tone recipe is re-tuned for this field. */
   .contact__constellation {
-    @apply relative z-2 h-48 w-full;
-  }
-  /* Section-sized, so it must never take a click meant for the form. */
-  .contact__constellation-canvas {
-    @apply pointer-events-none absolute inset-0 h-full w-full;
+    @apply z-2 h-48;
+    --tone-step-dir: -1;
+    --tone-subtle-l: 0.94;
+    --tone-subtle-c: 0.05;
   }
 
   .contact__node {
-    /* `touch-none` scoped here so dragging an icon pans it rather than scrolling
-       the page, while empty field space stays scrollable. */
-    @apply absolute left-0 top-0 z-2 inline-flex h-14 w-14 flex-none cursor-grab touch-none select-none items-center justify-center rounded-full;
-    transform-origin: center;
-    /* See .skill-node: position and hover scale both ride the transform, so
-       moving these every frame never touches layout. */
-    will-change: transform;
-    transition: box-shadow 0.2s;
-  }
-  .contact__node--frost {
-    @apply bg-tone-frost-subtle;
-  }
-  .contact__node--ice {
-    @apply bg-tone-ice-subtle;
-  }
-  .contact__node--sky {
-    @apply bg-tone-sky-subtle;
-  }
-  .contact__node--azure {
-    @apply bg-tone-azure-subtle;
-  }
-  .contact__node--cobalt {
-    @apply bg-tone-cobalt-subtle;
-  }
-  .contact__title {
-    @apply mb-6 text-3xl font-medium tracking-[-0.02em];
-  }
-
-  /* The social glyphs are dark SVGs, so their circles hold the light end of the
-     ladder in both themes. Spelled out rather than derived: the tone tokens are
-     already substituted by the time they inherit down here. */
-  .contact__constellation {
-    --tone-frost-subtle: oklch(0.94 0.045 var(--shade-frost-h));
-    --tone-ice-subtle: oklch(0.905 0.048 var(--shade-ice-h));
-    --tone-sky-subtle: oklch(0.87 0.05 var(--shade-sky-h));
-    --tone-azure-subtle: oklch(0.835 0.052 var(--shade-azure-h));
-    --tone-cobalt-subtle: oklch(0.8 0.055 var(--shade-cobalt-h));
+    @apply inline-flex h-14 w-14 flex-none items-center justify-center;
   }
 
   .contact__social-img {
     @apply h-7 w-7;
+  }
+
+  .contact__title {
+    @apply mb-6 text-3xl font-medium tracking-[-0.02em];
   }
 
   .contact__form {
@@ -88,12 +51,10 @@
   }
 
   .field {
-    @apply w-full rounded-xl border px-4 py-3.5 text-fg backdrop-blur-sm transition-colors placeholder:text-fg-faint focus:outline-none;
-    background: var(--glass-bg);
-    border-color: var(--glass-border);
+    @apply glass w-full rounded-xl px-4 py-3.5 text-fg transition-colors placeholder:text-fg-faint focus:outline-none;
   }
   .field:focus {
-    border-color: var(--accent-brand);
+    --glass-edge: var(--accent-brand);
   }
   .field--area {
     @apply resize-y;
@@ -101,8 +62,6 @@
 
   .contact__submit {
     @apply self-start;
-    --btn-fill: var(--fg);
-    --btn-fill-fg: var(--bg-base);
   }
   .contact__submit-icon {
     @apply ml-2 inline-block h-4 w-4;
@@ -115,6 +74,6 @@
     @apply text-accent-brand;
   }
   .contact__status--err {
-    @apply text-destructive;
+    @apply text-danger;
   }
 }

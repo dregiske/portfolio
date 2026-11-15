@@ -1,5 +1,11 @@
 import { useEffect, useRef, type RefObject } from "react";
 import { REDUCED_MOTION_QUERY } from "@/lib/useReducedMotion";
+import { watchThemeColors } from "@/lib/themeColors";
+
+const LINE_TOKENS = [
+  "--constellation-line",
+  "--constellation-line-active",
+] as const;
 
 type SetHome = (i: number, hx: number, hy: number) => void;
 
@@ -9,7 +15,7 @@ type Layout = (box: HTMLDivElement, setHome: SetHome) => number | void;
 export interface ConstellationOptions {
   boxRef: RefObject<HTMLDivElement | null>;
   canvasRef: RefObject<HTMLCanvasElement | null>;
-  nodeEls: RefObject<(HTMLElement | null)[]>;
+  /** How many nodes the box holds — its children marked `data-node`, in order. */
   count: number;
   /** Virtual coordinate space the homes are expressed in. */
   vw?: number;
@@ -67,7 +73,6 @@ type Node = {
 export function useConstellation({
   boxRef,
   canvasRef,
-  nodeEls,
   count,
   vw = 1000,
   vh = 1000,
@@ -92,42 +97,23 @@ export function useConstellation({
     if (!ctx) return;
     const roamEl = roam ? box.closest<HTMLElement>(roam) : null;
 
-    // Pull canvas colors from CSS tokens. A hidden probe lets the browser fully
-    // resolve var()/color-mix() to a concrete rgb() the canvas can parse; we
-    // re-read whenever the theme (.dark on <html>) toggles.
-    const probe = document.createElement("span");
-    probe.style.cssText =
-      "position:absolute;width:0;height:0;visibility:hidden";
-    box.appendChild(probe);
-    const resolve = (token: string) => {
-      probe.style.color = `var(${token})`;
-      return getComputedStyle(probe).color;
-    };
+    // Link colors come from CSS tokens and follow the theme. (Node shadows are
+    // pure CSS, keyed off `data-lifted` — see `.constellation__node`.)
     let lineRest = "";
     let lineActive = "";
-    let shadowRest = "";
-    let shadowHover = "";
-    const readColors = () => {
-      lineRest = resolve("--constellation-line");
-      lineActive = resolve("--constellation-line-active");
-      const sc = getComputedStyle(box)
-        .getPropertyValue("--shadow-color")
-        .trim();
-      shadowRest = `0 2px 8px rgb(${sc} / 0.06)`;
-      shadowHover = `0 8px 22px rgb(${sc} / 0.16)`;
-    };
-    readColors();
-    const themeObserver = new MutationObserver(readColors);
-    themeObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
+    const stopWatching = watchThemeColors(LINE_TOKENS, (colors) => {
+      lineRest = colors["--constellation-line"].css;
+      lineActive = colors["--constellation-line-active"].css;
     });
 
     const reduce = window.matchMedia(REDUCED_MOTION_QUERY).matches;
     const amp = reduce ? 0 : floatAmp;
 
+    const nodeEls = Array.from(
+      box.querySelectorAll<HTMLElement>(":scope > [data-node]"),
+    );
     const nodes: Node[] = Array.from({ length: count }, (_, i) => ({
-      el: nodeEls.current[i] as HTMLElement,
+      el: nodeEls[i],
       hx: 0,
       hy: 0,
       x: 0,
@@ -399,7 +385,7 @@ export function useConstellation({
 
         if (n.lifted !== lifted) {
           n.lifted = lifted;
-          n.el.style.boxShadow = lifted ? shadowHover : shadowRest;
+          n.el.toggleAttribute("data-lifted", lifted);
         }
         const z = lifted || dragging === i ? "5" : "2";
         if (n.z !== z) {
@@ -532,17 +518,15 @@ export function useConstellation({
       cancelAnimationFrame(raf);
       cancelAnimationFrame(resizeRaf);
       window.removeEventListener("resize", resize);
-      themeObserver.disconnect();
+      stopWatching();
       sizeObserver.disconnect();
       areaObserver?.disconnect();
       visibility.disconnect();
-      probe.remove();
       cleanups.forEach((fn) => fn());
     };
   }, [
     boxRef,
     canvasRef,
-    nodeEls,
     count,
     vw,
     vh,

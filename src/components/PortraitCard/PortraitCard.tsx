@@ -1,31 +1,25 @@
 import { cn } from "@/lib/utils";
 import { Photo } from "@/components/Photo/Photo";
+import type { ImageAsset } from "@/content/types";
 import "./PortraitCard.css";
 
-type PortraitCardProps = {
-  src: string;
+type PortraitCardProps = ImageAsset & {
   alt: string;
+  /** Sets the card's size and placement. */
   className?: string;
 };
 
 /**
- * The hero's photo: a soft-shadowed rounded frame that crops to fill.
+ * A photo in a soft-shadowed rounded frame that crops to fill.
  *
- * Deliberately not lazy — this is the largest thing in the first viewport, so
- * it *is* the page's largest-contentful-paint. Telling the browser it matters
- * gets it in flight before the images further down the page.
+ * Deliberately not lazy — it's used for the hero, the largest thing in the
+ * first viewport, so it *is* the page's largest-contentful-paint. Telling the
+ * browser it matters gets it in flight before the images further down.
  */
-export function PortraitCard({ src, alt, className }: PortraitCardProps) {
+export function PortraitCard({ className, ...image }: PortraitCardProps) {
   return (
     <div className={cn("portrait-card", className)}>
-      <Photo
-        src={src}
-        alt={alt}
-        className="portrait-card__img"
-        width={450}
-        height={800}
-        priority
-      />
+      <Photo {...image} className="portrait-card__img" priority />
     </div>
   );
 }

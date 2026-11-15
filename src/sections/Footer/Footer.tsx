@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import { ArrowUp } from "lucide-react";
+import { sectionHref } from "@/constants/sections";
+import { FOOTER_NOTE, PROFILE } from "@/content/profile";
 import type { ScrollMorph } from "@/lib/useScrollMorph";
 import "./Footer.css";
 
@@ -36,10 +38,10 @@ export function Footer({ morph }: { morph: ScrollMorph }) {
           {/* The year is baked in at build time by the prerender, so a visit
               in a later year than the last deploy legitimately differs. */}
           <span className="site-footer__copyright" suppressHydrationWarning>
-            © {new Date().getFullYear()} Andre Giske
+            © {new Date().getFullYear()} {PROFILE.name}
           </span>
-          <p>Thanks for scrolling this far!</p>
-          <a href="#hero" className="site-footer__top">
+          <p>{FOOTER_NOTE}</p>
+          <a href={sectionHref("hero")} className="site-footer__top">
             Back to top
             <ArrowUp className="site-footer__top-glyph" />
           </a>

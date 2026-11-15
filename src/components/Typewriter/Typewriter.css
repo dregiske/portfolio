@@ -19,9 +19,10 @@
 
   .typewriter__ghost {
     /**
-     * `text-shadow` is set on the line itself (`.hero__title`) and inherits,
-     * and a shadow is still painted under transparent text — without this, the
-     * full name would sit there as a blur before a character of it existed.
+     * `text-shadow` is set on the line's parent (`.hero__tagline`) and
+     * inherits, and a shadow is still painted under transparent text —
+     * without this, the full line would sit there as a blur before a
+     * character of it existed.
      */
     color: transparent;
     text-shadow: none;

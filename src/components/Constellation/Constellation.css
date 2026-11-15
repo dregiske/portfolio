@@ -1,0 +1,42 @@
+@reference "../../index.css";
+
+@layer components {
+  /* Deliberately not clipped: with `roam`, nodes can be dragged anywhere in
+     the surrounding section, which does the clipping instead. No
+     `touch-none` / `cursor-grab` here either — that would swallow vertical
+     scrolling anywhere in the field. Only the nodes opt out of scrolling. */
+  .constellation {
+    @apply relative w-full;
+  }
+
+  /* Can be stretched over a whole section, so it must never take a touch or
+     click meant for the page. */
+  .constellation__canvas {
+    @apply pointer-events-none absolute inset-0 h-full w-full;
+  }
+
+  /* No backdrop blur, deliberately: the tone fills are opaque, so there is
+     nothing to show through, and a moving backdrop-filter would make the
+     compositor re-blur a fresh patch of the animated background every frame,
+     once per node. */
+  .constellation__node {
+    /* `touch-none` scoped here so dragging a node pans the node rather than
+       scrolling the page, while empty space in the field stays scrollable. */
+    @apply absolute left-0 top-0 z-2 cursor-grab touch-none select-none rounded-full;
+    background: var(--tone-surface);
+    color: var(--tone-ink);
+    box-shadow: var(--shadow-node);
+    transform-origin: center;
+    /* left/top stay at 0: the position and the hover scale both live in the
+       transform, which keeps the per-frame updates off the layout path. The
+       scale is eased in JS, so there is no transition on transform to smear
+       every position write. */
+    will-change: transform;
+    transition: box-shadow 0.2s;
+  }
+
+  /* Set by `useConstellation` on the hovered or dragged node. */
+  .constellation__node[data-lifted] {
+    box-shadow: var(--shadow-node-lifted);
+  }
+}

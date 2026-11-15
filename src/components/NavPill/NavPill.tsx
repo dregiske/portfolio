@@ -1,4 +1,4 @@
-import { NAV_SECTIONS } from "@/constants/sections";
+import { NAV_SECTIONS, sectionHref } from "@/constants/sections";
 import { cn } from "@/lib/utils";
 import "./NavPill.css";
 
@@ -10,7 +10,7 @@ export function NavPill({ className }: { className?: string }) {
   return (
     <nav className={cn("nav-pill", className)} aria-label="Sections">
       {NAV_SECTIONS.map((section) => (
-        <a key={section.id} href={`#${section.id}`} className="nav-pill__link">
+        <a key={section.id} href={sectionHref(section.id)} className="nav-pill__link">
           {section.label}
         </a>
       ))}

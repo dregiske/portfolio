@@ -22,6 +22,9 @@ type CarouselProps = {
   gap?: number;
   /** Auto-advance period in ms. 0 (or reduced motion) disables autoplay. */
   autoPlay?: number;
+  /** Accessible names for the step buttons, e.g. "Previous projects". */
+  prevLabel?: string;
+  nextLabel?: string;
   className?: string;
 };
 
@@ -42,6 +45,8 @@ export function Carousel({
   itemsPerView = 3,
   gap = 20,
   autoPlay = 0,
+  prevLabel = "Previous",
+  nextLabel = "Next",
   className,
 }: CarouselProps) {
   const reduced = useReducedMotion();
@@ -163,7 +168,7 @@ export function Carousel({
       <button
         type="button"
         className="carousel__btn carousel__btn--left"
-        aria-label="Previous projects"
+        aria-label={prevLabel}
         onClick={nudge(shiftLeft)}
       >
         <ChevronLeft className="carousel__chevron" />
@@ -204,7 +209,7 @@ export function Carousel({
       <button
         type="button"
         className="carousel__btn carousel__btn--right"
-        aria-label="Next projects"
+        aria-label={nextLabel}
         onClick={nudge(shiftRight)}
       >
         <ChevronRight className="carousel__chevron" />

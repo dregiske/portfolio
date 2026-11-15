@@ -2,22 +2,8 @@
 
 @layer components {
   .tag {
-    @apply inline-flex items-center gap-2.5 font-mono text-[11px] px-2.5 py-1.5 rounded-full;
-  }
-
-  .tag--frost {
-    @apply bg-tone-frost-subtle text-tone-frost;
-  }
-  .tag--ice {
-    @apply bg-tone-ice-subtle text-tone-ice;
-  }
-  .tag--sky {
-    @apply bg-tone-sky-subtle text-tone-sky;
-  }
-  .tag--azure {
-    @apply bg-tone-azure-subtle text-tone-azure;
-  }
-  .tag--cobalt {
-    @apply bg-tone-cobalt-subtle text-tone-cobalt;
+    @apply inline-flex items-center gap-2.5 rounded-full px-2.5 py-1.5 font-mono text-[11px];
+    background: var(--tone-surface);
+    color: var(--tone-ink);
   }
 }

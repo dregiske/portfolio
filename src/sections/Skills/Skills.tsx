@@ -1,123 +1,61 @@
-import { useRef } from "react";
-import { TONES } from "@/constants/tones";
-import { useConstellation } from "@/lib/useConstellation";
+import type { CSSProperties } from "react";
+import { toneAt } from "@/constants/tones";
+import { SKILLS, SKILL_HOMES } from "@/content/skills";
 import { isWide } from "@/lib/breakpoint";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
+import { Constellation } from "@/components/Constellation/Constellation";
 import "./Skills.css";
 
-type Skill = { name: string; level: number };
+/** The field's height in px on each side of the breakpoint. Compact is
+ *  trimmed so the phone Skills section isn't taller than the viewport. */
+const FIELD_HEIGHT = { wide: 520, tall: 620 };
 
-const skills: Skill[] = [
-  { name: "Python", level: 95 },
-  { name: "TypeScript", level: 85 },
-  { name: "C++", level: 80 },
-  { name: "Java", level: 80 },
-  { name: "SQL", level: 80 },
-  { name: "React", level: 90 },
-  { name: "SQLAlchemy", level: 85 },
-  { name: "Numpy", level: 80 },
-  { name: "FastAPI", level: 95 },
-  { name: "Nginx", level: 75 },
-  { name: "Docker", level: 80 },
-  { name: "Git", level: 90 },
-];
+/**
+ * Node size follows proficiency: the weakest listed skill renders at
+ * `MIN_SCALE` of the base pill, the strongest at `MAX_SCALE`.
+ */
+const LEVEL_RANGE = [74, 100] as const;
+const MIN_SCALE = 0.92;
+const MAX_SCALE = 1.47;
+/** The base pill, at scale 1, in px. */
+const BASE = { padY: 9, padX: 16, font: 13.5 };
 
-// Two layouts in a normalized 1000×1000 virtual space, switched at the site
-// breakpoint (`@/lib/breakpoint`) along with everything else. The switch moves
-// each node's *home*; the spring in `useConstellation` then glides the node
-// there, so the change animates instead of snapping.
-// homesWide is the original landscape spread; homesTall is a loose, uneven
-// scatter for phones, placed by measured node size so no two pills touch at
-// ~330px wide. (It was a strict two-column zigzag, which read as a grid.)
-const homesWide: [number, number][] = [
-  [181, 238],
-  [377, 181],
-  [589, 263],
-  [779, 198],
-  [900, 362],
-  [143, 565],
-  [347, 590],
-  [559, 648],
-  [760, 573],
-  [903, 663],
-  [256, 819],
-  [650, 844],
-];
-const homesTall: [number, number][] = [
-  [581, 210], // Python
-  [275, 65], // TypeScript
-  [153, 282], // C++
-  [856, 323], // Java
-  [703, 468], // SQL
-  [367, 395], // React
-  [520, 726], // SQLAlchemy
-  [810, 629], // Numpy
-  [275, 556], // FastAPI
-  [153, 839], // Nginx
-  [703, 879], // Docker
-  [765, 113], // Git
-];
+function nodeStyle(level: number): CSSProperties {
+  const [lo, hi] = LEVEL_RANGE;
+  const scale = MIN_SCALE + ((level - lo) / (hi - lo)) * (MAX_SCALE - MIN_SCALE);
+  return {
+    padding: `${BASE.padY * scale}px ${BASE.padX * scale}px`,
+    fontSize: `${BASE.font * scale}px`,
+  };
+}
 
-const VW = 1000;
-const VH = 1000;
-const H_WIDE = 520; // field height (px), wide layout
-const H_TALL = 620; // field height (px), compact — trimmed so the phone
-// Skills section isn't taller than the viewport.
-
-const tints = TONES.map((tone) => `skill-node--${tone}`);
-
-export const Skills = () => {
-  const boxRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const nodeEls = useRef<(HTMLElement | null)[]>([]);
-
-  useConstellation({
-    boxRef,
-    canvasRef,
-    nodeEls,
-    count: skills.length,
-    vw: VW,
-    vh: VH,
-    // Free to roam the whole Skills section, like the Contact socials. The
-    // section's own overflow does the clipping.
-    roam: "section",
-    // Pick the layout for the current side of the breakpoint. Within either,
-    // homes are in virtual units, so the spread still scales with the width.
-    layout: (_box, setHome) => {
-      const wide = isWide();
-      const homes = wide ? homesWide : homesTall;
-      homes.forEach(([hx, hy], i) => setHome(i, hx, hy));
-      return wide ? H_WIDE : H_TALL;
-    },
-  });
-
-  return (
-    <SectionShell
-      id="skills"
-      title="Skills"
-      className="overflow-hidden"
-    >
-      <div ref={boxRef} className="constellation">
-        <canvas ref={canvasRef} className="constellation__canvas" />
-        {skills.map((skill, i) => {
-          const scale = 0.92 + ((skill.level - 74) / 26) * 0.55;
-          return (
-            <div
-              key={skill.name}
-              ref={(el) => {
-                nodeEls.current[i] = el;
-              }}
-              className={`skill-node ${tints[i % tints.length]}`}
-              style={{
-                padding: `${9 * scale}px ${16 * scale}px`,
-                fontSize: `${13.5 * scale}px`,
-              }}
-            >
-              {skill.name}
-            </div>
-          );
-        })}
-      </div>
-    </SectionShell>
-  );
-};
+export const Skills = () => (
+  <SectionShell id="skills" className="overflow-hidden">
+    <Constellation
+      className="skills__field"
+      items={SKILLS}
+      toneOf={(_, i) => toneAt(i)}
+      // Free to roam the whole section; its own overflow does the clipping.
+      roam="section"
+      // Homes are in virtual units, so the spread scales with the width; the
+      // layout set switches at the site breakpoint, and the field's spring
+      // glides each node to its new home.
+      layout={(_box, setHome) => {
+        const wide = isWide();
+        const homes = wide ? SKILL_HOMES.wide : SKILL_HOMES.tall;
+        homes.forEach(([hx, hy], i) => setHome(i, hx, hy));
+        return wide ? FIELD_HEIGHT.wide : FIELD_HEIGHT.tall;
+      }}
+      renderNode={(skill, node) => (
+        <div
+          key={skill.name}
+          {...node}
+          className={`${node.className} skills__node`}
+          style={nodeStyle(skill.level)}
+        >
+          {skill.name}
+        </div>
+      )}
+    />
+  </SectionShell>
+);

@@ -3,12 +3,9 @@
 @layer components {
   /* The usual section padding, plus whatever of the hero portrait hangs into
      the top of this section (wide only; compact, it doesn't hang), so the
-     heading or bio never runs into the photo. 1.28 is its 32/25 height. */
+     heading or bio never runs into the photo. */
   .section-shell.about {
-    padding-top: calc(
-      var(--section-pad-y) + var(--hero-portrait-w) * 1.28 *
-        var(--hero-portrait-hang)
-    );
+    padding-top: calc(var(--section-pad-y) + var(--hero-overhang));
   }
 
   /* Wide: photos in a column of up to half the width (520px at most), bio in
@@ -30,7 +27,7 @@
      means a different shot later reframes rather than moving the bio. */
   .about__photo {
     @apply aspect-[3/2] w-full max-w-[520px] overflow-hidden rounded-2xl object-cover;
-    box-shadow: 0 24px 50px -20px var(--hero-shadow);
+    box-shadow: var(--shadow-photo);
   }
 
   /* The second shot is wide-layout only: stacked in one column, two photos
@@ -53,7 +50,7 @@
       /* ~75px at the breakpoint, 144px from 1440 up. */
       margin-left: calc(-1 * clamp(64px, 10vw, 144px));
     }
-    text-shadow: 0 2px 40px var(--hero-shadow);
+    text-shadow: var(--shadow-text);
   }
 
   .about__text {

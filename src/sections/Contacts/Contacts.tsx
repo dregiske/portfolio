@@ -1,36 +1,27 @@
-import {
-  EMAIL_ADDRESS,
-  EMAIL_ADDRESS_ALT,
-  DISCORD_LINK,
-  GITHUB_LINK,
-  LINKEDIN_LINK,
-  INSTAGRAM_LINK,
-} from "@/constants/links";
+import { useState, type FormEvent } from "react";
 import { Mail, Send } from "lucide-react";
-import { useState } from "react";
+import { EMAILJS } from "@/config/emailjs";
+import { PROFILE } from "@/content/profile";
+import { SOCIALS } from "@/content/socials";
 import { SectionShell } from "@/components/SectionShell/SectionShell";
 import { Button } from "@/components/Button/Button";
-import { ContactConstellation, type Social } from "./ContactConstellation";
+import { Constellation } from "@/components/Constellation/Constellation";
 import "./Contacts.css";
 
-const socials: Social[] = [
-  { name: "Discord", url: DISCORD_LINK, src: "discord.svg", tone: "sky" },
-  { name: "GitHub", url: GITHUB_LINK, src: "github.svg", tone: "frost" },
-  { name: "LinkedIn", url: LINKEDIN_LINK, src: "linkedin.svg", tone: "ice" },
-  {
-    name: "Instagram",
-    url: INSTAGRAM_LINK,
-    src: "instagram.svg",
-    tone: "cobalt",
-  },
-];
+/**
+ * The socials' homes in the field's 1000×400 virtual space: spread evenly
+ * between the side margins, zigzagging above and below the midline so the
+ * links read as a chain.
+ */
+const FIELD = { vw: 1000, vh: 400, margin: 160, zigzag: 70 };
 
 export const Contacts = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
     setIsSubmitting(true);
     setStatus("idle");
 
@@ -38,14 +29,11 @@ export const Contacts = () => {
       // Fetched on send rather than up front: most visitors never submit, so
       // it has no business competing with the first paint.
       const { default: emailjs } = await import("@emailjs/browser");
-      await emailjs.sendForm(
-        "service_udsep0o",
-        "template_od2bcn2",
-        e.currentTarget,
-        { publicKey: "QlLGbagw5YQ4qecXH" },
-      );
+      await emailjs.sendForm(EMAILJS.serviceId, EMAILJS.templateId, form, {
+        publicKey: EMAILJS.publicKey,
+      });
       setStatus("success");
-      (e.target as HTMLFormElement).reset();
+      form.reset();
     } catch {
       setStatus("error");
     } finally {
@@ -54,27 +42,64 @@ export const Contacts = () => {
   };
 
   return (
-    <SectionShell
-      id="contact"
-      title="Contact"
-      className="overflow-hidden"
-    >
+    <SectionShell id="contact" className="overflow-hidden">
       <div className="contact__grid">
         {/* Left — where to find me */}
         <div>
           <div className="contact__emails">
-            <a href={`mailto:${EMAIL_ADDRESS}`} className="contact__email">
+            <a href={`mailto:${PROFILE.email}`} className="contact__email">
               <Mail className="contact__email-glyph" />
-              {EMAIL_ADDRESS}
+              {PROFILE.email}
             </a>
             <span className="contact__or">or</span>
-            <a href={`mailto:${EMAIL_ADDRESS_ALT}`} className="contact__email">
+            <a href={`mailto:${PROFILE.emailAlt}`} className="contact__email">
               <Mail className="contact__email-glyph" />
-              {EMAIL_ADDRESS_ALT}
+              {PROFILE.emailAlt}
             </a>
           </div>
 
-          <ContactConstellation socials={socials} />
+          <Constellation
+            className="contact__constellation"
+            items={SOCIALS}
+            toneOf={(social) => social.tone}
+            vw={FIELD.vw}
+            vh={FIELD.vh}
+            // Free to roam the whole Contact section — which fills the screen
+            // while you're on it — rather than a margin around the field.
+            roam="section"
+            floatAmp={16}
+            hoverScale={1.1}
+            layout={(_box, setHome) => {
+              const n = SOCIALS.length;
+              const span = FIELD.vw - 2 * FIELD.margin;
+              SOCIALS.forEach((_, i) => {
+                const hx = n > 1 ? FIELD.margin + (span * i) / (n - 1) : FIELD.vw / 2;
+                const hy = FIELD.vh / 2 + (i % 2 === 0 ? -1 : 1) * FIELD.zigzag;
+                setHome(i, hx, hy);
+              });
+            }}
+            renderNode={(social, node) => (
+              <a
+                key={social.name}
+                {...node}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.name}
+                className={`${node.className} contact__node`}
+              >
+                <img
+                  src={social.icon}
+                  alt={social.name}
+                  className="contact__social-img"
+                  width={28}
+                  height={28}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+            )}
+          />
         </div>
 
         {/* Right — say something */}

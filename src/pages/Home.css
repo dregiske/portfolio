@@ -21,7 +21,10 @@
        roughly 285px plus 20vw, as the wordmark and tagline grow with width,
        which leaves ~20px clear above and below it on the shortest phones —
        so a short phone gets a smaller photo instead of a collision. Floored
-       at 140px for landscape phones, where the hero simply grows taller. */
+       at 140px for landscape phones, where the hero simply grows taller.
+
+       `--hero-overhang` is the one number About reads: how far the photo
+       hangs into it, in px. */
     --hero-portrait-w: clamp(
       140px,
       (100svh - 285px - 20vw) * 25 / 32,
@@ -35,13 +38,18 @@
       --hero-portrait-right: 12vw;
       --hero-portrait-hang: 0.35;
     }
+
+    --hero-overhang: calc(
+      var(--hero-portrait-w) * 32 / 25 * var(--hero-portrait-hang)
+    );
   }
 
   /* Everything readable sits above the background canvases. The tail is
      empty on purpose: it's the stretch the footer rises through, so the
      reveal never plays over anything worth reading. */
   .home__content {
-    @apply relative z-10;
+    @apply relative;
+    z-index: var(--z-content);
     padding-bottom: var(--footer-zone);
   }
 }

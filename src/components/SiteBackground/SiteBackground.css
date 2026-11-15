@@ -9,11 +9,11 @@
   }
 
   .site-bg--aura {
-    @apply z-0;
+    z-index: var(--z-aura);
   }
 
   /* Koi pond, above the aura, still behind the sections. */
   .site-bg--koi {
-    @apply z-[2];
+    z-index: var(--z-koi);
   }
 }

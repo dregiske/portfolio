@@ -7,7 +7,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { Menu, X } from "lucide-react";
-import { NAV_SECTIONS } from "@/constants/sections";
+import { NAV_SECTIONS, sectionHref } from "@/constants/sections";
 import { useIsWide } from "@/lib/breakpoint";
 import { cn } from "@/lib/utils";
 import "./MobileMenu.css";
@@ -130,7 +130,7 @@ export function MobileMenu() {
               {NAV_SECTIONS.map((section, i) => (
                 <a
                   key={section.id}
-                  href={`#${section.id}`}
+                  href={sectionHref(section.id)}
                   className="mobile-menu__link"
                   style={{ "--i": i } as CSSProperties}
                   onClick={() => close(false)}

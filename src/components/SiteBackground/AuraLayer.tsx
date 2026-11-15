@@ -49,7 +49,8 @@ export function AuraLayer({ morph }: { morph: ScrollMorph }) {
 
     const state = morph.state;
 
-    let base = "#0a0a0a";
+    // Both filled in from the tokens before the first draw.
+    let base = "";
     let blobs: ResolvedColor[] = [];
 
     const aura = createAura();

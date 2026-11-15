@@ -2,10 +2,10 @@
 
 @layer components {
   /* Parked one full height below the viewport; the reveal is a transform, so it
-     never takes part in layout and never lengthens the page. z-40 sat it
-     under the (now archived) scroll indicator's z-50 for their handoff. */
+     never takes part in layout and never lengthens the page. */
   .site-footer {
-    @apply fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-sm;
+    @apply fixed inset-x-0 bottom-0 border-t backdrop-blur-sm;
+    z-index: var(--z-footer);
     border-color: var(--glass-border);
     /* `--scrim` is a bare rgb triplet, so it has to go through rgb() — on its
        own it isn't a color, and the footer used to paint no fill at all. */
@@ -17,7 +17,8 @@
 
   .site-footer__inner {
     /* Bottom pad clears the iOS home indicator (safe-area inset). */
-    @apply mx-auto flex w-full max-w-[1180px] flex-col gap-3 pt-6 wide:flex-row wide:items-end wide:justify-between;
+    @apply mx-auto flex w-full flex-col gap-3 pt-6 wide:flex-row wide:items-end wide:justify-between;
+    max-width: var(--content-max);
     padding-inline: var(--gutter);
     padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
   }
@@ -32,7 +33,7 @@
   }
 
   .site-footer__top {
-    @apply ml-auto inline-flex shrink-0 items-center gap-1.5 uppercase tracking-[0.08em] text-accent-brand transition-opacity hover:opacity-70;
+    @apply type-label ml-auto inline-flex shrink-0 items-center gap-1.5 text-accent-brand transition-opacity hover:opacity-70;
   }
 
   .site-footer__top-glyph {

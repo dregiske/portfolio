@@ -4,13 +4,10 @@
   /* The AG pill's glass, as a circle of the same 48px. Compact only — the nav
      pill takes over at the breakpoint. */
   .mobile-menu__button {
-    @apply flex h-12 w-12 items-center justify-center rounded-full border backdrop-blur-sm transition-colors wide:hidden;
-    background: var(--nav-pill-bg);
-    border-color: var(--nav-pill-border);
-    color: var(--nav-pill-fg);
+    @apply glass glass-nav flex h-12 w-12 items-center justify-center rounded-full transition-colors wide:hidden;
   }
   .mobile-menu__button:hover {
-    background: var(--glass-bg-strong);
+    --glass-fill: var(--glass-bg-strong);
   }
 
   .mobile-menu__icon {
@@ -27,7 +24,8 @@
    * menu is open — closed, `visibility: hidden` takes it out of rendering.
    */
   .mobile-menu__cover {
-    @apply fixed inset-0 z-[60] flex flex-col items-center justify-center wide:hidden;
+    @apply fixed inset-0 flex flex-col items-center justify-center wide:hidden;
+    z-index: var(--z-menu);
     background: var(--menu-cover-bg);
     color: var(--menu-cover-fg);
     /* Unprefixed only: the build adds the -webkit- copy itself, and writing
@@ -49,7 +47,7 @@
   /* Where the menu button sits in the top bar, so ☰ turns into ✕ in place. */
   .mobile-menu__close {
     @apply absolute;
-    top: clamp(24px, 2.4vw, 34px);
+    top: var(--topbar-pad);
     right: var(--gutter);
   }
 
@@ -57,10 +55,11 @@
     @apply flex flex-col items-center gap-2;
   }
 
-  /* The section titles' voice: regular, lowercase, tight. Each rises in a
-     beat after the one above it (`--i` is its index). */
+  /* The section titles' voice. Each rises in a beat after the one above it
+     (`--i` is its index). */
   .mobile-menu__link {
-    @apply rounded-2xl px-6 py-2 font-display font-normal lowercase leading-[1.1] tracking-[-0.04em] transition-colors;
+    @apply type-display rounded-2xl px-6 py-2 transition-colors;
+    line-height: 1.1;
     font-size: clamp(40px, 11vw, 64px);
     opacity: 0;
     translate: 0 12px;

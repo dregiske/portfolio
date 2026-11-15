@@ -4,53 +4,47 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Tone classes are built from data (`tone-${tone}`), which Tailwind can't see
+   in the source, so list them for it. Mirrors `TONES`. */
+@source inline("tone-{frost,ice,sky,azure,cobalt}");
+
 /* ---------------------------------------------------------------------------
    Design tokens
    ---------------------------------------------------------------------------
    Everything visual — CSS *and* the background canvases — reads from the role
-   tokens below. A role names a job ("the color of a dot", "the glass border"),
-   never a hue, so the two themes are two value sets for one vocabulary:
+   tokens below. A role names a job ("the glass border", "a koi trail"), never
+   a hue, so the two themes are two value sets for one vocabulary:
 
      .dark  (default) — near-black, white ink, monochrome aura
      :root  (light)   — white paper, near-black ink
 
-   The site currently ships dark-only: `index.html` always sets `.dark` and the
-   theme toggle is archived. The light set below is kept complete so the toggle
-   can come back without re-deriving a palette.
+   The site currently ships dark-only: `index.html` always sets `.dark`. The
+   light set below is kept complete so a theme toggle can come back without
+   re-deriving a palette.
 
    The canvases can't read CSS variables directly, so `src/lib/themeColors.ts`
-   resolves the ones they need (--aura-*, --koi-*) through a hidden
-   probe element and re-resolves whenever `.dark` toggles on <html>.
+   resolves the ones they need (--aura-*, --koi-*, --constellation-*) through a
+   hidden probe element and re-resolves whenever `.dark` toggles on <html>.
    ------------------------------------------------------------------------- */
 
-@theme inline {
+/* Not `inline`: these are emitted as real variables, so canvas code can read
+   a font stack (the koi read `--font-mono`). */
+@theme {
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
 
-  /* Role colors — the redesign's vocabulary */
+@theme inline {
   --color-bg-base: var(--bg-base);
   --color-fg: var(--fg);
   --color-fg-muted: var(--fg-muted);
   --color-fg-faint: var(--fg-faint);
   --color-accent-brand: var(--accent-brand);
+  --color-danger: var(--danger);
   --color-glass: var(--glass-bg);
   --color-glass-strong: var(--glass-bg-strong);
   --color-glass-border: var(--glass-border);
-  --color-nav-pill: var(--nav-pill-bg);
-  --color-nav-pill-fg: var(--nav-pill-fg);
-
-  /* Blue shade ladder */
-  --color-tone-frost: var(--tone-frost);
-  --color-tone-frost-subtle: var(--tone-frost-subtle);
-  --color-tone-ice: var(--tone-ice);
-  --color-tone-ice-subtle: var(--tone-ice-subtle);
-  --color-tone-sky: var(--tone-sky);
-  --color-tone-sky-subtle: var(--tone-sky-subtle);
-  --color-tone-azure: var(--tone-azure);
-  --color-tone-azure-subtle: var(--tone-azure-subtle);
-  --color-tone-cobalt: var(--tone-cobalt);
-  --color-tone-cobalt-subtle: var(--tone-cobalt-subtle);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -59,24 +53,6 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
-
-  /* Legacy shadcn-shaped roles, re-pointed at the tokens above so components
-     that already consume them inherit the new look. */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-surface: var(--card-surface);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
 }
 
 /* ---------------------------------------------------------------------------
@@ -91,8 +67,7 @@
 
    What only *scales* with the viewport doesn't switch at all: the gutters and
    section spacing below, and the type sizes in each component, are clamp()ed
-   so a window resize glides instead of snapping between steps. They're
-   resolved once per style pass — free when nothing is resizing.
+   so a window resize glides instead of snapping between steps.
    ------------------------------------------------------------------------- */
 @theme static {
   --breakpoint-*: initial;
@@ -100,38 +75,61 @@
 }
 
 :root {
-  /* Side margin of every full-width band: hero, sections, footer, indicator.
+  /* Side margin of every full-width band: hero, sections, footer.
      24px on a phone, 60px from ~1330px wide. */
   --gutter: clamp(24px, 4.5vw, 60px);
+  /* The measure every band's content is centred on. */
+  --content-max: 1180px;
   /* Top/bottom padding of each content section. */
   --section-pad-y: clamp(64px, 8vw, 96px);
+  /* Distance from the top of the screen to the top bar — and to the compact
+     menu's ✕, which sits exactly where the ☰ was. */
+  --topbar-pad: clamp(24px, 2.4vw, 34px);
   /* The empty run at the foot of the page that the footer rises through.
      Read by `.home__content` (as padding) and by the morph engine (as the
      reveal's length), so the two can't drift apart. */
   --footer-zone: 180px;
+
+  /* Page-level stacking, back to front. Local stacking inside a component
+     (a lifted bio, a hovered card) stays as small numbers in that component. */
+  --z-aura: 0;
+  --z-koi: 1;
+  --z-content: 10;
+  --z-footer: 40;
+  --z-menu: 60;
+
+  --radius: 0.75rem;
+
+  /* Shadows, in the theme's shadow ink: a soft drop under photos, and the
+     wide haze that lifts free-standing type off the background. */
+  --shadow-photo: 0 24px 50px -20px var(--shadow-ink);
+  --shadow-text: 0 2px 40px var(--shadow-ink);
+  /* Constellation nodes, at rest and when picked up. */
+  --shadow-node: 0 2px 8px rgb(var(--shadow-color) / 0.06);
+  --shadow-node-lifted: 0 8px 22px rgb(var(--shadow-color) / 0.16);
 }
 
 /* ---------------------------------------------------------------------------
    Light theme — white paper, near-black ink
    ------------------------------------------------------------------------- */
 :root {
-  --radius: 0.75rem;
-
   /* Surfaces + ink */
   --bg-base: #ffffff;
   --fg: #10131a;
   --fg-muted: rgba(16, 19, 26, 0.55);
   --fg-faint: rgba(16, 19, 26, 0.38);
   --accent-brand: #3457c8;
+  --danger: oklch(0.577 0.245 27.325);
 
-  /* Glass — the only "card" surface in the redesign: a whisper of ink over
-     the live background, never an opaque panel. */
+  /* Glass — the only "card" surface: a whisper of ink over the live
+     background, never an opaque panel. */
   --glass-bg: rgba(16, 19, 26, 0.035);
   --glass-bg-strong: rgba(16, 19, 26, 0.06);
   --glass-border: rgba(16, 19, 26, 0.12);
 
-  /* Chrome. The nav pill wears the glass surface (same as Contact's email
-     pill), but keeps its own roles so it can be restyled on its own. */
+  /* Chrome. The nav pill wears the glass surface, but keeps its own roles so
+     it can be restyled on its own. These only point at other tokens, so they
+     follow the theme without being repeated under `.dark`. */
   --nav-pill-bg: var(--glass-bg);
   --nav-pill-border: var(--glass-border);
   --nav-pill-fg: var(--fg);
@@ -140,8 +138,8 @@
   --menu-cover-bg: rgb(var(--scrim) / 0.55);
   --menu-cover-blur: 20px;
   --menu-cover-fg: var(--fg);
-  --scrim: 255 255 255; /* rgb triplet — scroll-indicator gradient */
-  --hero-shadow: rgba(20, 30, 60, 0.22);
+  --scrim: 255 255 255; /* rgb triplet, so it can take an alpha */
+  --shadow-ink: rgba(20, 30, 60, 0.22);
   --selection-bg: #3457c8;
   --selection-fg: #ffffff;
 
@@ -153,99 +151,35 @@
   --aura-blob-4: rgb(232, 238, 252);
   --aura-blob-5: rgb(169, 196, 255);
 
-
-  /* ---- Blue shade ladder -------------------------------------------------
-     One hue family, five shades. Each rung turns the hue a few degrees and
-     steps `--tone-step-dir` further from the page background — darker on white,
-     lighter on navy — so the ladder reads the same way in both themes without
-     a second set of colors. `-h` is the hue, `-step` the lightness offset. */
-  --shade-frost-h: 232;
-  --shade-frost-step: 0;
-  --shade-ice-h: 240;
-  --shade-ice-step: 0.035;
-  --shade-sky-h: 248;
-  --shade-sky-step: 0.07;
-  --shade-azure-h: 256;
-  --shade-azure-step: 0.105;
-  --shade-cobalt-h: 264;
-  --shade-cobalt-step: 0.14;
-
-  /* Base recipe (light): ink L 0.55 / C 0.12 · subtle L 0.935 / C 0.048.
-     Deeper rungs go darker here, so the step direction is negative. */
-  --tone-step-dir: -1;
-  --tone-ink-l: 0.55;
-  --tone-ink-c: 0.12;
-  --tone-subtle-l: 0.935;
-  --tone-subtle-c: 0.048;
-
-  --tone-frost: oklch(
-    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-frost-step))
-      var(--tone-ink-c) var(--shade-frost-h)
-  );
-  --tone-frost-subtle: oklch(
-    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-frost-step))
-      var(--tone-subtle-c) var(--shade-frost-h)
-  );
-  --tone-ice: oklch(
-    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-ice-step))
-      var(--tone-ink-c) var(--shade-ice-h)
-  );
-  --tone-ice-subtle: oklch(
-    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-ice-step))
-      var(--tone-subtle-c) var(--shade-ice-h)
-  );
-  --tone-sky: oklch(
-    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-sky-step))
-      var(--tone-ink-c) var(--shade-sky-h)
-  );
-  --tone-sky-subtle: oklch(
-    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-sky-step))
-      var(--tone-subtle-c) var(--shade-sky-h)
-  );
-  --tone-azure: oklch(
-    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-azure-step))
-      var(--tone-ink-c) var(--shade-azure-h)
-  );
-  --tone-azure-subtle: oklch(
-    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-azure-step))
-      var(--tone-subtle-c) var(--shade-azure-h)
-  );
-  --tone-cobalt: oklch(
-    calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--shade-cobalt-step))
-      var(--tone-ink-c) var(--shade-cobalt-h)
-  );
-  --tone-cobalt-subtle: oklch(
-    calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--shade-cobalt-step))
-      var(--tone-subtle-c) var(--shade-cobalt-h)
-  );
+  /* The koi's water marks. The fish keep their own natural colors (see
+     `SPECIES` in koi.ts); these are what they leave on the page. */
+  --koi-trail: rgb(70, 100, 150);
+  --koi-ripple: rgb(70, 110, 160);
+  --koi-splash: rgb(90, 125, 170);
+  --koi-food: rgb(204, 126, 58);
 
   --constellation-line: rgba(16, 19, 26, 0.18);
   --constellation-line-active: var(--accent-brand);
   --shadow-color: 20 30 60;
 
-  /* Legacy roles → new tokens */
-  --background: var(--bg-base);
-  --foreground: var(--fg);
-  --card: var(--glass-bg);
-  --card-surface: var(--glass-bg-strong);
-  --card-foreground: var(--fg);
-  --primary: var(--accent-brand);
-  --primary-foreground: #ffffff;
-  --muted: var(--glass-bg);
-  --muted-foreground: var(--fg-muted);
-  --accent: var(--glass-bg-strong);
-  --accent-foreground: var(--fg);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: var(--glass-border);
-  --input: var(--glass-border);
-  --ring: var(--accent-brand);
+  /* ---- Blue shade ladder -------------------------------------------------
+     The recipe for the `tone-*` classes below. Each rung turns the hue a few
+     degrees and steps `--tone-step-dir` further from the page background —
+     darker on white, lighter on black — so the ladder reads the same way in
+     both themes without a second set of colors.
+     Light: ink L 0.55 / C 0.12 · surface L 0.935 / C 0.048. */
+  --tone-step-dir: -1;
+  --tone-ink-l: 0.55;
+  --tone-ink-c: 0.12;
+  --tone-subtle-l: 0.935;
+  --tone-subtle-c: 0.048;
 }
 
 /* ---------------------------------------------------------------------------
    Dark theme (default) — near-black, white ink, monochrome aura
 
    Everything here is greyscale on purpose, so the koi are the only color on
-   the page.
+   the page. Only values that differ from the light set are listed.
    ------------------------------------------------------------------------- */
 .dark {
   --bg-base: #0a0a0a;
@@ -253,19 +187,14 @@
   --fg-muted: rgba(255, 255, 255, 0.62);
   --fg-faint: rgba(255, 255, 255, 0.42);
   --accent-brand: #e5e5e5;
+  --danger: oklch(0.704 0.191 22.216);
 
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-bg-strong: rgba(255, 255, 255, 0.09);
   --glass-border: rgba(255, 255, 255, 0.14);
 
-  --nav-pill-bg: var(--glass-bg);
-  --nav-pill-border: var(--glass-border);
-  --nav-pill-fg: var(--fg);
-  --menu-cover-bg: rgb(var(--scrim) / 0.55);
-  --menu-cover-blur: 20px;
-  --menu-cover-fg: var(--fg);
   --scrim: 10 10 10;
-  --hero-shadow: rgba(0, 0, 0, 0.6);
+  --shadow-ink: rgba(0, 0, 0, 0.6);
   --selection-bg: #ffffff;
   --selection-fg: #0a0a0a;
 
@@ -276,29 +205,98 @@
   --aura-blob-4: rgb(15, 15, 15);
   --aura-blob-5: rgb(38, 38, 38);
 
+  --koi-trail: rgb(150, 175, 210);
+  --koi-ripple: rgb(150, 185, 220);
+  --koi-splash: rgb(170, 200, 230);
 
-  /* Base recipe (dark): bright ink L 0.82 · subtle L 0.36, chroma 0 — the
-     ladder keeps its lightness rungs but drains to grey to match the page.
-     Raise the two `-c` values to bring the blue back. The ladder climbs *out*
-     of the page instead of down into it, so the step direction flips. */
+  --constellation-line: rgba(255, 255, 255, 0.22);
+  --shadow-color: 0 0 0;
+
+  /* Dark recipe: bright ink L 0.82 · surface L 0.36, chroma 0 — the ladder
+     keeps its lightness rungs but drains to grey to match the page. Raise the
+     two `-c` values to bring the blue back. It climbs *out* of the page
+     instead of down into it, so the step direction flips. */
   --tone-step-dir: 1;
   --tone-ink-l: 0.82;
   --tone-ink-c: 0;
   --tone-subtle-l: 0.36;
   --tone-subtle-c: 0;
+}
 
-  --constellation-line: rgba(255, 255, 255, 0.22);
-  --constellation-line-active: var(--accent-brand);
-  --shadow-color: 0 0 0;
+/* ---------------------------------------------------------------------------
+   Shared surfaces and type
+   ---------------------------------------------------------------------------
+   Utilities, so components either put them in markup or `@apply` them.
+   ------------------------------------------------------------------------- */
 
-  --primary: var(--accent-brand);
-  --primary-foreground: #0a0a0a;
-  --destructive: oklch(0.704 0.191 22.216);
+/* Glass: tint, hairline border and a light blur over whatever is behind.
+   `--glass-fill` / `--glass-edge` let a consumer re-point it at its own
+   roles (see `glass-nav`). */
+@utility glass {
+  @apply border backdrop-blur-sm;
+  background: var(--glass-fill, var(--glass-bg));
+  border-color: var(--glass-edge, var(--glass-border));
+}
+
+/* The nav chrome's glass: same surface, through the `--nav-pill-*` roles. */
+@utility glass-nav {
+  --glass-fill: var(--nav-pill-bg);
+  --glass-edge: var(--nav-pill-border);
+  color: var(--nav-pill-fg);
+}
+
+/* The display voice: regular weight, lowercase, tight. Authored in title
+   case and lowercased here, so screen readers and the document outline keep
+   the proper capitalisation. */
+@utility type-display {
+  @apply font-display font-normal lowercase leading-[0.9] tracking-[-0.05em];
+}
+
+/* The small mono label: "or", "back to top", "take a look". */
+@utility type-label {
+  @apply font-mono text-xs uppercase tracking-[0.08em];
+}
+
+/* ---- Blue shade ladder ----------------------------------------------------
+   One class per rung of `TONES` (src/constants/tones.ts) — keep the two lists
+   in step. Each sets `--tone-ink` (text) and `--tone-surface` (fill) from the
+   theme's recipe above, resolved on the element itself, so a component can
+   re-tune the recipe for its own children (see `.contact__constellation`). */
+@utility tone-frost {
+  --tone-h: 232;
+  --tone-step: 0;
+}
+@utility tone-ice {
+  --tone-h: 240;
+  --tone-step: 0.035;
+}
+@utility tone-sky {
+  --tone-h: 248;
+  --tone-step: 0.07;
+}
+@utility tone-azure {
+  --tone-h: 256;
+  --tone-step: 0.105;
+}
+@utility tone-cobalt {
+  --tone-h: 264;
+  --tone-step: 0.14;
 }
 
 @layer base {
+  [class*="tone-"] {
+    --tone-ink: oklch(
+      calc(var(--tone-ink-l) + var(--tone-step-dir) * var(--tone-step))
+        var(--tone-ink-c) var(--tone-h)
+    );
+    --tone-surface: oklch(
+      calc(var(--tone-subtle-l) + var(--tone-step-dir) * var(--tone-step))
+        var(--tone-subtle-c) var(--tone-h)
+    );
+  }
+
   * {
-    @apply border-border outline-ring/50;
+    @apply border-glass-border outline-accent-brand/50;
   }
 
   html {

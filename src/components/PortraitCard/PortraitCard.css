@@ -1,9 +1,11 @@
 @reference "../../index.css";
 
 @layer components {
+  /* A soft-shadowed rounded frame that crops its photo to fill. Size comes
+     from the caller. */
   .portrait-card {
-    @apply h-[256px] w-[200px] flex-none overflow-hidden rounded-2xl wide:h-[320px] wide:w-[250px];
-    box-shadow: 0 24px 50px -20px var(--hero-shadow);
+    @apply flex-none overflow-hidden rounded-2xl;
+    box-shadow: var(--shadow-photo);
   }
 
   .portrait-card__img {

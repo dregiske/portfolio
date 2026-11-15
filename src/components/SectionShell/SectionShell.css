@@ -2,24 +2,23 @@
 
 @layer components {
   .section-shell {
-    /* z-10 keeps every section above both background canvases (z-0 / z-1).
-       `svh` (small-viewport height), not `screen`/`vh`: on mobile `100vh` is the
-       toolbars-hidden height, so a centered section is taller than what's on
-       screen and gets clipped top and bottom. `svh` is the always-visible height
-       — the section fits the viewport whether the toolbars are up or not. */
-    @apply relative z-10 flex min-h-svh items-center;
+    /* Above the background canvases. `svh` (small-viewport height), not
+       `screen`/`vh`: on mobile `100vh` is the toolbars-hidden height, so a
+       centered section is taller than what's on screen and gets clipped top
+       and bottom. `svh` is the always-visible height. */
+    @apply relative flex min-h-svh items-center;
+    z-index: var(--z-content);
     padding-block: var(--section-pad-y);
   }
 
   .section-shell__inner {
-    @apply mx-auto w-full max-w-[1180px];
+    @apply mx-auto w-full;
+    max-width: var(--content-max);
     padding-inline: var(--gutter);
   }
 
-  /* The hero wordmark's voice, one size down: regular weight, lowercase, tight.
-     Titles are authored in title case ("About") and lowercased here, so screen
-     readers and the document outline keep the proper capitalisation. */
+  /* The hero wordmark's voice, one size down. */
   .section-shell__title {
-    @apply font-display text-[clamp(56px,10vw,120px)] font-normal lowercase leading-[0.9] tracking-[-0.05em];
+    @apply type-display text-[clamp(56px,10vw,120px)];
   }
 }

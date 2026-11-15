@@ -12,21 +12,24 @@
  */
 
 export type ResolvedColor = {
-  /** Ready for `ctx.fillStyle`, e.g. "rgb(11, 31, 77)". */
+  /** Ready for `ctx.fillStyle`, e.g. "rgb(11, 31, 77)" or "rgba(…, 0.2)". */
   css: string;
   r: number;
   g: number;
   b: number;
+  /** Alpha, 0..1 — 1 for an opaque token. */
+  a: number;
 };
 
 export type ThemeColors<T extends string> = Record<T, ResolvedColor>;
 
-const BLACK: ResolvedColor = { css: "rgb(0, 0, 0)", r: 0, g: 0, b: 0 };
+const BLACK: ResolvedColor = { css: "rgb(0, 0, 0)", r: 0, g: 0, b: 0, a: 1 };
 
 function parse(color: string): ResolvedColor {
-  const [r, g, b] = (color.match(/[\d.]+/g) ?? []).map(Number);
+  const [r, g, b, a = 1] = (color.match(/[\d.]+/g) ?? []).map(Number);
   if (r === undefined || g === undefined || b === undefined) return BLACK;
-  return { css: `rgb(${r}, ${g}, ${b})`, r, g, b };
+  const css = a < 1 ? `rgba(${r}, ${g}, ${b}, ${a})` : `rgb(${r}, ${g}, ${b})`;
+  return { css, r, g, b, a };
 }
 
 /**

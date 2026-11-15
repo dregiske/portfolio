@@ -1,5 +1,5 @@
 import { Eyebrow } from "@/components/Eyebrow/Eyebrow";
-import { Pill } from "@/components/Pill/Pill";
+import { Button } from "@/components/Button/Button";
 import "./NotFound.css";
 
 export const NotFound = () => {
@@ -16,9 +16,7 @@ export const NotFound = () => {
         </p>
 
         <div className="notfound__actions">
-          <Pill href="/" variant="solid">
-            ← Back to home
-          </Pill>
+          <Button href="/">← Back to home</Button>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 /**
- * DEMO — koi pond, ported from the koi scene of "ASCII Animals New Tab"
+ * Koi pond, ported from the koi scene of "ASCII Animals New Tab"
  * (https://github.com/Pawan-webdeveloper/Ascii-Animals-extension).
  *
  *   MIT License — Copyright (c) 2026 Pawan-webdeveloper
@@ -61,7 +61,7 @@ function vnoise(x: number, y: number, s: number) {
   return lerp(lerp(a, b, sx), lerp(c, d, sx), sy);
 }
 
-type RGB = readonly [number, number, number];
+export type RGB = readonly [number, number, number];
 const mix = (c1: RGB, c2: RGB, t: number): RGB => [
   lerp(c1[0], c2[0], t),
   lerp(c1[1], c2[1], t),
@@ -104,7 +104,7 @@ const SPECIES = {
   retarget: [6, 14] as const,
   /** At most this many koi go for the same pellet. */
   maxChasers: 3,
-  trail: { chars: "~-~=", color: [150, 175, 210] as RGB, life: 1.8, at: [[-10, 0]] as const },
+  trail: { chars: "~-~=", life: 1.8, at: [[-10, 0]] as const },
   variants: [
     { base: [236, 232, 226], patch: [214, 48, 36], thr: 0.5 },
     { base: [236, 232, 226], patch: [205, 45, 35], thr: 0.55, dark: [30, 30, 34] },
@@ -211,8 +211,16 @@ function sampleKoi(u: number, v: number, e: Fish) {
 
 /* ---------------------------------------------------------------- pond -- */
 
+/**
+ * What the koi leave on the page — trails, ripples, the splash when they eat,
+ * and the food itself. Theme colors, set from CSS tokens (`--koi-*`) by the
+ * caller; the fish keep their own natural colors in `SPECIES`.
+ */
+export type KoiInk = { trail: RGB; ripple: RGB; splash: RGB; food: RGB };
+
 export type KoiPond = {
   resize(): void;
+  setInk(ink: KoiInk): void;
   /** Drop food at a viewport point (CSS px). */
   feed(clientX: number, clientY: number): void;
   start(): void;
@@ -222,7 +230,14 @@ export type KoiPond = {
 
 export function createKoiPond(
   world: HTMLCanvasElement,
-  opts: { reducedMotion: () => boolean; trace?: boolean },
+  opts: {
+    reducedMotion: () => boolean;
+    /** Font family for the glyphs (trails, ripples). */
+    fontFamily: string;
+    /** Starting theme colors; change them later with `setInk`. */
+    ink: KoiInk;
+    trace?: boolean;
+  },
 ): KoiPond {
   const ctx = world.getContext("2d")!;
   const lo = document.createElement("canvas");
@@ -251,6 +266,7 @@ export function createKoiPond(
   let raf = 0;
   let last = 0;
   const foods: Food[] = [];
+  let ink = opts.ink;
   const ripples: {
     x: number; y: number; age: number; dur: number; maxR: number; chars: string; color: RGB;
   }[] = [];
@@ -273,7 +289,7 @@ export function createKoiPond(
     R.occ = new Int16Array(n);
     R.tLife = new Float32Array(n);
     R.tChar = new Uint8Array(n);
-    R.font = `600 ${Math.round(R.cell * 1.02)}px ui-monospace, "SF Mono", Menlo, monospace`;
+    R.font = `600 ${Math.round(R.cell * 1.02)}px ${opts.fontFamily}`;
 
     // Grid lines, erased out of the fish so they read as tiles. The empty
     // water gets no grid — that's the site's background showing through.
@@ -337,7 +353,7 @@ export function createKoiPond(
       dur: o.dur ?? 0.9,
       maxR: o.maxR ?? 6,
       chars: o.chars ?? "·",
-      color: o.color ?? [200, 210, 230],
+      color: o.color ?? ink.ripple,
     });
     if (ripples.length > 24) ripples.shift();
   }
@@ -357,7 +373,7 @@ export function createKoiPond(
       });
     }
     while (foods.length > 80) foods.shift();
-    addRipple(x, y, { dur: 1.3, maxR: 7, chars: "~", color: [150, 185, 220] });
+    addRipple(x, y, { dur: 1.3, maxR: 7, chars: "~", color: ink.ripple });
   }
 
   /* ---------- simulation ---------- */
@@ -462,7 +478,7 @@ export function createKoiPond(
             f.eaten = true;
             e.food = null;
             e.nextBite = t + rand(0.5, 0.9);
-            addRipple(f.x, f.y, { dur: 0.7, maxR: 2.5, chars: "°", color: [170, 200, 230] });
+            addRipple(f.x, f.y, { dur: 0.7, maxR: 2.5, chars: "°", color: ink.splash });
           }
         }
       }
@@ -627,8 +643,6 @@ export function createKoiPond(
     R.tChar[idx] = (Math.random() * SPECIES.trail.chars.length) | 0;
   }
 
-  const FOOD: RGB = [204, 126, 58];
-
   function render(dt: number) {
     const W = R.cols * R.cell;
     const H = R.rows * R.cell;
@@ -651,9 +665,9 @@ export function createKoiPond(
       const idx = j * R.cols + i;
       R.buf[idx] =
         ((clamp(a * 255, 0, 255) | 0) << 24) |
-        (clamp(FOOD[2] * f.tint, 0, 255) << 16) |
-        (clamp(FOOD[1] * f.tint, 0, 255) << 8) |
-        clamp(FOOD[0] * f.tint, 0, 255);
+        (clamp(ink.food[2] * f.tint, 0, 255) << 16) |
+        (clamp(ink.food[1] * f.tint, 0, 255) << 8) |
+        clamp(ink.food[0] * f.tint, 0, 255);
       R.occ[idx] = 32000;
     }
 
@@ -671,7 +685,7 @@ export function createKoiPond(
     const half = R.cell / 2 + R.line / 2;
 
     // Trails fade out underneath the fish.
-    const tc = SPECIES.trail.color;
+    const tc = ink.trail;
     const chars = SPECIES.trail.chars;
     const decay = dt / SPECIES.trail.life;
     for (let idx = 0; idx < R.tLife.length; idx++) {
@@ -723,6 +737,9 @@ export function createKoiPond(
   return {
     resize,
     feed,
+    setInk(next) {
+      ink = next;
+    },
     start() {
       if (raf) return;
       last = 0;

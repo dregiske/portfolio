@@ -1,3 +1,5 @@
+import { sectionHref } from "@/constants/sections";
+import { PROFILE } from "@/content/profile";
 import { NavPill } from "@/components/NavPill/NavPill";
 import { MobileMenu } from "@/components/MobileMenu/MobileMenu";
 import "./TopBar.css";
@@ -10,8 +12,12 @@ import "./TopBar.css";
 export function TopBar() {
   return (
     <div className="top-bar">
-      <a href="#hero" className="top-bar__logo" aria-label="Back to top">
-        AG
+      <a
+        href={sectionHref("hero")}
+        className="top-bar__logo"
+        aria-label="Back to top"
+      >
+        {PROFILE.monogram}
       </a>
       <div className="top-bar__actions">
         {/* One or the other, swapped at the site breakpoint. */}
