@@ -6,9 +6,9 @@
   }
 
   /* The monogram in the same glass pill as the nav beside it — it wears the
-     nav pill's roles, so the two always match. 9px of padding around the 28px
-     line makes it the nav pill's 48px tall. */
+     nav pill's roles, so the two always match. 10px of padding around the
+     28px line makes it the nav pill's 48px tall. */
   .top-bar__logo {
-    @apply glass glass-nav rounded-[30px] px-4 py-[9px] font-display text-xl font-medium tracking-[0.04em];
+    @apply glass glass-nav rounded-[30px] px-4 py-[10px] font-display text-xl font-medium tracking-[0.04em];
   }
 }

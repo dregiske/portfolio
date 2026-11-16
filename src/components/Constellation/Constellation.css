@@ -15,15 +15,13 @@
     @apply pointer-events-none absolute inset-0 h-full w-full;
   }
 
-  /* No backdrop blur, deliberately: the tone fills are opaque, so there is
-     nothing to show through, and a moving backdrop-filter would make the
-     compositor re-blur a fresh patch of the animated background every frame,
-     once per node. */
+  /* The nav pills' glass, without the hairline: tint and a light blur, the
+     tone left to the ink. The blur re-samples the animated background under
+     every node each frame — a cost paid only while Skills is on screen. */
   .constellation__node {
     /* `touch-none` scoped here so dragging a node pans the node rather than
        scrolling the page, while empty space in the field stays scrollable. */
-    @apply absolute left-0 top-0 z-2 cursor-grab touch-none select-none rounded-full;
-    background: var(--tone-surface);
+    @apply glass glass-flat absolute left-0 top-0 z-2 cursor-grab touch-none select-none rounded-full;
     color: var(--tone-ink);
     box-shadow: var(--shadow-node);
     transform-origin: center;
@@ -37,6 +35,7 @@
 
   /* Set by `useConstellation` on the hovered or dragged node. */
   .constellation__node[data-lifted] {
+    --glass-fill: var(--glass-bg-strong);
     box-shadow: var(--shadow-node-lifted);
   }
 }

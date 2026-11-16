@@ -24,6 +24,29 @@
     @apply -translate-y-1;
   }
 
+  /**
+   * Cards side by side share their rows: each card spans six of the grid's
+   * rows (media, title, summary, description, tags, foot) and its body
+   * subgrids the last five, so every part starts on the same line as its
+   * neighbours' — each row as tall as the tallest card's part in it. The
+   * subgrids zero the grid's gap inside a card; it still parts rows of cards.
+   */
+  .projects__grid > .project-card {
+    grid-row: span 6;
+    display: grid;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+  .projects__grid .project-card__body {
+    grid-row: span 5;
+    display: grid;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+  .projects__grid .project-card__foot {
+    align-self: end;
+  }
+
   /* The featured card: wide, media on the left (7 twelfths), text beside it. */
   .project-card--featured {
     @variant wide {
@@ -97,7 +120,8 @@
     @apply type-tag px-1 text-fg-faint;
   }
 
-  /* Pushed to the bottom so the feet line up across a row of cards. */
+  /* Pushed to the bottom so the foot sits on the card's floor (in the grid,
+     the shared rows above line it up across a row of cards). */
   .project-card__foot {
     @apply mt-auto flex items-center justify-between gap-4 pt-6 font-mono text-xs text-fg-faint;
   }

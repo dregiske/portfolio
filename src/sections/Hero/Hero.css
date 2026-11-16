@@ -41,18 +41,36 @@
     text-shadow: var(--shadow-text);
   }
 
-  /* Tagline + actions, then the portrait. Compact, one column. Wide, the
-     tagline takes two thirds and the portrait the last third, top-aligned so
-     the tagline stays right under the name it describes. */
+  /**
+   * Tagline + actions, then the portrait. Compact, one column. Wide, two
+   * columns, top-aligned so the tagline stays right under the name it
+   * describes: the portrait's column is sized here, and the tagline takes
+   * whatever is left.
+   *
+   *   --portrait-max      compact cap
+   *   --portrait-chrome   wide: the first screen's height already spent on
+   *                       the bar, the name and the paddings (~1440 wide)
+   *   --portrait-min      wide floor, for short laptop screens
+   *   --portrait-w        wide: 1.5x the height the chrome leaves of the
+   *                       first screen (so it runs past the fold), never
+   *                       more than half the row
+   */
   .hero__body {
     --hero-gap: clamp(32px, 4cqw, 64px);
+    --portrait-max: 420px;
+    --portrait-chrome: 500px;
+    --portrait-min: 360px;
+    --portrait-w: min(
+      (100cqw - var(--hero-gap)) / 2,
+      max(var(--portrait-min), (100svh - var(--portrait-chrome)) * 1.5 * 25 / 32)
+    );
     @apply flex flex-col;
     gap: var(--stack-lg);
     margin-top: var(--stack-md);
 
     @variant wide {
       @apply grid items-start;
-      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) var(--portrait-w);
       column-gap: var(--hero-gap);
     }
   }
@@ -70,8 +88,8 @@
    *
    * The rows never wrap: the size is derived from the longest line (~18.3em,
    * see `TAGLINE`), so it fills ~95% of whatever it sits in. Compact, that's
-   * the whole container; wide, it's the two-thirds column (container less the
-   * gap, × 2/3), capped for very wide screens.
+   * the whole container; wide, it's what the portrait's column and the gap
+   * leave, capped for very wide screens.
    */
   .hero__tagline {
     @apply relative z-1 flex flex-col items-start whitespace-nowrap font-normal leading-[1.15] tracking-[-0.02em] text-fg;
@@ -79,7 +97,10 @@
     text-shadow: var(--shadow-text);
 
     @variant wide {
-      font-size: min(calc((100cqw - var(--hero-gap)) * 2 / 3 / 19.2), 44px);
+      font-size: min(
+        (100cqw - var(--hero-gap) - var(--portrait-w)) / 19.2,
+        44px
+      );
     }
   }
 
@@ -88,34 +109,15 @@
     @apply flex flex-wrap justify-center gap-3.5 self-stretch wide:justify-start wide:self-auto;
   }
 
-  /**
-   * The portrait, in a 25:32 frame.
-   *
-   *   --portrait-max      compact cap, after the actions, so the name,
-   *                       tagline and actions all fit the first screen
-   *   --portrait-chrome   wide: the first screen's height already spent on
-   *                       the bar, the name and the paddings (~1440 wide)
-   *   --portrait-min      wide floor, for short laptop screens, where the
-   *                       hero simply grows taller
-   *
-   * Compact, it's centred in the column.
-   * Wide, it fills its column but is never taller than what the chrome
-   * leaves of the first screen, so the whole hero lands in one view.
-   */
+  /* The portrait, in a 25:32 frame, sized by `.hero__body`. Compact, it's
+     centred in the column up to its cap; wide, it fills its own column. */
   .hero__portrait {
-    --portrait-max: 280px;
-    --portrait-chrome: 500px;
-    --portrait-min: 240px;
     @apply relative z-0 mx-auto w-full wide:mx-0;
     max-width: var(--portrait-max);
     aspect-ratio: 25 / 32;
 
     @variant wide {
-      @apply justify-self-end;
-      max-width: max(
-        var(--portrait-min),
-        (100svh - var(--portrait-chrome)) * 25 / 32
-      );
+      max-width: none;
     }
   }
 }

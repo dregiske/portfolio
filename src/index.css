@@ -144,7 +144,6 @@
      it can be restyled on its own. These only point at other tokens, so they
      follow the theme without being repeated under `.dark`. */
   --nav-pill-bg: var(--glass-bg);
-  --nav-pill-border: var(--glass-border);
   --nav-pill-fg: var(--fg);
   /* The compact menu's full-screen cover: glass, but frosted far heavier than
      the pills, since its links sit over the whole moving background. */
@@ -277,10 +276,11 @@
   box-shadow: var(--shadow-photo);
 }
 
-/* The nav chrome's glass: same surface, through the `--nav-pill-*` roles. */
+/* The nav chrome's glass: same surface, through the `--nav-pill-*` roles,
+   with no hairline — the tint and blur alone carry the pills. */
 @utility glass-nav {
   --glass-fill: var(--nav-pill-bg);
-  --glass-edge: var(--nav-pill-border);
+  border-width: 0;
   color: var(--nav-pill-fg);
 }
 

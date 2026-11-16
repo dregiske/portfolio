@@ -14,6 +14,6 @@
   }
 
   .skills__node {
-    @apply whitespace-nowrap border font-medium;
+    @apply whitespace-nowrap font-medium;
   }
 }
